@@ -1,0 +1,80 @@
+export const MOCK_STATISTICS_CERTIFICATE = [
+  {
+    pos_1: '본관',
+    pos_2: '3층',
+    pos_3: '응급실',
+    cnt_01: 8,
+    cnt_02: 27,
+    cnt_03: 0,
+    cnt_04: 0,
+    cnt_05: 0,
+    cnt_06: 0,
+    cnt_07: 0,
+    total: 35
+  },
+  {
+    pos_1: '본관',
+    pos_2: '2층',
+    pos_3: 'CT활영실',
+    cnt_01: 1,
+    cnt_02: 100,
+    cnt_03: 0,
+    cnt_04: 0,
+    cnt_05: 0,
+    cnt_06: 0,
+    cnt_07: 0,
+    total: 101
+  },
+  {
+    pos_1: '본관',
+    pos_2: '3층',
+    pos_3: '초진창구',
+    cnt_01: 1,
+    cnt_02: 1,
+    cnt_03: 0,
+    cnt_04: 0,
+    cnt_05: 0,
+    cnt_06: 0,
+    cnt_07: 0,
+    total: 2
+  },
+  {
+    pos_1: '암병원',
+    pos_2: '1층',
+    pos_3: '응급실',
+    cnt_01: 6,
+    cnt_02: 66,
+    cnt_03: 0,
+    cnt_04: 0,
+    cnt_05: 0,
+    cnt_06: 0,
+    cnt_07: 0,
+    total: 72
+  },
+  {
+    pos_1: '암병원',
+    pos_2: '2층',
+    pos_3: '채혈실앞',
+    cnt_01: 3,
+    cnt_02: 0,
+    cnt_03: 0,
+    cnt_04: 0,
+    cnt_05: 0,
+    cnt_06: 0,
+    cnt_07: 0,
+    total: 3
+  },
+  {
+    pos_1: '암병원',
+    pos_2: '3층',
+    pos_3: '중앙수납',
+    cnt_01: 3,
+    cnt_02: 55,
+    cnt_03: 0,
+    cnt_04: 0,
+    cnt_05: 77,
+    cnt_06: 0,
+    cnt_07: 0,
+    total: 135
+  }
+]
