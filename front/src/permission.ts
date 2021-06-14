@@ -24,29 +24,28 @@ const getPageTitle = (key: string) => {
 
 router.beforeEach(async (to: Route, _: Route, next: any) => {
   NProgress.start()
-  console.log('router.beforeEach')
   // next()
   if (localStorage.getItem('token')) {
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (UserStoreModule.roles.length === 0) {
-        try {
-          await UserStoreModule.CheckLogin({})
-          const roles = UserStoreModule.roles
-          PermissionModule.GenerateRoutes(roles)
-          router.addRoutes(PermissionModule.dynamicRoutes)
-          next({ ...to, replace: true })
-        } catch (err) {
-          localStorage.removeItem('token')
-          Message.error(err || 'Has Error')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
-        }
-      } else {
-        next()
-      }
+      // if (UserStoreModule.roles.length === 0) {
+      //  try {
+      //    await UserStoreModule.CheckLogin({})
+      //    const roles = UserStoreModule.roles
+      //    PermissionModule.GenerateRoutes(roles)
+      //    router.addRoutes(PermissionModule.dynamicRoutes)
+      //    next({ ...to, replace: true })
+      //  } catch (err) {
+      //    localStorage.removeItem('token')
+      //    Message.error(err || 'Has Error')
+      //    next(`/login?redirect=${to.path}`)
+      //    NProgress.done()
+      //  }
+      // } else {
+      next()
+      // }
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {

@@ -1,5 +1,5 @@
 import store from '@/store'
-import { login, checkLogin, logout, getUserList, getDashboardUser } from '@/api/user-api'
+import { dashCertificate, dashKiosk, dashWaitTime, dashStatusUse } from '@/api/dashboard-api'
 import { DashboardStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
@@ -44,6 +44,34 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   }
 
   @Action({ rawError: true })
+  public async Dashboard(type: string) {
+    let resultCd
+    switch (type) {
+      case 'certificate':
+        resultCd = await dashCertificate(type)
+        break
+      case 'kiosk':
+        resultCd = await dashKiosk(type)
+        break
+      case 'wait':
+        resultCd = await dashWaitTime(type)
+        break
+      case 'status':
+        resultCd = await dashStatusUse(type)
+        break
+      default:
+        resultCd = await dashCertificate(type)
+        break
+    }
+
+    if (resultCd === 200) {
+      return new Promise(resolve => {
+        resolve(200)
+      })
+    }
+  }
+
+  @Action({ rawError: true })
   public ChangeValue(payload: { key: string; value: any }) {
     this.SET_CHANGE_VALUE(payload)
   }
@@ -84,8 +112,6 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   @Action({ rawError: true })
   public GetDateRange(payload: any) {
     const selectDate = payload.date
-    console.log('GetDateRange')
-    console.log(selectDate)
     let date = this.crntMonth
 
     switch (selectDate) {
@@ -102,7 +128,6 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
         date = this.crntMonth
         break
     }
-    console.log(date)
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
 }

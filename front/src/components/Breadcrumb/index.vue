@@ -34,35 +34,21 @@ export default class extends Vue {
   }
 
   private getBreadcrumb() {
-    console.log('this.$route.matched')
-    console.log('this.$route.matched')
-    console.log('this.$route.matched')
-    console.log('this.$route.matched')
-    console.log('this.$route.currentRoute')
-    console.log(this.$route.path) // url: /statistics/receipt/compare
-
     let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-    console.log(matched)
 
     const first = matched[0]
 
     if (!this.isDashboard(first)) {
       matched = [{ path: '/', meta: { title: 'main' } } as RouteRecord].concat(matched)
     }
-    console.log(matched)
     this.breadcrumbs = matched.filter(item => {
       return item.meta && item.meta.title && item.meta.breadcrumb !== false
     })
     // dashboardTemp/dashboardTemp
     // raw-data/receipt
     // statistics/receipt/compare
-    console.log('this.breadcrumbs : ', this.breadcrumbs)
     const path = this.$route.path.split('/')
-    console.log(path)
     this.breadcrumbs = this.getPath(path)
-
-    console.log('this.breadcrumbs---------------------------')
-    console.log(this.breadcrumbs)
   }
 
   get menuList(): object[] {

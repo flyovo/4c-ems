@@ -35,9 +35,6 @@ import variables from '@/styles/_variables.scss'
     SidebarItem,
     SidebarLogo,
     SidebarLogoSmall
-  },
-  created() {
-    console.log(AppStoreModule.device)
   }
 })
 export default class extends Vue {

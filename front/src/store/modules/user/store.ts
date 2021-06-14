@@ -40,15 +40,15 @@ class UserStore extends VuexModule implements UserStoreState {
     }
   }
 
-  @Action({ rawError: true })
-  public async CheckLogin(payload: any) {
-    const { resultCd } = await checkLogin(payload)
-    if (resultCd === 200) {
-      const readyRouterList = []
-      this.SET_CHANGE_VALUE({ key: 'routerList', value: Object.freeze(readyRouterList) })
-      this.SET_CHANGE_VALUE({ key: 'roles', value: ['admin'] })
-    }
-  }
+  // @Action({ rawError: true })
+  // public async CheckLogin(payload: any) {
+  //   const { resultCd } = await checkLogin(payload)
+  //   if (resultCd === 200) {
+  //     const readyRouterList = []
+  //     this.SET_CHANGE_VALUE({ key: 'routerList', value: Object.freeze(readyRouterList) })
+  //     this.SET_CHANGE_VALUE({ key: 'roles', value: ['admin'] })
+  //   }
+  // }
 
   @Action({ rawError: true })
   public async Logout() {

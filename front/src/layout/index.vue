@@ -35,10 +35,6 @@ import ResizeMixin from './mixin/resize'
 })
 export default class extends mixins(ResizeMixin) {
   get classObj() {
-    console.log('hideSidebar: ', !this.sidebar.opened)
-    console.log('openSidebar: ', this.sidebar.opened)
-    console.log('withoutAnimation: ', this.sidebar.withoutAnimation)
-    console.log('mobile: ', this.device === DeviceType.Mobile)
     return {
       hideSidebar: !this.sidebar.opened,
       openSidebar: this.sidebar.opened,

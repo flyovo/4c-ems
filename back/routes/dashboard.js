@@ -1,14 +1,31 @@
 const express = require("express");
+const router = express.Router();
 const api = require("../controllers");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
-const router = express.Router();
-
 module.exports = function () {
 	router.get(
-		"/dashboard/certification",
+		"/dashboard/kiosk",
 		isLoggedIn,
-		api.dashboard.getCertification
+		api.dashboard.getKiosk
+	);
+	
+	router.get(
+		"/dashboard/certificate",
+		isLoggedIn,
+		api.dashboard.getCertificate
+	);
+
+	router.get(
+		"/dashboard/wait",
+		isLoggedIn,
+		api.dashboard.getWait
+	);
+
+	router.get(
+		"/dashboard/status",
+		isLoggedIn,
+		api.dashboard.getStatus
 	);
 	
 	return router;

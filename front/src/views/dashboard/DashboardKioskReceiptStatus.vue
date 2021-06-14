@@ -15,11 +15,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 // import DatePicker from '@/components/DatePicker/index.vue'
 import BarChart, { IBarChart } from '@/components/Chart/BarChart.vue'
 import variables from '@/styles/_variables.scss'
-import { MessageService } from '@/utils/message-service'
 import ChartToCsv from '@/components/ChartToCsv/index.vue'
 
 @Component({
@@ -27,10 +26,11 @@ import ChartToCsv from '@/components/ChartToCsv/index.vue'
   components: { BarChart, ChartToCsv }
 })
 export default class extends Vue {
+  @Prop() private initData?: []
+
   private title: string = '키오스크 수납 현황'
-  private searchStartDate: any = ''
-  private searchEndDate: any = ''
   private chartItems: IBarChart = {
+
     title: {
       text: ''
     },
@@ -61,22 +61,16 @@ export default class extends Vue {
       }
     ]
   }
-  private searchUseItem() {
-    const searchStartDate = this.searchStartDate || ''
-    const searchEndDate = this.searchEndDate || ''
-    if (searchStartDate === '') {
-      MessageService.notiWarning('시작 기간을 입력해 주세요.')
-      return false
-    }
-    if (searchEndDate === '') {
-      MessageService.notiWarning('종료 기간을 입력해 주세요.')
-      return false
-    }
-    if (searchStartDate > searchEndDate) {
-      MessageService.notiWarning('기간 입력을 확인해 주세요.')
-      return false
-    }
+[{"start":"2021/03/07","end":"2021/03/13","date":"202110","cnt_sunap":"20"},{"start":"2021/03/14","end":"2021/03/20","date":"202111","cnt_sunap":"35"}]
+  created() {
+    this.fetchData()
   }
+
+  private async fetchData() {
+    
+    // await DashboardStoreModule.GetDateRange(payload)
+  }
+
 }
 </script>
 

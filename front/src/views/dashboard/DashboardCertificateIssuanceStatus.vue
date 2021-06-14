@@ -18,7 +18,7 @@ import ChartToCsv from '@/components/ChartToCsv/index.vue'
 
 @Component({
   name: 'DashboardCertificateIssuanceStatus',
-  components: { BarHorizontalChart, ChartToCsv }
+  components: { BarHorizontalChart, IBarHorizontalChart, ChartToCsv }
 })
 export default class extends Vue {
   private title: string = '증명서 발급 현황'

@@ -56,7 +56,7 @@ import VersionPopup from './VersionPopup.vue'
 export default class extends Vue {
   private loginForm = {
     userId: 'admin',
-    userPwd: '78787admin00753'
+    userPwd: '1234'
   }
   private passwordType = 'password'
   private showDialog = false

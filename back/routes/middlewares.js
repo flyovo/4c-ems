@@ -1,24 +1,7 @@
-exports.isLoggedIn = (req, res, next) => {
-	if (req.isAuthenticated()) {
-		const token = req.cookies[credentials.cookie.session];
-		jwt.verify(token, req.app.get("jwt-secret"), (err, decoded) => {
-			if (err) {
-				if (err.name === "TokenExpiredError") {
-					const error = new Error(err);
-					error.status = 9401;
-					res.clearCookie(credentials.cookie.session);
-					return next(error);
-				} else {
-					const error = new Error(err);
-					error.status = 9401;
-					return next(error);
-				}
-			}
-	
-			req.token = decoded;
-			return next();
-		});
+const jwt = require("jsonwebtoken");
 
+exports.isLoggedIn = (req, res, next) => {
+	if (req.isAuthenticated() || req.headers.token) {
 		return next();
 	}
 	return res.status(401).send({ reason: "로그인이 필요합니다." });

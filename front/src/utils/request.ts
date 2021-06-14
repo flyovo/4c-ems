@@ -16,27 +16,30 @@ declare module 'axios' {
     request?: any
   }
 }
-
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API,
   withCredentials: true,
+  baseURL: `http://${process.env.VUE_APP_SERVER_API}:${process.env.VUE_APP_SERVER_PORT}/api`,
   timeout: 100000
 })
 
 let loading: any
 service.interceptors.request.use(
   config => {
-    if (localStorage.getItem('token')) {
-      set(config.headers, 'token', localStorage.getItem('token'))
-    }
+    // if (localStorage.getItem('token')) {
+    //  set(config.headers, 'token', localStorage.getItem('token'))
+    // }
     const reqType = config.method
     switch (reqType) {
-      case 'post':
-        // if (localStorage.getItem('token')) {
-        //   config.data.token = localStorage.getItem('token')
-        // }
+      case 'get':
+        if (localStorage.getItem('token')) {
+          set(config.headers, 'token', localStorage.getItem('token'))
+        }
         break
-
+      case 'post':
+        if (localStorage.getItem('token')) {
+          config.data.token = localStorage.getItem('token')
+        }
+        break
       default:
         break
     }
@@ -57,21 +60,26 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     loading.close()
-    if (response.headers.token === '' || !response.headers.token) {
-      MessageService.MsgError('토큰 불일치 또는 만료')
-      localStorage.removeItem('userId')
-      localStorage.removeItem('token')
-      router.push(`/login`)
-    } else {
-      localStorage.setItem('token', response.headers.token)
+
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token)
     }
+
+    const token = localStorage.getItem('token')
+    if (token === '' || !token) {
+      MessageService.MsgError('토큰 불일치 또는 만료')
+      // localStorage.removeItem('userId')
+      // localStorage.removeItem('token')
+      router.push(`/login`)
+    }
+
     if (response.status === 500) {
       MessageService.MsgError('내부 시스템 오류 관리자에게 문의하세요.')
     }
     if (response.data.resultCd === 300) {
       MessageService.MsgError('아이디 및 비밀번호를 확인해 주세요.')
     }
-
+    console.log(response.data)
     return response.data
   },
   error => {

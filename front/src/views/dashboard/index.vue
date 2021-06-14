@@ -11,10 +11,10 @@
       </div>
     </div>
     <div class="dashboard-content__charts">
-      <dashboard-kiosk-receipt-status></dashboard-kiosk-receipt-status>
-      <dashboard-status-use-by-menu></dashboard-status-use-by-menu>
-      <dashboard-receipt-waiting-time></dashboard-receipt-waiting-time>
-      <dashboard-certificate-issuance-status></dashboard-certificate-issuance-status>
+      <dashboard-kiosk-receipt-status :initData="fetchData('kiosk')"></dashboard-kiosk-receipt-status>
+      <dashboard-status-use-by-menu :initData="fetchData('status')"></dashboard-status-use-by-menu>
+      <dashboard-receipt-waiting-time :initData="fetchData('wait')"></dashboard-receipt-waiting-time>
+      <dashboard-certificate-issuance-status :initData="fetchData('certificate')"></dashboard-certificate-issuance-status>
     </div>
     <back-to-top :visibility-height="300" :back-position="50" transition-name="fade" />
   </div>
@@ -28,7 +28,7 @@ import DashboardReceiptWaitingTime from './DashboardReceiptWaitingTime.vue'
 import DashboardCertificateIssuanceStatus from './DashboardCertificateIssuanceStatus.vue'
 import { dashboard } from '../../router/modules/router-constants'
 import BackToTop from '@/components/BackToTop/index.vue'
-import { DashboardStoreModule } from '@/store/modules/dashboard/store'
+import { DashboardStoreModule } from '@/store/modules/dashboard/store.ts'
 @Component({
   name: 'Dashboard',
   components: {
@@ -54,6 +54,13 @@ export default class extends Vue {
   private async handleDateChange(value: number) {
     this.selectDate = await value
     this.getDateRange()
+  }
+
+  private async fetchData(type: string) {
+    // axios
+    // range.from
+    // range.to
+    await DashboardStoreModule.Dashboard(type)
   }
 
   private async getDateRange() {

@@ -16,8 +16,8 @@ declare module 'axios' {
 }
 
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API,
   withCredentials: true,
+  baseURL: `${process.env.VUE_APP_SERVER_API}/api`,
   timeout: 5000
 })
 

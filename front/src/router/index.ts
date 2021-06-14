@@ -353,7 +353,7 @@ const createRouter = () =>
         return { x: 0, y: 0 }
       }
     },
-    base: process.env.BASE_URL,
+    base: process.env.VUE_APP_BASE_URL,
     routes: constantRoutes
   })
 

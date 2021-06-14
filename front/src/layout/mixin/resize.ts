@@ -44,15 +44,12 @@ export default class extends Vue {
 
   private isMobile() {
     const rect = document.body.getBoundingClientRect()
-    console.log('rect = ', document.body.getBoundingClientRect().width, rect.width - 1 < WIDTH)
     return rect.width - 1 < WIDTH
   }
 
   private resizeHandler() {
     if (!document.hidden) {
       const isMobile = this.isMobile()
-      console.log('Mobile : ', isMobile, DeviceType.Mobile, DeviceType.Desktop)
-      console.log(isMobile ? DeviceType.Mobile : DeviceType.Desktop)
       AppStoreModule.ToggleDevice(isMobile ? DeviceType.Mobile : DeviceType.Desktop)
       if (isMobile) {
         AppStoreModule.CloseSideBar(true)

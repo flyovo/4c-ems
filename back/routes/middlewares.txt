@@ -1,0 +1,21 @@
+	if (req.isAuthenticated() || req.headers.token) {
+		const token = req.headers.token;
+		jwt.verify(token, req.app.get("jwt-secret"), (err, decoded) => {
+			if (err) {
+				if (err.name === "TokenExpiredError") {
+					const error = new Error(err);
+					error.status = 9401;
+					res.clearCookie("4_ems");
+					return next(error);
+				} else {
+					const error = new Error(err);
+					error.status = 9401;
+					return next(error);
+				}
+			}
+			req.token = decoded;
+			return next();
+		});
+
+		return next();
+	}

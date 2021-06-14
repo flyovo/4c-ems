@@ -33,7 +33,6 @@ class App extends VuexModule implements IAppState {
 
   @Mutation
   private TOGGLE_SIDEBAR(withoutAnimation: boolean) {
-    console.log('Mutation TOGGLE_SIDEBAR : ', !this.sidebar.opened, withoutAnimation)
     this.sidebar.opened = !this.sidebar.opened
     this.sidebar.withoutAnimation = withoutAnimation
     // if (this.sidebar.opened) {
@@ -69,7 +68,6 @@ class App extends VuexModule implements IAppState {
 
   @Action({ rawError: true })
   public ToggleSideBar(withoutAnimation: boolean) {
-    console.log('ToggleSideBar : ', withoutAnimation)
     this.TOGGLE_SIDEBAR(withoutAnimation)
   }
 

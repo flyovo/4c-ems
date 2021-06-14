@@ -1,24 +1,25 @@
 const express = require("express");
+const router = express.Router();
+const passport = require("passport");
+const auth = require("../controllers/authController");
 const api = require("../controllers");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
-const router = express.Router();
-
 module.exports = function () {
 	router.get(
-		"/",
+		"/user",
 		isLoggedIn,
 		api.user.checkLogin
 	);
 
 	router.post(
-		"/login",
+		"/user/login",
 		isNotLoggedIn,
 		api.user.userLogin
 	);
 
 	router.post(
-		"/logout",
+		"/user/logout",
 		api.user.userLogout
 	);
 

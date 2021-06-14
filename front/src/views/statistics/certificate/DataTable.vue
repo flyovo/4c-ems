@@ -60,7 +60,6 @@ export default class extends Vue {
   private selectDate: number = 0
 
   created() {
-    console.log('???')
     this.getDateRange()
     this.getTableList()
   }
