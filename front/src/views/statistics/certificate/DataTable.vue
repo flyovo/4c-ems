@@ -3,9 +3,37 @@
     <div class="statistics-table__header">
       <div class="statistics-table__header__button">
         <div class="statistics-table__header__button__date">
-          <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월</el-button>
+          <!-- <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월</el-button>
           <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월</el-button>
-          <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간</el-button>
+          <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간</el-button> -->
+          <el-dropdown>
+            <el-button type="primary">
+              {{ dateList[selectDate] }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item 
+                v-for="(item, index) in dateList" 
+                :key="index"
+                :label="item"
+                @click.native="handleDateChange(index)">{{ item }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>  
+          <el-dropdown>
+            <el-button type="primary">
+              센터명 선택<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown>
+            <el-button type="primary">
+              기관 선택<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+            </el-dropdown-menu>
+          </el-dropdown>  
           <div class="statistics-table__header__button__date__text">
             <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
           </div>
@@ -16,26 +44,23 @@
           </download-excel>
         </div>
       </div>
-      <!-- <div class="statistics-table__header__text">
-        <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
-      </div> -->
     </div>
     <div class="statistics-table__body">
       <div class="statistics-table__body__table">
         <el-table :data="tableData" header-align="center">
           <el-table-column label="구분" align="center">
-            <el-table-column prop="pos_1" label="센터명" align="center"></el-table-column>
-            <el-table-column prop="pos_2" label="층" align="center"></el-table-column>
-            <!-- <el-table-column prop="pos_3" label="창구명" align="center"></el-table-column> -->
+            <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
+            <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
+            <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
           </el-table-column>
-          <el-table-column prop="cnt_01" label="입퇴원 증명서" align="center"></el-table-column>
-          <el-table-column prop="cnt_02" label="통원 증명서" align="center"></el-table-column>
-          <el-table-column prop="cnt_03" label="납입 증명서" align="center"></el-table-column>
-          <el-table-column prop="cnt_04" label="장애인 증명서" align="center"></el-table-column>
-          <el-table-column prop="cnt_05" label="입원진료비 영수증" align="center"></el-table-column>
-          <el-table-column prop="cnt_06" label="외래진료비 영수증" align="center"></el-table-column>
-          <el-table-column prop="cnt_07" label="응급진료비 영수증" align="center"></el-table-column>
-          <el-table-column prop="total" label="계" align="center"></el-table-column>
+          <el-table-column prop="입퇴원증명서" label="입퇴원 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="통원증명서" label="통원 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="납입증명서" label="납입 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="장애인증명서" label="장애인 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="입원영수증" label="입원진료비 영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="외래진료비" label="외래진료비 영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="응급진료비" label="응급진료비 영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
         </el-table>
         <div class="statistics-table__body__paging">
           <el-pagination :page-size="15" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination>
@@ -47,44 +72,48 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DashboardStoreModule } from '@/store/modules/dashboard/store'
+import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 
 @Component({
   name: 'TableList'
 })
 export default class extends Vue {
-  // @Prop({ default: 'hi' }) private msg!: string
-  @Prop() private initData?: []
-
   private page: number = 1
   private selectDate: number = 0
+  public type: string = 'certification'
+  public data: []
 
   created() {
     this.getDateRange()
-    this.getTableList()
+    this.fetchData()
+  }
+
+  get dateList() {
+    return StatisticsStoreModule.dateList
   }
 
   get dateRange() {
-    return DashboardStoreModule.dateRange
+    return StatisticsStoreModule.dateRange
   }
 
   private async handleDateChange(value: number) {
-    this.selectDate = await value
-    this.getDateRange()
+    this.selectDate = value
+    await this.getDateRange()
+    this.fetchData()
   }
 
   private async getDateRange() {
     const payload = {
       date: this.selectDate
     }
-    await DashboardStoreModule.GetDateRange(payload)
+    await StatisticsStoreModule.GetDateRange(payload)
   }
 
   get tableData() {
-    return DashboardStoreModule.tableList
+    return StatisticsStoreModule.tableList
   }
   get totalCount() {
-    return DashboardStoreModule.tableListTotalCount
+    return StatisticsStoreModule.tableListTotalCount
   }
 
   get currentPage() {
@@ -95,18 +124,36 @@ export default class extends Vue {
     this.$emit('update:page', value)
   }
 
-  private async handleCurrentChange(value: number) {
-    this.page = await value
-    this.getTableList()
+  private async getTablePagination() {
+    await StatisticsStoreModule.GetTableData({
+        data: this.data,
+        page: this.page,
+        limit: 15
+      })
   }
 
-  private async getTableList() {
-    const payload = {
-      data: this.initData,
-      page: this.page,
-      limit: 15
+  private async handleCurrentChange(value: number) {
+    this.page = await value
+    this.getTablePagination()
+  }
+
+  private async fetchData() {
+    await StatisticsStoreModule.RawTableData({
+      type: this.type,
+      range: this.dateRange
+    }).then( (result: any) => {
+      this.data = result
+      this.handleCurrentChange(1)
+    })
+  }
+
+  private getNumFormat(row:any, column:any) {
+    let value = row[column.property];
+    if (value == undefined) {
+        return "";
     }
-    await DashboardStoreModule.GetTableData(payload)
+    value = typeof value === 'string' ? value : value.toString()
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
   }
 }
 </script>
@@ -142,9 +189,15 @@ export default class extends Vue {
           height: 100%;
         }
       }
+      .el-dropdown {
+        height: 100%;
+        margin-right: 15px;
+      }
       .el-button {
         height: 100%;
         padding: 0px 15px;
+        background-color: #5d5d5d;
+        border-color: #5d5d5d;
         &.active {
           background-color: #2a2a2a;
           border-color: #2a2a2a;

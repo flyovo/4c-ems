@@ -23,9 +23,9 @@ module.exports = function () {
 	);
 
 	router.get(
-		"/dashboard/status",
+		"/dashboard/menu",
 		isLoggedIn,
-		api.dashboard.getStatus
+		api.dashboard.getMenuUse
 	);
 	
 	return router;

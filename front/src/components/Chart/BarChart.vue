@@ -3,10 +3,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import echarts, { ECharts, EChartOption } from 'echarts'
-import variables from '@/styles/_variables.scss'
 
 export interface IBarChart {
   title: Object
@@ -14,15 +12,7 @@ export interface IBarChart {
   colors: string[]
   xAxisData: string[]
   series: Object
-  // series: SeriesType[]
 }
-
-// export interface SeriesType {
-//   name: string
-//   type: string
-//   stack: string
-//   data: number[]
-// }
 
 @Component({
   name: 'BarChart'
@@ -34,6 +24,11 @@ export default class extends Vue {
   @Prop({ default: '100%' }) private width!: string
   @Prop({ default: '500px' }) private height!: string
   private chart!: ECharts
+
+  @Watch('chartItems', {immediate: true, deep: true})
+  public onInitChartChange(val: any, oldVal: any) {
+    this.setOptions(this.chartItems)
+  }
 
   mounted() {
     this.initProcess()

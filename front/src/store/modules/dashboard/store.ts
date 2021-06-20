@@ -1,5 +1,5 @@
 import store from '@/store'
-import { dashCertificate, dashKiosk, dashWaitTime, dashStatusUse } from '@/api/dashboard-api'
+import { dashCertificate, dashKiosk, dashWaitTime, dashMenuUse } from '@/api/dashboard-api'
 import { DashboardStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
@@ -13,27 +13,32 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   public dateRange = {}
   public dateToday = dayjs(new Date())
   public crntMonth = {
+    term: 'weekly',
     from: dayjs(this.dateToday)
       .date(1)
       .format('YYYY-MM-DD'),
     to: this.dateToday.format('YYYY-MM-DD')
   }
   public PrevMonth = {
+    term: 'weekly',
     from: dayjs(this.dateToday)
       .subtract(1, 'month')
       .date(1)
       .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
+      to: dayjs(this.dateToday)
+      .subtract(1, 'month')
+      .date(this.dateToday.daysInMonth())
+      .format('YYYY-MM-DD')
   }
   public PrevYear = {
+    term: 'monthly',
     from: dayjs(this.dateToday)
-      .subtract(1, 'year')
+      // .subtract(1, 'year')
+      .set('month', 0)
       .date(1)
       .format('YYYY-MM-DD'),
     to: this.dateToday.format('YYYY-MM-DD')
   }
-  public tableList = []
-  public tableListTotalCount = 0
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {
@@ -44,31 +49,35 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   }
 
   @Action({ rawError: true })
-  public async Dashboard(type: string) {
+  // public Dashboard(data: { type: string, range: {}}) {
+  public Dashboard(data: { type: string, range: {}}) {
     let resultCd
-    switch (type) {
+    switch (data.type) {
       case 'certificate':
-        resultCd = await dashCertificate(type)
-        break
+        resultCd = dashCertificate(data.range)
+      break
       case 'kiosk':
-        resultCd = await dashKiosk(type)
-        break
+          resultCd = dashKiosk(data.range)
+      break
       case 'wait':
-        resultCd = await dashWaitTime(type)
-        break
-      case 'status':
-        resultCd = await dashStatusUse(type)
-        break
+        resultCd = dashWaitTime(data.range)
+      break
+      case 'menu':
+        resultCd = dashMenuUse(data.range)
+      break
       default:
-        resultCd = await dashCertificate(type)
-        break
+        resultCd = dashCertificate(data.range)
+      break
     }
 
-    if (resultCd === 200) {
-      return new Promise(resolve => {
-        resolve(200)
-      })
-    }
+    return new Promise(resolve => {
+      resolve(resultCd)      
+    })
+    // if (resultCd === 200) {
+    //   return new Promise(resolve => {
+    //     resolve(200)
+    //   })
+    // }
   }
 
   @Action({ rawError: true })
@@ -91,22 +100,6 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
 
     this.SET_CHANGE_VALUE({ key: 'dashboardList', value: pageList })
     this.SET_CHANGE_VALUE({ key: 'dashboardListTotalCount', value: totalCount })
-  }
-
-  @Action({ rawError: true })
-  public GetTableData(payload: any) {
-    const page = payload.page
-    const limit = payload.limit
-    const dataList2 = cloneDeep(payload.data)
-    let count = 1
-    const dataList = dataList2.map(item => {
-      return { ...item }
-    })
-    const pageList = dataList.filter((_, index) => index < (limit as number) * (page as number) && index >= (limit as number) * ((page as number) - 1))
-    const totalCount = dataList.length
-
-    this.SET_CHANGE_VALUE({ key: 'tableList', value: pageList })
-    this.SET_CHANGE_VALUE({ key: 'tableListTotalCount', value: totalCount })
   }
 
   @Action({ rawError: true })

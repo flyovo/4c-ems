@@ -59,5 +59,5 @@ router.beforeEach(async (to: Route, _: Route, next: any) => {
 
 router.afterEach((to: Route) => {
   NProgress.done()
-  document.title = getPageTitle(to.meta.title)
+  // document.title = getPageTitle(to.meta.title)
 })

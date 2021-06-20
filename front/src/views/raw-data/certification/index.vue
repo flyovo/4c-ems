@@ -1,6 +1,7 @@
 <template>
   <div class="raw-data-wrapper">
-    <data-table :initData="mock" @fetch="fetchData"></data-table>
+    <!-- <data-table :initData="mock" @fetch="fetchData"></data-table> -->
+    <data-table></data-table>
     <back-to-top :visibility-height="300" :back-position="50" transition-name="fade" />
   </div>
 </template>
@@ -10,20 +11,14 @@ import { Component, Vue } from 'vue-property-decorator'
 import { dashboard } from '../../../router/modules/router-constants'
 import DataTable from './DataTable.vue'
 import BackToTop from '@/components/BackToTop/index.vue'
-import { MOCK_RAW_DATA_CERTIFICATION } from '@/store/modules/tableMock/rawdata-certification'
+// import { MOCK_RAW_DATA_CERTIFICATION } from '@/store/modules/rawdata/mock/rawdata-certification'
 
 @Component({
   name: 'rawData',
   components: { DataTable, BackToTop }
 })
 export default class extends Vue {
-  private mock: any = MOCK_RAW_DATA_CERTIFICATION
-
-  private async fetchData(range: {}) {
-    // axios
-    // range.from
-    // range.to
-  }
+  // private mock: any = MOCK_RAW_DATA_CERTIFICATION
 }
 </script>
 

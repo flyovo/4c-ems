@@ -2,7 +2,7 @@ const path = require('path')
 
 const devServerPort = process.env.PORT
 // const mockServerPort = 9528
-const name = '4C-Dashboard'
+const name = '4C gate - EMS'
 
 module.exports = {
   transpileDependencies: ['vue2-dropzone', 'excel-date-to-js', 'element-ui', 'echarts'],

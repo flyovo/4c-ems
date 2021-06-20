@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING(4),
 			allowNull: true
 		},
-		pos_1: {
+		pos_4: {
 			type: DataTypes.STRING(20),
 			allowNull: true
 		},

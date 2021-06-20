@@ -31,9 +31,7 @@ class UserStore extends VuexModule implements UserStoreState {
     let { userId, userPwd } = userInfo
     userId = userId.trim()
     const { resultCd } = await login({ userId, userPwd })
-
     if (resultCd === 200) {
-      localStorage.setItem('userId', userId)
       return new Promise(resolve => {
         resolve(200)
       })

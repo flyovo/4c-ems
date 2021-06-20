@@ -3,8 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import echarts, { ECharts, EChartOption } from 'echarts'
 
 export interface IPieChart {
@@ -32,6 +31,11 @@ export default class extends Vue {
   @Prop({ default: '100%' }) private width!: string
   @Prop({ default: '500px' }) private height!: string
   private chart!: ECharts
+  
+  @Watch('chartItems', {immediate: true, deep: true})
+  public onInitChartChange(val: any, oldVal: any) {
+    this.setOptions(this.chartItems)
+  }
 
   mounted() {
     this.initProcess()
@@ -64,7 +68,16 @@ export default class extends Vue {
         title: chartItems.title,
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          // formatter: '{b} : {c} ({d}%)'
+          formatter: function (params) {
+            let value = params.value
+            if (value == undefined) {
+                return "";
+            }
+            value = typeof value === 'string' ? value : value.toString()
+            value = value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+            return `${params.name} : ${value} (${params.percent}%)`
+          }
         },
         legend: {
           x: 'center',

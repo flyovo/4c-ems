@@ -11,7 +11,7 @@ export const dashKiosk = (data: any) =>
   request({
     url: '/dashboard/kiosk',
     method: 'get',
-    data
+    params: data
   })
 
 export const dashWaitTime = (data: any) =>
@@ -21,9 +21,9 @@ export const dashWaitTime = (data: any) =>
     data
   })
 
-export const dashStatusUse = (data: any) =>
+export const dashMenuUse = (data: any) =>
   request({
-    url: '/dashboard/status',
+    url: '/dashboard/menu',
     method: 'get',
     data
   })

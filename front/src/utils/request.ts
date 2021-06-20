@@ -62,7 +62,10 @@ service.interceptors.response.use(
     loading.close()
 
     if (response.data.token) {
+      console.log(response.data.data)
       localStorage.setItem('token', response.data.token)
+      localStorage.setItem('4c-userId', response.data.data.user_id)
+      localStorage.setItem('4c-userAuth', response.data.data.authority)
     }
 
     const token = localStorage.getItem('token')
@@ -79,7 +82,7 @@ service.interceptors.response.use(
     if (response.data.resultCd === 300) {
       MessageService.MsgError('아이디 및 비밀번호를 확인해 주세요.')
     }
-    console.log(response.data)
+
     return response.data
   },
   error => {

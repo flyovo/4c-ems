@@ -3,9 +3,34 @@
     <div class="statistics-table__header">
       <div class="statistics-table__header__button">
         <div class="statistics-table__header__button__date">
-          <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월</el-button>
-          <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월</el-button>
-          <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간</el-button>
+          <el-dropdown>
+            <el-button type="primary">
+              {{ dateList[selectDate] }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item 
+                v-for="(item, index) in dateList" 
+                :key="index"
+                :label="item"
+                @click.native="handleDateChange(index)">{{ item }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>  
+          <el-dropdown>
+            <el-button type="primary">
+              센터명 선택<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown>
+            <el-button type="primary">
+              기관 선택<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+            </el-dropdown-menu>
+          </el-dropdown>  
           <div class="statistics-table__header__button__date__text">
             <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
           </div>
@@ -16,30 +41,28 @@
           </download-excel>
         </div>
       </div>
-      <!-- <div class="statistics-table__header__text">
-        <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
-      </div> -->
     </div>
     <div class="statistics-table__body">
       <div class="statistics-table__body__table">
         <el-table :data="tableData" header-align="center">
           <el-table-column label="구분" align="center">
-            <el-table-column prop="pos_1" label="센터명" align="center"></el-table-column>
-            <el-table-column prop="pos_2" label="층" align="center"></el-table-column>
-            <el-table-column prop="op_prog" label="용도" align="center"></el-table-column>
+            <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
+            <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
+            <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+            <el-table-column prop="용도" label="용도" sortable align="center"></el-table-column>
           </el-table-column>
           <el-table-column label="수납관련사항" align="center">
-            <el-table-column prop="cnt_sunap" label="건수" align="center"></el-table-column>
-            <el-table-column prop="amount" label="금액" align="center"></el-table-column>
-            <el-table-column prop="cnt_sunap_x" label="불능건수" align="center"></el-table-column>
-            <el-table-column prop="cnt_his_query" label="HIS조회건수" align="center"></el-table-column>
+            <el-table-column prop="건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="불능건수" label="불능건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="HIS 조회" label="HIS조회건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
           </el-table-column>
           <el-table-column label="기타사항" align="center">
-            <el-table-column prop="cnt_prescription" label="약처방전 발행건수" align="center"></el-table-column>
-            <el-table-column prop="cnt_pharm" label="약처방전 전송건수" align="center"></el-table-column>
-            <el-table-column prop="cnt_parking_reg" label="차량등록 건수" align="center"></el-table-column>
-            <el-table-column prop="cnt_parking_chg" label="차량등록 변경건수" align="center"></el-table-column>
-            <el-table-column prop="cnt_self_eval" label="진료전자기 평가건수" align="center"></el-table-column>
+            <el-table-column prop="처방전 발행" label="약처방전 발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="약국 전송" label="약처방전 전송건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="주차등록" label="차량등록 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="차량등록/변경" label="차량등록 변경건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+            <el-table-column prop="진료전자기평가" label="진료전자기 평가건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
           </el-table-column>
         </el-table>
         <div class="statistics-table__body__paging">
@@ -52,44 +75,48 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DashboardStoreModule } from '@/store/modules/dashboard/store'
+import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 
 @Component({
   name: 'TableList'
 })
 export default class extends Vue {
-  // @Prop({ default: 'hi' }) private msg!: string
-  @Prop() private initData?: []
-
   private page: number = 1
   private selectDate: number = 0
+  public type: string = 'out-patient'
+  public data: []
 
   created() {
     this.getDateRange()
-    this.getTableList()
+    this.fetchData()
+  }
+
+  get dateList() {
+    return StatisticsStoreModule.dateList
   }
 
   get dateRange() {
-    return DashboardStoreModule.dateRange
+    return StatisticsStoreModule.dateRange
   }
 
   private async handleDateChange(value: number) {
-    this.selectDate = await value
-    this.getDateRange()
+    this.selectDate = value
+    await this.getDateRange()
+    this.fetchData()
   }
 
   private async getDateRange() {
     const payload = {
       date: this.selectDate
     }
-    await DashboardStoreModule.GetDateRange(payload)
+    await StatisticsStoreModule.GetDateRange(payload)
   }
 
   get tableData() {
-    return DashboardStoreModule.tableList
+    return StatisticsStoreModule.tableList
   }
   get totalCount() {
-    return DashboardStoreModule.tableListTotalCount
+    return StatisticsStoreModule.tableListTotalCount
   }
 
   get currentPage() {
@@ -100,18 +127,36 @@ export default class extends Vue {
     this.$emit('update:page', value)
   }
 
-  private async handleCurrentChange(value: number) {
-    this.page = await value
-    this.getTableList()
+  private async getTablePagination() {
+    await StatisticsStoreModule.GetTableData({
+        data: this.data,
+        page: this.page,
+        limit: 15
+      })
   }
 
-  private async getTableList() {
-    const payload = {
-      data: this.initData,
-      page: this.page,
-      limit: 15
+  private async handleCurrentChange(value: number) {
+    this.page = await value
+    this.getTablePagination()
+  }
+
+  private async fetchData() {
+    await StatisticsStoreModule.RawTableData({
+      type: this.type,
+      range: this.dateRange
+    }).then( (result: any) => {
+      this.data = result
+      this.handleCurrentChange(1)
+    })
+  }
+  
+  private getNumFormat(row:any, column:any) {
+    let value = row[column.property];
+    if (value == undefined) {
+        return "";
     }
-    await DashboardStoreModule.GetTableData(payload)
+    value = typeof value === 'string' ? value : value.toString()
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
   }
 }
 </script>
@@ -147,9 +192,15 @@ export default class extends Vue {
           height: 100%;
         }
       }
+      .el-dropdown {
+        height: 100%;
+        margin-right: 15px;
+      }
       .el-button {
         height: 100%;
         padding: 0px 15px;
+        background-color: #5d5d5d;
+        border-color: #5d5d5d;
         &.active {
           background-color: #2a2a2a;
           border-color: #2a2a2a;

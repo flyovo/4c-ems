@@ -5,7 +5,7 @@
       <!-- <img src="@/assets/images/icon-logo.png" /> -->
     </div>
     <div class="sidebar-logo-user">
-      <img src="@/assets/images/icon-admin-user.png" alt="홍길동 / EUMC MOKDONG 원무 / Administator" />
+      <img src="@/assets/images/icon-admin-user.png" alt="" />
     </div>
     <div class="sidebar-logo-logout">
       <el-button class="button-1" type="text" @click.native="logout()"><img src="@/assets/images/icon-out.png"/></el-button>

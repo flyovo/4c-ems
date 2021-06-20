@@ -18,7 +18,7 @@ interface ISettings {
 }
 
 const settings: ISettings = {
-  title: '4C gate',
+  title: '4C gate - EMS',
   showSettings: true,
   showTagsView: false,
   fixedHeader: false,

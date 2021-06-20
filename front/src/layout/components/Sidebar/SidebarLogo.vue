@@ -10,9 +10,8 @@
         <img src="@/assets/images/icon-admin-user.png" />
       </div>
       <div class="sidebar-title">
-        <div class="text1">홍길동</div>
-        <div class="text2">EUMC MOKDONG 원무</div>
-        <div class="text3">Administator</div>
+        <div class="text1">{{ getterSetter }}</div>
+        <div class="text2">{{ userId }}</div>
       </div>
       <el-button class="button-1" type="text" @click.native="logout()"><img src="@/assets/images/icon-out.png"/></el-button>
     </div>
@@ -40,6 +39,28 @@ import router from '@/router'
 })
 export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
+  public userId = localStorage.getItem('4c-userId')
+  public userAuth = ''
+
+  created(){
+    switch(localStorage.getItem('4c-userAuth')){
+      case 'S': this.userAuth = 'Super Admin(4cgate)'
+      break;
+      case 'A': this.userAuth = '병원 총괄 관리자'
+      break;
+      case 'P': this.userAuth = '기관 / 부서 관리자'
+      break;
+      default: this.userAuth = '기관 / 부서 관리자'
+      break;
+    }
+  }
+  get getterSetter() {
+    return this.userAuth;
+  }
+  set getterSetter(value) {
+    this.userAuth = value;
+  }
+
   private async logout() {
     await UserStoreModule.Logout()
 
@@ -104,6 +125,9 @@ export default class extends Vue {
     & .sidebar-title {
       width: 182px;
       height: 60px;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
       .text1 {
         color: #fff;
         font-size: 15px;
@@ -113,6 +137,9 @@ export default class extends Vue {
         line-height: normal;
         letter-spacing: normal;
         text-align: left;
+        display: flex;
+        height: 50%;
+        align-items: center;
       }
       .text2 {
         color: #fff;
@@ -123,16 +150,9 @@ export default class extends Vue {
         line-height: normal;
         letter-spacing: normal;
         text-align: left;
-      }
-      .text3 {
-        color: #c5c6ca;
-        font-size: 12px;
-        font-weight: 500;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        text-align: left;
+        display: flex;
+        height: 50%;
+        align-items: center;
       }
     }
     .button-1 {
