@@ -1,7 +1,9 @@
 <template>
+  <!-- <div :class="{ 'has-logo': showLogo }">
+    <sidebar-logo v-if="showLogo" :collapse="isCollapse" /> -->
   <div :class="{ 'has-logo': showLogo }">
     <sidebar-logo v-if="showLogo" :collapse="isCollapse" />
-    <el-scrollbar wrap-class="scrollbar-wrapper">
+    <!-- <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         mode="vertical"
         style="background-color:#3d424e;"
@@ -14,7 +16,7 @@
       >
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" :is-collapse="isCollapse" />
       </el-menu>
-    </el-scrollbar>
+    </el-scrollbar> -->
   </div>
 </template>
 
@@ -117,7 +119,8 @@ export default class extends Vue {
 
 .has-logo {
   .el-scrollbar {
-    height: calc(100% - 80px);
+    // height: calc(100% - 80px);
+    height: calc(100% - setViewport('vh', 80));
   }
 }
 

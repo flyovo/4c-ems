@@ -4,7 +4,7 @@ export const dashCertificate = (data: any) =>
   request({
     url: '/dashboard/certificate',
     method: 'get',
-    data
+    params: data
   })
 
 export const dashKiosk = (data: any) =>
@@ -18,12 +18,12 @@ export const dashWaitTime = (data: any) =>
   request({
     url: '/dashboard/wait',
     method: 'get',
-    data
+    params: data
   })
 
 export const dashMenuUse = (data: any) =>
   request({
     url: '/dashboard/menu',
     method: 'get',
-    data
+    params: data
   })

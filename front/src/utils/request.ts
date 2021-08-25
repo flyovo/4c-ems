@@ -66,6 +66,7 @@ service.interceptors.response.use(
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('4c-userId', response.data.data.user_id)
       localStorage.setItem('4c-userAuth', response.data.data.authority)
+      localStorage.setItem('4c-userState', JSON.stringify({ organ: response.data.data.organ, pos_4: response.data.data.pos_4 }))
     }
 
     const token = localStorage.getItem('token')

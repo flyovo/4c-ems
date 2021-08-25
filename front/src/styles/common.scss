@@ -2,9 +2,10 @@
 /* font */
 @import '~@/styles/font/fonts.css';
 // $font-family: 'Noto Sans KR', Malgun Gothic, Dotum, Arial, Helvetica, sans-serif;
-$font-family: 'NanumSquareRound', Malgun Gothic, Dotum, Arial, Helvetica, sans-serif;
-$font-family-roboto: 'Roboto', Malgun Gothic, Dotum, Arial, Helvetica,
-  sans-serif;
+// $font-family: 'NanumSquareRound', Malgun Gothic, Dotum, Arial, Helvetica, sans-serif;
+// $font-family-roboto: 'Roboto', Malgun Gothic, Dotum, Arial, Helvetica,
+//   sans-serif;
+$font-family: 'NotoSansCJKkr', Malgun Gothic, Dotum, Arial, Helvetica, sans-serif;
 
 $font-size1: 36px;
 $font-size2: 24px;
@@ -59,6 +60,57 @@ $col-bg-grey-d: #11131e;
 $col-bg-grey-l: #f6f6f6;
 $col-text-grey: #353535;
 
+
+@function setViewport($unit, $px) {
+  $denominator: 0;
+  $viewport: 0;
+  @if $unit == 'vw' {
+    $denominator: 1920;
+    $viewport: 100vw;
+  }
+  @else if $unit == 'vh' {
+    $denominator: 1200;
+    $viewport: 100vh
+  }
+  //$result: calc($viewport + ($px / $denominator * 100));
+  $result: $px / $denominator * $viewport;
+  @return $result;
+}
+  
+@function setRem($px) {
+  @return $px/16*1rem;
+}
+
+@function setCalc($num, $func) {
+  $result: calc($num - $func);
+  @return $result;
+}
+
+
+$header-height: 36;
+$header-bottom: 72;
+// $chart-top: setViewport('vh', 42);
+// $chart-bottom: setViewport('vh', 28);
+// $chart-font: setViewport('vw', 20);
+$chart-width: 98%;
+$chart-height: 80%;
+$chart-left: 0%;
+$chart-right: 3%;
+$chart-top: 15%;
+$chart-bottom: 0%;
+$chart-font: 20;
+
+:export {
+  headerHeight: $header-height;
+  headerBottom: $header-bottom;
+  chartWidth: $chart-width;
+  chartHeight: $chart-height;
+  chartLeft: $chart-left;
+  chartRight: $chart-right;
+  chartTop: $chart-top;
+  chartBottom: $chart-bottom;
+  chartFont: $chart-font;
+}
 /* shadow & transparent*/
 // $col-shadow-dark: rgba(0, 0, 0, 0.2);
 // $col-shadow-light: rgba(255, 255, 255, 0.4);

@@ -67,7 +67,8 @@ export default class extends mixins(ResizeMixin) {
   position: relative;
   height: 100%;
   width: 100%;
-  min-width: 375px;
+  // min-width: 375px;
+  min-width: setViewport('vw', 375);
   display: flex;
   flex-direction: column;
 }
@@ -83,31 +84,22 @@ export default class extends mixins(ResizeMixin) {
 }
 .container {
   display: flex;
+  height: 100%;
 }
 .main-container {
+  width: calc(100% - #{$sideBarWidth});
   min-height: 100%;
   background-color: #f4f3ef;
   position: relative;
-  width: calc(100% - #{$sideBarWidth});
 }
 
 .sidebar-container {
-  // transition: width 0.28s;
-  // transition-duration: 0.3s;
+  transition: width 0.28s;
+  transition-duration: 0.3s;
   width: $sideBarWidth;
   height: 100%;
-  background-color: #3b404d;
-  overflow: hidden;
+  background-color: $subMenuBg;
 }
-
-// .fixed-header {
-//   position: fixed;
-//   top: 0;
-//   right: 0;
-//   z-index: 9;
-//   width: calc(100% - #{$sideBarWidth});
-//   transition: width 0.28s;
-// }
 
 .hideSidebar {
   .sidebar-container {
@@ -116,21 +108,18 @@ export default class extends mixins(ResizeMixin) {
   .main-container {
     width: 100%;
   }
-
-  // .fixed-header {
-  //   width: 100%;
-  // }
+  .navbar {
+    left: setViewport('vw', 5);
+  }
 }
 
 /* for mobile response */
 .mobile {
   &.openSidebar {
     position: fixed;
-    // top: 0;
     .container {
-      // display: block;
       .sidebar-container {
-        // transition: transform 0.28s;
+        transition: transform 0.28s;
         // width: 100%;
       }
       .main-container {
@@ -146,14 +135,10 @@ export default class extends mixins(ResizeMixin) {
     .sidebar-container {
       position: absolute;
       pointer-events: none;
-      // transition-duration: 0.3s;
-      // transform: translate3d(-$sideBarWidth, 0, 0);
+      transition-duration: 0.3s;
+      transform: translate3d(-$sideBarWidth, 0, 0);
     }
   }
-
-  // .fixed-header {
-  //   width: 100%;
-  // }
 
   .drawer-bg {
     display: none;

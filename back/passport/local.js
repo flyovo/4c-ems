@@ -20,7 +20,9 @@ module.exports = () => {
 				const parseUser = {
 					user_id: exUser.user_id,
 					pwd: exUser.pwd, 
-					authority: exUser.authority 
+					authority: exUser.authority,
+					organ: exUser.organ,
+					pos_4: exUser.pos_4
 				};
 				return done(null, parseUser);
 			} else {

@@ -9,36 +9,68 @@ import dayjs from 'dayjs'
 class DashboardStore extends VuexModule implements DashboardStoreState {
   public dashboardList = []
   public dashboardListTotalCount = 0
-
   public dateRange = {}
   public dateToday = dayjs(new Date())
-  public crntMonth = {
-    term: 'weekly',
-    from: dayjs(this.dateToday)
-      .date(1)
-      .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
-  }
-  public PrevMonth = {
-    term: 'weekly',
-    from: dayjs(this.dateToday)
-      .subtract(1, 'month')
-      .date(1)
-      .format('YYYY-MM-DD'),
-      to: dayjs(this.dateToday)
-      .subtract(1, 'month')
-      .date(this.dateToday.daysInMonth())
-      .format('YYYY-MM-DD')
-  }
-  public PrevYear = {
-    term: 'monthly',
-    from: dayjs(this.dateToday)
-      // .subtract(1, 'year')
-      .set('month', 0)
-      .date(1)
-      .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
-  }
+  public dateList = [
+    {
+      label: {
+        text: '당월(주별)',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD'),
+      }
+    },
+    {
+      label: {
+        text: '전월(주별)',
+        from: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(this.dateToday.daysInMonth())
+          .format('YYYY년 MM월 DD일'),
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(this.dateToday.daysInMonth())
+          .format('YYYY-MM-DD'),
+      }
+    },
+    {
+      label: {
+        text: '연간(월별)',
+        from: dayjs(this.dateToday)
+          .set('month', 0)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일'),
+      },
+      date: {
+        term: 'monthly',
+        from: dayjs(this.dateToday)
+          .set('month', 0)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD'),
+      }
+    }
+  ]
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {
@@ -51,6 +83,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   @Action({ rawError: true })
   // public Dashboard(data: { type: string, range: {}}) {
   public Dashboard(data: { type: string, range: {}}) {
+    console.log(data.type, data.range)
     let resultCd
     switch (data.type) {
       case 'certificate':
@@ -69,6 +102,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
         resultCd = dashCertificate(data.range)
       break
     }
+    console.log('resultCd dash::::::', resultCd)
 
     return new Promise(resolve => {
       resolve(resultCd)      
@@ -104,23 +138,8 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
 
   @Action({ rawError: true })
   public GetDateRange(payload: any) {
-    const selectDate = payload.date
-    let date = this.crntMonth
-
-    switch (selectDate) {
-      case 0:
-        date = this.crntMonth
-        break
-      case 1:
-        date = this.PrevMonth
-        break
-      case 2:
-        date = this.PrevYear
-        break
-      default:
-        date = this.crntMonth
-        break
-    }
+    // const selectDate = payload.date
+    let date = this.dateList[payload.date]
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
 }

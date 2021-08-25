@@ -13,6 +13,8 @@ const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
+db.autooff_holiday = require("./db/autooff_holiday")(sequelize, Sequelize);
+db.autooff_time = require("./db/autooff_time")(sequelize, Sequelize);
 db.certificate_daily_cnt = require("./db/certificate_daily_cnt")(sequelize, Sequelize);
 db.certificate_rt_log = require("./db/certificate_rt_log")(sequelize, Sequelize);
 db.device_hw_info = require("./db/device_hw_info")(sequelize, Sequelize);

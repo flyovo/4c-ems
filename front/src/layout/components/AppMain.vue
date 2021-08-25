@@ -28,17 +28,20 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .app-main {
-  /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  // min-height: 100vh;
   width: 100%;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  background-color: #f4f3ef;
+  height: 100%;
+  // padding: 20px 60px;
+  // padding: setViewport('vh', 20) setViewport('vw', 60);
+  padding: setViewport('vh', 20) setViewport('vw', 60) setViewport('vh', 70) setViewport('vw', 60);
+  // position: relative;
+  // overflow: hidden;
+  background-color: $loginBg;
 }
 
 .fixed-header + .app-main {
-  padding-top: 50px;
+  // padding-top: 50px;
+  padding-top: setViewport('vh', 50);
   height: 100vh;
   overflow: auto;
 }
@@ -46,11 +49,13 @@ export default class extends Vue {
 .hasTagsView {
   .app-main {
     /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    // min-height: calc(100vh - 84px);
+    min-height: calc(100vh - #{setViewport('vh', 84)});
   }
 
   .fixed-header + .app-main {
-    padding-top: 84px;
+    // padding-top: 84px;
+    padding-top: setViewport('vh', 84);
   }
 }
 </style>

@@ -2,28 +2,21 @@
   <div class="sidebar-logo-container">
     <div class="sidebar-logo-link">
       <div class="sidebar-logo">
-        <img src="@/assets/images/icon-logo-4c-gray.png" />
+        <img src="@/assets/images/icon-logo-4c-logo.svg" />
       </div>
     </div>
     <div class="sidebar-logo-user">
       <div class="sidebar-image">
-        <img src="@/assets/images/icon-admin-user.png" />
+        <img src="@/assets/images/ic-users.svg" />
       </div>
       <div class="sidebar-title">
         <div class="text1">{{ getterSetter }}</div>
         <div class="text2">{{ userId }}</div>
       </div>
-      <el-button class="button-1" type="text" @click.native="logout()"><img src="@/assets/images/icon-out.png"/></el-button>
+      <el-button type="text" @click.native="logout()"><img src="@/assets/images/ic-export.svg"/></el-button>
     </div>
     <div class="sidebar-logo-menu">
-      <div class="sidebar-menu" v-for="item in menuList" :key="item.title" @click="handleFunctionCall(item.menu, '')">
-        <span :class="item.menu"> {{ item.title }} </span>
-        <ul v-if="item.child">
-          <li v-for="chlidItem in item.child" :key="chlidItem.title" @click="handleFunctionCall(item.menu, chlidItem.menu)">
-            {{ chlidItem.title }}
-          </li>
-        </ul>
-      </div>
+      <el-tree :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick" />
     </div>
   </div>
 </template>
@@ -33,7 +26,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { UserStoreModule } from '@/store/modules/user/store'
 import { SettingsModule } from '@/store/modules/settings/store'
 import { Loading } from 'element-ui'
-import router from '@/router'
 @Component({
   name: 'SidebarLogo'
 })
@@ -41,6 +33,13 @@ export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
   public userId = localStorage.getItem('4c-userId')
   public userAuth = ''
+  public menuActive = 'dashboard'
+  public defaultProps = {
+    children: 'children',
+    label: 'label',
+  }
+  public menuUrl = []
+  public menuText = []
 
   created(){
     switch(localStorage.getItem('4c-userAuth')){
@@ -53,6 +52,7 @@ export default class extends Vue {
       default: this.userAuth = '기관 / 부서 관리자'
       break;
     }
+    // this.handleNodeClick
   }
   get getterSetter() {
     return this.userAuth;
@@ -77,10 +77,16 @@ export default class extends Vue {
     }, 100)
   }
 
+
+  get menuListTree() {
+    console.log('get menuListTree')
+    return SettingsModule.menuListTree
+  }
   get menuList() {
     return SettingsModule.menuList
   }
   private handleFunctionCall(funcName, funcParam) {
+    this.menuActive = funcName;
     if (funcName !== 'dashboard' && funcParam === '') return
     if (funcName === 'dashboard') {
       funcParam = 'dashboard'
@@ -91,12 +97,96 @@ export default class extends Vue {
     }
     this.$router.push(path)
   }
-  private toCamelCase(string) {
-    return string.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
+
+  private async handleNodeClick(data, checked, indeterminate) {
+    this.menuUrl = [];
+    this.menuText = [];
+
+    this.parseJson(checked);
+    let url = this.menuUrl.reverse();
+    let text = this.menuText.reverse().slice(1);
+    
+    if(text.length > 0){
+      text.push(`<span>${text.pop()}</span>`);
+      await SettingsModule.SetMenuText(text)
+    }
+    
+    this.$router.push(`/${url.join('/')}`)
+  }
+
+  private parseJson(node) {
+    if(node.data.id){
+      this.menuUrl.push(node.data.id);
+      this.menuText.push(node.data.label);
+    }
+    if(node.parent){
+      this.parseJson(node.parent);
+    }
   }
 }
 </script>
 
+
+<style lang="scss">
+.sidebar-logo-container {
+  .el-tree {
+    &>.el-tree-node:first-child {
+      .el-tree-node__expand-icon {
+        background-image: url('~@/assets/images/ic-home.svg');
+      }
+    }
+    // background-color: #fafafa; 
+    .is-current {
+      &>.el-tree-node__content {
+        color: $menuActiveText;
+        border-left: 4px solid $menuActiveText;
+        background-color: $menuActiveBg;
+        &+.el-tree-node__children {
+          .el-tree-node__expand-icon {
+            margin-left: 16px;
+            margin-left: setViewport('vw', 16);
+          }          
+        }
+      }
+      .el-tree-node__expand-icon {
+        // margin-left: 12px;
+        margin-left: setViewport('vw', 12);
+      }
+    }
+    .el-tree-node__expand-icon {
+      // width: 24px;
+      // height: 24px;
+      // margin-right: 4px;
+      // margin-left: 16px;
+      width: setViewport('vw', 24);
+      height: setViewport('vw', 24);
+      margin-right: setViewport('vw', 4);
+      margin-left: setViewport('vw', 16);
+      background-size: contain;
+      background-image: url('~@/assets/images/ic-plus.svg');
+      &.expanded {
+        background-image: url('~@/assets/images/ic-minus.svg');
+        transform: unset;
+      }
+      &.el-icon-caret-right:before {
+        content: ''
+      }
+    }
+    .el-tree-node {
+      // min-height: 40px;
+      min-height: setViewport('vh', 40);
+      color: $subMenuText;
+      // font-size: 16px;
+      font-size: setViewport('vw', 16);
+      font-weight: bold;
+      & > div {
+        // min-height: 40px;
+        min-height: setViewport('vh', 40);
+      }
+    }
+  }
+}
+</style>
 <style lang="scss" scoped>
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
@@ -109,28 +199,34 @@ export default class extends Vue {
 
 .sidebar-logo-container {
   position: relative;
-  width: 100%;
+  width: $sideBarWidth;
   height: 100%;
-  background: #3d424e;
+  
   & .sidebar-logo-user {
     width: 100%;
-    height: 100px;
+    height: 60px;
+    height: setViewport('vh', 60);
     display: flex;
+    background-color: $subMenuUserBg;
     justify-content: space-between;
     align-items: center;
 
     & .sidebar-image {
-      margin-left: 20px;
+      // margin: 0 4px 0 16px;
+      margin: 0 setViewport('vh', 4) 0 setViewport('vh', 16);
     }
     & .sidebar-title {
-      width: 182px;
-      height: 60px;
+      width: 100%;
+      // height: 60px;
+      height: setViewport('vh', 60);
       display: flex;
-      flex-direction: column;
       flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
       .text1 {
         color: #fff;
-        font-size: 15px;
+        // font-size: 15px;
+        font-size: setViewport('vw', 15);
         font-weight: 500;
         font-stretch: normal;
         font-style: normal;
@@ -143,7 +239,8 @@ export default class extends Vue {
       }
       .text2 {
         color: #fff;
-        font-size: 15px;
+        // font-size: 15px;
+        font-size: setViewport('vw', 15);
         font-weight: 500;
         font-stretch: normal;
         font-style: normal;
@@ -155,47 +252,25 @@ export default class extends Vue {
         align-items: center;
       }
     }
-    .button-1 {
-      margin-right: 20px;
+    button {
+      // margin-right: 18px;
+      margin-right: setViewport('vw', 18);
     }
   }
 
   & .sidebar-logo-menu {
     width: 100%;
-    height: calc(100vh - 250px);
+    // height: calc(100vh - 250px);
+    height: calc(100vh - #{setViewport('vh', 250)});
+    background-color: $subMenuBg;
     overflow: scroll;
-    & .sidebar-menu {
-      display: inline-block;
-      width: 100%;
-      padding-left: 20px;
-      padding-top: 20px;
-      padding-bottom: 20px;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 700;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: normal;
-      letter-spacing: normal;
-      cursor: default;
-      .dashboard {
-        cursor: pointer;
-      }
-      ul {
-        margin-bottom: 0;
-        li {
-          font-weight: 500;
-          padding: 10px 0;
-          cursor: pointer;
-        }
-      }
-    }
   }
 
   & .sidebar-logo-link {
     width: 100%;
-    height: 100px;
-    background-color: #323640;
+    // height: 122px;
+    height: setViewport('vh', 122);
+    background-color: $subMenuBg;
     display: flex;
     flex-direction: column;
     justify-content: center;

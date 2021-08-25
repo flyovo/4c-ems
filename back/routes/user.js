@@ -23,5 +23,10 @@ module.exports = function () {
 		api.user.userLogout
 	);
 
+	router.get(
+		"/user/site",
+		api.user.getSite
+	);
+
 	return router;
 };

@@ -5,6 +5,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import echarts, { ECharts, EChartOption } from 'echarts'
+import commonScss from '@/styles/common.scss'
 
 export interface IPieChart {
   title: Object
@@ -64,8 +65,15 @@ export default class extends Vue {
 
   private setOptions(chartItems: IPieChart) {
     if (this.chart) {
-      this.chart.setOption({
-        title: chartItems.title,
+      this.chart.setOption(({
+        // title: chartItems.title,
+        title: {
+          text: chartItems.title,
+          left: 'center',
+          textStyle: {
+            fontSize: commonScss.chartFont
+          }
+        },
         tooltip: {
           trigger: 'item',
           // formatter: '{b} : {c} ({d}%)'
@@ -80,15 +88,31 @@ export default class extends Vue {
           }
         },
         legend: {
-          x: 'center',
-          y: 'bottom',
+          orient: 'vertical',
+          right: '2%',
+          top: '25%',
+          bottom: '25%',
           icon: 'rect',
-          // itemGap: 30,
-          itemWidth: 9,
-          itemHeight: 9,
+          itemWidth: 12,
+          itemHeight: 12,
           data: chartItems.legend
         },
         color: chartItems.colors,
+        grid: {
+          width: commonScss.chartWidth,
+          height: commonScss.chartHeight,
+          left: commonScss.chartLeft,
+          right: commonScss.chartRight,
+          top: commonScss.chartTop,
+          bottom: commonScss.chartBottom,
+          // width: "100%",
+          // height: "80%",
+          // left: '0%',
+          // right: '3%',
+          // top: '15%',
+          // bottom: '0%',
+          containLabel: true
+        },
         series: [
           {
             name: chartItems.seriesMegTitle,
@@ -111,7 +135,7 @@ export default class extends Vue {
             }
           }
         ]
-      } as EChartOption<EChartOption.SeriesPie>)
+      } as unknown) as EChartOption<EChartOption.SeriesPie>)
     }
   }
 }
@@ -119,6 +143,8 @@ export default class extends Vue {
 <style lang="scss">
 .pie-chart {
   width: 100%;
-  height: 400px;
+  height: 100% !important;
+  // height: 400px;
+  // height: setViewport('vh', 400);
 }
 </style>

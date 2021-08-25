@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <defs>
+        <clipPath id="clip-path">
+            <path id="패스_445" fill="none" d="M0 0h24v24H0z" transform="translate(1530 108)"/>
+        </clipPath>
+        <style>
+            .cls-3{fill:none;stroke:#999;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px}
+        </style>
+    </defs>
+    <g id="ic_calineder" clip-path="url(#clip-path)" transform="translate(-1530 -108)">
+        <rect id="사각형_608" width="16" height="16" class="cls-3" rx="2" transform="translate(1534 113)"/>
+        <path id="선_31" d="M0 0L0 4" class="cls-3" transform="translate(1546 111)"/>
+        <path id="선_32" d="M0 0L0 4" class="cls-3" transform="translate(1538 111)"/>
+        <path id="선_33" d="M0 0L16 0" class="cls-3" transform="translate(1534 119)"/>
+        <path id="사각형_609" d="M0 0H2V2H0z" class="cls-3" transform="translate(1538 123)"/>
+    </g>
+</svg>

@@ -9,36 +9,124 @@ import dayjs from 'dayjs'
 class RawDataStore extends VuexModule implements RawDataStoreState {
   public tableList = []
   public tableListTotalCount = 0
-  public dateList = ['당월', '전월', '연간']
   public dateRange = {}
   public dateToday = dayjs(new Date())
-  public crntMonth = {
-    term: 'weekly',
-    from: dayjs(this.dateToday)
-      .date(1)
-      .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
-  }
-  public PrevMonth = {
-    term: 'weekly',
-    from: dayjs(this.dateToday)
-      .subtract(1, 'month')
-      .date(1)
-      .format('YYYY-MM-DD'),
-      to: dayjs(this.dateToday)
-      .subtract(1, 'month')
-      .date(this.dateToday.daysInMonth())
-      .format('YYYY-MM-DD')
-  }
-  public PrevYear = {
-    term: 'monthly',
-    from: dayjs(this.dateToday)
-      // .subtract(1, 'year')
-      .set('month', 0)
-      .date(1)
-      .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
-  }
+  public dateList = [
+    {
+      label: {
+        text: '전체 날짜',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '당월',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '1개월',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '2개월',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '3개월',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '연간 조회',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '기간 조회',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    }
+  ]
+  public typeList = ['수납 전체', '외래 수납', '중간금 수납', '퇴원 수납']
+
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {
@@ -88,23 +176,10 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
 
   @Action({ rawError: true })
   public GetDateRange(payload: any) {
-    const selectDate = payload.date
-    let date = this.crntMonth
-
-    switch (selectDate) {
-      case 0:
-        date = this.crntMonth
-        break
-      case 1:
-        date = this.PrevMonth
-        break
-      case 2:
-        date = this.PrevYear
-        break
-      default:
-        date = this.crntMonth
-        break
-    }
+    // const selectDate = payload.date
+    console.log('RawDataStoreModule:::::::', payload.date)
+    console.log(this.dateList[payload.date].date)
+    let date = this.dateList[payload.date]
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
 }

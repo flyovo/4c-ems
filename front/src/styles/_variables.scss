@@ -11,19 +11,28 @@ $yellow:#FEC171;
 $panGreen: #30B08F;
 
 // Sidebar
-$sideBarWidth: 320px;
-$subMenuBg: #2e333e;
-$subMenuHover:#323640;
-$subMenuActiveText:#ffffff;;
-$menuBg:#2e333e;
-$menuText:#ffffff;
-$menuActiveText:#ffffff; // Also see settings.sidebarTextTheme
+$sideBarWidth: 260px;
+$subMenuBg: #ffffff;
+$subMenuUserBg: #333;
+$subMenuText:  #333333;
+$subMenuHover: #323640;
+$subMenuActiveText: #ffffff;
+$menuBg: #2e333e;
+$menuText: #ffffff;
+$menuActiveBg: #e9f0ff; // Also see settings.sidebarTextTheme
+$menuActiveText: #0058ff; // Also see settings.sidebarTextTheme
+$paginationText:  #131523;
+$buttonBg: #5d5d5d;
+$buttonActiveBg: #0058ff;
 
 // Login page
 $lightGray: #eee;
-$darkGray:#889aa4;
-$loginBg: #2d3a4b;
-$loginCursorColor: #fff;
+$middleGray-c:#ccc;
+$middleGray-d:#ddd;
+$darkGrayText: #333333;
+$loginBg: #f4f7fc;
+$loginInputBg: #fafafa;
+$loginCursorColor: #0058ff;
 
 // Chart page
 $chartTitle: #808080;
@@ -34,6 +43,17 @@ $axisLineText: #008ACC;
 $dashLine: #8C97B5;
 
 //chart Color
+$darkRed: #f83523;
+$lightRed: #ff6658;
+$darkBlue: #0058ff;
+$darkGreen: #2b5877;
+$lightGreen: #4eb500;
+$darkTurquoise: #1194a8;
+$lightTurquoise: #1fc7b7;
+$darkYellow: #fba922;
+$darkPurple: #8800ff;
+$darkGray: #777e82;
+
 $payment: #358ed7;
 $arrive:#1fa7cb;
 $numberTicket: #828dd4;
@@ -127,6 +147,17 @@ $t8C97B5: rgba(140, 151, 181, .4);
   menuBg: $menuBg;
   menuText: $menuText;
   menuActiveText: $menuActiveText;
+
+  darkRed: $darkRed;
+  lightRed: $lightRed;
+  darkBlue: $darkBlue;
+  darkGreen: $darkGreen;
+  lightGreen: $lightGreen;
+  darkTurquoise: $darkTurquoise;
+  lightTurquoise: $lightTurquoise;
+  darkYellow: $darkYellow;
+  darkPurple: $darkPurple;
+  darkGray: $darkGray;
 
   payment: $payment; 
   arrive: $arrive;

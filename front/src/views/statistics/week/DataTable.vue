@@ -32,7 +32,7 @@
             </el-dropdown-menu>
           </el-dropdown>  
           <div class="statistics-table__header__button__date__text">
-            <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
+            <div>조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}</div>
           </div>
         </div>
         <div class="statistics-table__header__button__excel">
@@ -166,11 +166,11 @@ export default class extends Vue {
 
   private countDayOfWeek(){
     this.dayOfWeek = [0, 0, 0, 0, 0, 0, 0] // 일, 월, 화, 수, 금, 토
-    let from = this.dateRange.from;
+    let from = this.dateRange.label.from;
     do {
       this.dayOfWeek[dayjs(from).day()] += 1;
       from = dayjs(from).add(1, 'day').format('YYYY-MM-DD')
-    } while (from <= this.dateRange.to)
+    } while (from <= this.dateRange.label.to)
   }
 
   private getNumFormat(row:any, column:any) {

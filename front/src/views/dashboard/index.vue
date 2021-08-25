@@ -1,79 +1,42 @@
 <template>
   <div class="dashboard-content">
-    <!-- <div class="dashboard-content__header">
-      <div class="raw-data-table__header__button">
-        <div class="dashboard-content__header__button__date">
-          <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월</el-button>
-          <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월</el-button>
-          <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간</el-button>
-          <div class="dashboard-content__header__button__date__text">
-            <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-    <div class="dashboard-content__charts">
-      <!-- <dashboard-kiosk-receipt-status :initDateRange="dateRange"></dashboard-kiosk-receipt-status>
-      <dashboard-status-use-by-menu :initDateRange="dateRange"></dashboard-status-use-by-menu>
-      <dashboard-receipt-waiting-time :initDateRange="dateRange"></dashboard-receipt-waiting-time>
-      <dashboard-certificate-issuance-status :initDateRange="dateRange"></dashboard-certificate-issuance-status> -->
-      <dashboard-kiosk-receipt-status></dashboard-kiosk-receipt-status>
-      <dashboard-status-use-by-menu></dashboard-status-use-by-menu>
-      <dashboard-receipt-waiting-time></dashboard-receipt-waiting-time>
-      <dashboard-certificate-issuance-status></dashboard-certificate-issuance-status>
+    <div class="dashboard-content__header">
+      <control-header-dashboard />
     </div>
-    <back-to-top :visibility-height="300" :back-position="50" transition-name="fade" />
+    <div class="dashboard-content__charts">
+      <dashboard-kiosk-receipt-status />
+      <dashboard-status-use-by-menu />
+      <dashboard-receipt-waiting-time />
+      <dashboard-certificate-issuance-status />
+    </div>
+    <!-- <back-to-top :visibility-height="300" :back-position="50" transition-name="fade" /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import ControlHeaderDashboard from '@/components/ControlHeader/dashboard.vue'
 import DashboardKioskReceiptStatus from './DashboardKioskReceiptStatus.vue'
 import DashboardStatusUseByMenu from './DashboardStatusUseByMenu.vue'
 import DashboardReceiptWaitingTime from './DashboardReceiptWaitingTime.vue'
 import DashboardCertificateIssuanceStatus from './DashboardCertificateIssuanceStatus.vue'
-// import { dashboard } from '../../router/modules/router-constants'
-import BackToTop from '@/components/BackToTop/index.vue'
-// import { DashboardStoreModule } from '@/store/modules/dashboard/store.ts'
 @Component({
   name: 'Dashboard',
   components: {
+    ControlHeaderDashboard,
     DashboardKioskReceiptStatus,
     DashboardStatusUseByMenu,
     DashboardReceiptWaitingTime,
     DashboardCertificateIssuanceStatus,
-    BackToTop
   }
 })
 export default class extends Vue {
-  // private selectDate: number = 0
-  // public init_data: { 
-  //   kiosk: {}, 
-  //   status: {}, 
-  //   wait: {}, 
-  //   certificate: {} 
-  // }
-
-  // created() {
-  //   this.getDateRange()
-  // }
-
-  // get dateRange() {
-  //   this.$emit('fetch', DashboardStoreModule.dateRange)
-  //   return DashboardStoreModule.dateRange
-  // }
-
-  // private async handleDateChange(value: number) {
-  //   this.selectDate = await value
-  //   this.getDateRange()
-  // }
-
-  // private async getDateRange() {
-  //   const payload = {
-  //     date: this.selectDate
-  //   }
-  //   await DashboardStoreModule.GetDateRange(payload)
-  // }
+  public init_data: { 
+    kiosk: {}, 
+    status: {}, 
+    wait: {}, 
+    certificate: {} 
+  }
 }
 </script>
 
@@ -83,44 +46,26 @@ export default class extends Vue {
     width: 100%;
     height: 100%;
     &__header {
-      padding-bottom: 20px;
-      &__button {
-        height: 20px;
-        display: flex;
-        justify-content: space-between;
-        &__date {
-          height: 100%;
-          &__text {
-            display: inline-block;
-            div {
-              padding-left: 20px;
-              font-size: 14px;
-            }
-          }
-        }
-        &__excel {
-          height: 100%;
-          > div {
-            height: 100%;
-          }
-        }
-        // .el-button {
-        //   height: 100%;
-        //   padding: 0px 15px;
-        //   &.active {
-        //     background-color: #2a2a2a;
-        //     border-color: #2a2a2a;
-        //   }
-        //   &:nth-child(3) {
-        //     margin-right: 15px;
-        //   }
-        // }
-      }
+      display: flex;
+      // height: 36px;
+      // margin-bottom: 72px;
+      height: setViewport('vh', $header-height);
+      margin-bottom: setViewport('vh', $header-bottom);
     }
     &__charts {
-      display: grid;
-      column-gap: 10px;
-      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      height: calc(100% - #{setViewport('vh', $header-height + $header-bottom)});
+      display: flex;
+      flex-wrap: wrap;
+      // flex-direction: column;
+      gap: setViewport('vw', 40);
+      > div {
+        width: calc(50% - #{setViewport('vw', 20)});
+        height: calc(50% - #{setViewport('vh', 20)});
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
     }
   }
 }

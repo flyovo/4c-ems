@@ -1,31 +1,6 @@
 <template>
   <div class="dashboard-kiosk-receipt-status">
-    <div class="dashboard-kiosk-receipt-status__header">
-      <div class="dashboard-kiosk-receipt-status__header__title">{{ title }}</div>
-    </div>
-    <div class="dashboard-kiosk-receipt-status__wrapper">
-      <div class="dashboard-kiosk-receipt-status__chart-card">
-        <div class="dashboard-kiosk-receipt-status__button">
-          <div class="dashboard-kiosk-receipt-status__button__date">
-            <el-dropdown>
-              <el-button type="primary">
-                기관 선택<i class="el-icon-arrow-down el-icon--right"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-              </el-dropdown-menu>
-            </el-dropdown>  
-            <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월</el-button>
-            <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월</el-button>
-            <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간</el-button>
-            <!-- <div class="dashboard-kiosk-receipt-status__date__text">
-              <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
-            </div> -->
-          </div>
-        </div>
-        <chart-to-csv :chart-title="title" :chart-items="chartItems" />
-        <bar-chart class="dashboard-kiosk-receipt-status__chart" :chart-items="chartItems" />
-      </div>
-    </div>
+    <bar-chart :chart-items="chartItems" />
   </div>
 </template>
 
@@ -33,62 +8,42 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import BarChart, { IBarChart } from '@/components/Chart/BarChart.vue'
 import variables from '@/styles/_variables.scss'
-import ChartToCsv from '@/components/ChartToCsv/index'
 import { DashboardStoreModule } from '@/store/modules/dashboard/store.ts'
 
 @Component({
   name: 'DashboardKioskReceiptStatus',
-  components: { BarChart, ChartToCsv }
+  components: { BarChart }
 })
 export default class extends Vue {
-  private selectDate: number = 0
-  // @Prop() public initDateRange!: {}
-
   public data: any = {}
+  private interval: any
   public type: string = 'kiosk'
-
-  // @Watch('initDate', {immediate: true, deep: true})
-  // public onInitDateChange(val: any, oldVal: any) {
-  //   this.fetchData()
-  // }
-
-  created() {
-    this.getDateRange()
+  private title: string = '키오스크 수납 현황'
+  private chartItems: IBarChart = {}
+  private chartItemsOrigin: IBarChart = {
+    title: this.title,
+    legend: [],
+    colors: [variables.darkBlue, variables.lightRed],
+    xAxisData: [],
+    series: []
   }
 
-  get dateRange() {
-    this.$emit('fetch', DashboardStoreModule.dateRange)
-    return DashboardStoreModule.dateRange
-  }
-
-  private async handleDateChange(value: number) {
-    this.selectDate = await value
-    this.getDateRange()
-  }
-
-  private async getDateRange() {
-    const payload = {
-      date: this.selectDate
+  @Watch('dateRange', {immediate: true, deep: true})
+  public onInitDateChange(val: any, oldVal: any) {
+    if (this.interval) {
+      clearInterval(this.interval);
     }
-    await DashboardStoreModule.GetDateRange(payload)
     this.fetchData()
   }
 
-  private title: string = '키오스크 수납 현황'
-  private chartItems: IBarChart = {
-    title: {
-      text: ''
-    },
-    legend: [],
-    colors: [variables.payment, variables.arrive],
-    xAxisData: [],
-    series: []
+  get dateRange() {
+    return DashboardStoreModule.dateRange
   }
 
   private async fetchData() {
     DashboardStoreModule.Dashboard({
       type: this.type,
-      range: this.dateRange
+      range: this.dateRange.date
     }).then(async (result: any) => {
       this.data = result
       await this.setChart()
@@ -96,9 +51,8 @@ export default class extends Vue {
   }
 
   private async setChart() {
-    this.chartItems.xAxisData = []
-    this.chartItems.legend = []
-    this.chartItems.series = []
+    // init
+    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin));
 
     for(let data of this.data.column){
       this.chartItems.xAxisData.push(data)
@@ -129,53 +83,21 @@ export default class extends Vue {
         }
       )
     }
+    console.log('chartItems:::::::::::', this.chartItems)
   }
 }
 </script>
 
 <style lang="scss">
 .dashboard-kiosk-receipt-status {
-  margin-bottom: 30px;
-  &__header {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    &__title {
-      font-size: 20px;
-      font-weight: 600;
-    }
-  }
-  &__wrapper {
-    position: relative;
-    // height: 100%;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: solid 1px #e5e5e5;
-  }
-  &__button{
-    position: absolute;
-    top: 16px;
-    right: 40px;
-    z-index: 1;
-    // height: 20px;
-    .el-dropdown {
-      height: 100%;
-      margin-right: 15px;
-    }
-    .el-button {
-      height: 100%;
-      padding: 3px 8px;
-      font-size: 10px;
-      background-color: #5d5d5d;
-      border-color: #5d5d5d;
-      &.active {
-        background-color: #2a2a2a;
-        border-color: #2a2a2a;
-      }
-      &:nth-child(4) {
-        margin-right: 15px;
-      }
-    }
-  }
+  width: 100%;
+  height: 100%;
+  position: relative;
+  // padding: 20px;
+  padding: setViewport('vh', 20) setViewport('vw', 20);
+  border-radius: 10px;
+  border: solid 2px $lightGray;
+  background-color: $subMenuBg;
+  box-shadow: 0 4px 10px 0 rgba(68, 68, 68, 0.1);
 }
 </style>

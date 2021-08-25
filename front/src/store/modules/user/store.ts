@@ -1,6 +1,6 @@
 import store from '@/store'
 import { login, checkLogin, logout, getUserList, getDashboardUser } from '@/api/user-api'
-import { DEFAULT_USER_SEARCH_ITEM, DEFAULT_DASH_USER_ITEM } from './constants'
+import { DEFAULT_USER_STATE, DEFAULT_USER_SEARCH_ITEM, DEFAULT_DASH_USER_ITEM } from './constants'
 import { UserStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
@@ -10,6 +10,7 @@ class UserStore extends VuexModule implements UserStoreState {
   public routerList = []
   public userList = []
   public userListCount = 0
+  public userState = cloneDeep(DEFAULT_USER_STATE)
   public userSearchItem = cloneDeep(DEFAULT_USER_SEARCH_ITEM)
   public dashboardUserItem = cloneDeep(DEFAULT_DASH_USER_ITEM)
   @Mutation
@@ -30,7 +31,11 @@ class UserStore extends VuexModule implements UserStoreState {
   public async Login(userInfo: { userId: string; userPwd: string }) {
     let { userId, userPwd } = userInfo
     userId = userId.trim()
-    const { resultCd } = await login({ userId, userPwd })
+    const { data, resultCd } = await login({ userId, userPwd })    
+    // this.userState.organ = data.organ
+    // this.userState.pos_4 = data.pos_4
+    // this.SET_CHANGE_VALUE({ key: 'userState', value: {organ: data.organ, pos_4: data.pos_4} })
+    // console.log('Usesr Store userState ::::::::::::', this.userState)
     if (resultCd === 200) {
       return new Promise(resolve => {
         resolve(200)

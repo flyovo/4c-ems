@@ -1,7 +1,7 @@
 "use strict";
 const passport = require("passport");
+const db = require("../models");
 const { Op } = require("sequelize");
-//const jwt = require("../utils/jwt-wrapper");
 const jwt = require("jsonwebtoken");
 
 const user = {
@@ -64,8 +64,74 @@ const user = {
 			req.session.destroy(); // 선택사항
 			return res.status(200).send("로그아웃 되었습니다.");
 		}
-	}
+	},
 
+
+	getSite: async function (req, res, next) {
+		try {
+			// req.query
+			// { site: 'site', position: ['site', 'pos_1', 'pos_2'], 
+			//   state: {organ, pos_4}, auth: localStorage.getItem('4c-userAuth') }
+
+			// let organ = req.query.state.organ ? ` pos_1 = ${req.query.state.organ} ` : "";
+			// let pos_4 = req.query.state.pos_4 ? ` pos_4 = ${req.query.state.pos_4} ` : "";
+
+			let query = ` SELECT ${req.query.site} FROM ${db.device_op_info.name} `;
+			switch(req.query.site){
+				case "site" : // 사이트
+					if(req.query.auth === "P"){
+						// query += (!organ && !pos_4) ?  
+						query += ` WHERE pos_1 = ${req.query.state.organ} AND pos_4 = ${req.query.state.pos_4} `;
+					}else if(req.query.auth === "A"){
+						query += req.query.state.pos_4 ? ` WHERE pos_4 = ${req.query.state.pos_4} ` : "";
+					}
+					break;
+				case "pos_1" : // 기관명
+					query += ` WHERE site = ${req.query.position[0]} `;
+					if(req.query.auth === "P"){
+						query += ` AND pos_1 = ${req.query.state.organ} AND pos_4 = ${req.query.state.pos_4} `;
+					}else if(req.query.auth === "A"){
+						query += ` AND pos_4 = ${req.query.state.pos_4} `;
+					}
+					break;
+				case "pos_2" : // 층
+					query += ` WHERE site = ${req.query.position[0]} `;
+					query += ` AND pos_1 = ${req.query.position[1]} `;
+					if(req.query.auth === "P" || req.query.auth === "A"){
+						query += ` AND pos_4 = ${req.query.state.pos_4} `;
+					}
+					break;
+				case "pos_3" : // 부서
+					query += ` WHERE site = ${req.query.position[0]} `;
+					query += ` AND pos_1 = ${req.query.position[1]} `;
+					query += ` AND pos_2 = ${req.query.position[2]} `;
+					if(req.query.auth === "P" || req.query.auth === "A"){
+						query += ` AND pos_4 = ${req.query.state.pos_4} `;
+					}
+					break;
+			}
+			query += ` group by ${req.query.site} `;
+
+			let result = [];
+			await db.sequelize.query(query, {
+				model: db.device_op_info
+			}).then(rows => {
+				// get columns & data
+				rows.forEach(row => {
+					result.push({
+						id: row.dataValues.site,
+						label: row.dataValues.site,
+						children: []
+					});
+				});
+			});
+			res.setHeader("token", req.headers.token);
+			res.json(result);
+		} catch (err) {
+			console.error(err);
+			next(err);
+		}
+	}
 };
 
 module.exports = user;

@@ -35,7 +35,7 @@
             </el-dropdown-menu>
           </el-dropdown>  
           <div class="statistics-table__header__button__date__text">
-            <div>조회 기간 : {{ dateRange.from }} ~ {{ dateRange.to }}</div>
+            <div>조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}</div>
           </div>
         </div>
         <div class="statistics-table__header__button__excel">

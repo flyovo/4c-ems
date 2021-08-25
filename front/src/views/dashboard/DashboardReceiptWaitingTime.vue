@@ -1,14 +1,6 @@
 <template>
   <div class="dashboard-receipt-waiting-time">
-    <div class="dashboard-receipt-waiting-time__header">
-      <div class="dashboard-receipt-waiting-time__header__title">{{ title }}</div>
-    </div>
-    <div class="dashboard-receipt-waiting-time__wrapper">
-      <div class="dashboard-receipt-waiting-time__chart-card">
-        <bar-chart :chart-items="chartItems" />
-        <chart-to-csv :chart-title="title" :chart-items="chartItems" />
-      </div>
-    </div>
+    <bar-chart :chart-items="chartItems" />
   </div>
 </template>
 
@@ -16,40 +8,43 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import BarChart, { IBarChart } from '@/components/Chart/BarChart.vue'
 import variables from '@/styles/_variables.scss'
-import ChartToCsv from '@/components/ChartToCsv/index.vue'
 import { DashboardStoreModule } from '@/store/modules/dashboard/store.ts'
 
 @Component({
   name: 'DashboardReceiptWaitingTime',
-  components: { BarChart, ChartToCsv }
+  components: { BarChart }
 })
 export default class extends Vue {
-  // @Prop() public initDateRange!: {}
-
   public data: any = {}
+  private interval: any
   public type: string = 'wait'
-
-  @Watch('initDate', {immediate: true, deep: true})
-  public onInitDateChange(val: any, oldVal: any) {
-    this.fetchData()
-  }
-
   private title: string = '수납대기 시간'
-  private chartItems: IBarChart = {
-    title: {
-      text: ''
-    },
+  private chartItems: IBarChart = {}
+  private chartItemsOrigin: IBarChart = {
+    title: this.title,
     legend: ['10:00~12:00', '14:00~16:00', '1일 평균 대기시간'],
-    colors: [variables.payment, variables.arrive, variables.install],
+    colors: [variables.darkRed, variables.darkGray, variables.darkTurquoise],
     // xAxisData: ['세브란스병원', '연세암병원', '심장혈관병원', '어린이병원', '안과병원'],
     xAxisData: [],
     series: []
   }
+ 
+  @Watch('dateRange', {immediate: true, deep: true})
+  public onInitDateChange(val: any, oldVal: any) {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.fetchData()
+  }
   
+  get dateRange() {
+    return DashboardStoreModule.dateRange
+  }
+
   private async fetchData() {
     DashboardStoreModule.Dashboard({
       type: this.type,
-      range: {}
+      range: this.dateRange.date
     }).then(async (result: any) => {
       this.data = result
       await this.setChart()
@@ -57,6 +52,9 @@ export default class extends Vue {
   }
 
   private async setChart() {
+    // init
+    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin));
+
     this.chartItems.xAxisData = this.data.column
     this.chartItems.series = [
       {
@@ -83,12 +81,13 @@ export default class extends Vue {
       {
         name: '1일 평균 대기시간',
         type: 'line',
-        stack: '',
-        label: {
-          show: true,
-          position: 'top'
-        },
-        data: this.data.data.avgtime
+        // stack: '',
+        // label: {
+        //   show: true,
+        //   position: 'top'
+        // },
+        data: this.data.data.avgTime
+        // data: this.data.data.avgTimeTotal
       }
     ]
   }
@@ -97,22 +96,13 @@ export default class extends Vue {
 
 <style lang="scss">
 .dashboard-receipt-waiting-time {
-  margin-bottom: 30px;
-  &__header {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    &__title {
-      font-size: 20px;
-      font-weight: 600;
-    }
-  }
-  &__wrapper {
-    position: relative;
-    // height: 100%;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: solid 1px #e5e5e5;
-  }
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: setViewport('vh', 20) setViewport('vw', 20);
+  border-radius: 10px;
+  border: solid 2px $lightGray;
+  background-color: $subMenuBg;
+  box-shadow: 0 4px 10px 0 rgba(68, 68, 68, 0.1);
 }
 </style>

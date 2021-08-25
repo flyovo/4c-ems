@@ -1,5 +1,5 @@
 import store from '@/store'
-
+import { getSite } from '@/api/user-api'
 import defaultSettings from '@/settings'
 import elementVariables from '@/styles/element-variables.scss'
 
@@ -15,9 +15,11 @@ class Settings extends VuexModule implements SettingsState {
   public showSidebarLogo = defaultSettings.showSidebarLogo
   public sidebarTextTheme = defaultSettings.sidebarTextTheme
   public loginTime = defaultSettings.loginTime
+  public menuListTree = defaultSettings.menuListTree
   public menuList = defaultSettings.menuList
   public userEditStatus = false
   public loginTimeStatus = false
+  public menuText = ""
 
   @Action({ rawError: true })
   public ChangeSetting(payload: { key: string; value: any }) {
@@ -30,6 +32,21 @@ class Settings extends VuexModule implements SettingsState {
     if (Object.prototype.hasOwnProperty.call(this, key)) {
       ;(this as any)[key] = value
     }
+  }
+
+  @Action({ rawError: true })
+  public SetMenuText(payload: any) {
+    this.CHANGE_SETTING({ key: 'menuText', value: payload.join(' ') })
+  }
+
+  @Action({ rawError: true })
+  public GetSite(payload: any) {
+    let resultCd = getSite(payload)
+
+    return new Promise(resolve => {
+      console.log('resultCd user ::::::', resultCd)
+      resolve(resultCd)
+    })
   }
 }
 

@@ -1,6 +1,7 @@
 <template>
   <div :class="[{ 'is-active': isActive }]" @click="toggleClick">
-    <svg-icon name="hamburger" width="20" height="20" />
+    <!-- <svg-icon name="hamburger" width="20" height="20" /> -->
+    <img src="@/assets/images/ic-chevron-left.svg" />
   </div>
 </template>
 

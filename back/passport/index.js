@@ -9,7 +9,7 @@ module.exports = () => {
 	passport.deserializeUser(async (userId, done) => {
 		try {
 			const user = await db.user_login.findOne({ 
-				attributes: ["authority", "user_id", "pwd"],
+				attributes: ["authority", "user_id", "pwd", "organ", "pos_4"],
 				where: { user_id: userId } 
 			});
 			return done(null, user); // req.user, req.isAuthenticated() === true,

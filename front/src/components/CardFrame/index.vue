@@ -108,30 +108,34 @@ export default class extends Vue {
   width: 100%;
   height: 100%;
   &__date {
-    font-size: 15px;
-    font-family: NotoSansCJKkr;
-    font-size: 15px;
+    // font-size: 15px;
+    font-size: setViewport('vw', 15);
     font-weight: 500;
     font-stretch: normal;
     font-style: normal;
     line-height: normal;
     letter-spacing: normal;
-    margin-top: -40px;
+    // margin-top: -40px;
+    margin-top: setViewport('vh', -40);
 
     color: #414146;
   }
   &__use {
-    margin-top: 60px;
-    font-size: 30px;
+    // margin-top: 60px;
+    // font-size: 30px;
+    margin-top: setViewport('vh', 60);
+    font-size: setViewport('vw', 30);
     font-weight: bold;
     letter-spacing: -0.6px;
     text-align: left;
     color: #323640;
   }
   &__count {
-    margin-top: 50px;
+    // margin-top: 50px;
+    margin-top: setViewport('vh', 50);
     &__text {
       font-size: 16px;
+      font-size: setViewport('vw', 16);
       font-weight: 500;
       font-stretch: normal;
       font-style: normal;
@@ -139,7 +143,8 @@ export default class extends Vue {
       letter-spacing: -0.32px;
       text-align: left;
       color: #3d424e;
-      margin-bottom: 25px;
+      // margin-bottom: 25px;
+      margin-bottom: setViewport('vh', 25);
     }
     &__line {
       border-bottom: solid 1px #3d424e;

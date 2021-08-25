@@ -25,6 +25,13 @@ module.exports = {
       patterns: [path.resolve(__dirname, 'src/styles/_variables.scss'), path.resolve(__dirname, 'src/styles/_mixins.scss')]
     }
   },
+  css: {
+    loaderOptions: {
+      scss: {
+        prependData: `@import "@/styles/common.scss";`
+      }
+    }
+  },
   chainWebpack(config) {
     config.set('name', name)
 

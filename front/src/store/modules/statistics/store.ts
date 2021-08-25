@@ -15,7 +15,8 @@ import dayjs from 'dayjs'
 class StatisticsStore extends VuexModule implements StatisticsStoreState {
   public tableList = []
   public tableListTotalCount = 0
-  public dateList = ['당월', '전월', '연간']
+  public dateList = ['전체 날짜', '당월', '1개월', '2개월', '3개월', '연간 조회', '기간 조회']
+  public typeList = ['수납 전체', '외래 수납', '중간금 수납', '퇴원 수납']
   public dateRange = {}
   public dateToday = dayjs(new Date())
   public crntMonth = {

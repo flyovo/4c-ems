@@ -34,3 +34,10 @@ export const getDashboardUser = (data: any) =>
     method: 'post',
     data
   })
+
+export const getSite = (data: any) =>
+  request({
+    url: '/user/site',
+    method: 'get',
+    params: data
+  })

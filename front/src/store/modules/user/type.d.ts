@@ -1,6 +1,7 @@
 import { PageQuery } from '@/utils/comn-code/type'
 
 export interface UserStoreState {
+  userState: UserState
   roles: string[]
   routerList: RouteConfig[]
   userList: any[]
@@ -8,7 +9,10 @@ export interface UserStoreState {
   userListCount: number
   dashboardUserItem: DashboardUserItem
 }
-
+export interface UserState {
+  organ: string
+  pos_4: string
+}
 export interface UserSearchItem {
   userName: string
   joinPath: string
