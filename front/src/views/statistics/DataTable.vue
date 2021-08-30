@@ -44,13 +44,13 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 import { SettingsModule } from '@/store/modules/settings/store'
-import OutPatient from './OutPatient/index.vue'
-import Leaves from './Leaves/index.vue'
-import Week from './Week/index.vue'
-import Certification from './Certification/index.vue'
-import WaitTime from './WaitTime/index.vue'
-import Arrive from './Arrive/index.vue'
-import Measurements from './Measurements/index.vue'
+import OutPatient from './outPatient/index.vue'
+import Leaves from './leaves/index.vue'
+import Week from './week/index.vue'
+import Certification from './certification/index.vue'
+import WaitTime from './waitTime/index.vue'
+import Arrive from './arrive/index.vue'
+import Measurements from './measurements/index.vue'
 
 @Component({
   name: 'TableList',

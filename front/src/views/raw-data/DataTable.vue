@@ -42,11 +42,11 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 import { SettingsModule } from '@/store/modules/settings/store'
-import HospitalStorage from './HospitalStorage/index.vue'
-import Certification from './Certification/index.vue'
-import Arrive from './Arrive/index.vue'
-import Measurements from './Measurements/index.vue'
-import Failure from './Failure/index.vue'
+import HospitalStorage from './hospitalStorage/index.vue'
+import Certification from './certification/index.vue'
+import Arrive from './arrive/index.vue'
+import Measurements from './measurements/index.vue'
+import Failure from './failure/index.vue'
 
 @Component({
   name: 'TableList',
