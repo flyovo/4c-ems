@@ -21,10 +21,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { RawDataStoreModule } from '@/store/modules/rawdata/store'
+import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 
 @Component({
-  name: 'Certification'
+  name: 'statistics-Certification'
 })
 export default class extends Vue {
   // @Prop({ default: [] }) private tableData!: []
@@ -39,15 +39,15 @@ export default class extends Vue {
   }
 
   get dateList() {
-    return RawDataStoreModule.dateList
+    return StatisticsStoreModule.dateList
   }
 
   get dateRange() {
-    return RawDataStoreModule.dateRange
+    return StatisticsStoreModule.dateRange
   }
 
   get tableData() {
-    return RawDataStoreModule.tableList
+    return StatisticsStoreModule.tableList
   }
 
   private async handleDateChange(value: number) {
@@ -60,11 +60,11 @@ export default class extends Vue {
     const payload = {
       date: this.selectDate
     }
-    await RawDataStoreModule.GetDateRange(payload)
+    await StatisticsStoreModule.GetDateRange(payload)
   }
 
   get totalCount() {
-    return RawDataStoreModule.tableListTotalCount
+    return StatisticsStoreModule.tableListTotalCount
   }
 
   get currentPage() {
@@ -76,7 +76,7 @@ export default class extends Vue {
   }
 
   private async getTablePagination() {
-    await RawDataStoreModule.GetTableData({
+    await StatisticsStoreModule.GetTableData({
         data: this.data,
         page: this.page,
         limit: 15
@@ -89,7 +89,7 @@ export default class extends Vue {
   }
 
   private async fetchData() {
-    await RawDataStoreModule.RawTableData({
+    await StatisticsStoreModule.RawTableData({
       type: this.type,
       range: this.dateRange
     }).then( (result: any) => {
