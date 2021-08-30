@@ -15,36 +15,26 @@
                 <el-dropdown-item>30개씩</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
-        <el-button type="info">데이터 조회</el-button>
+        <el-button type="info" @click="fetchData">데이터 조회</el-button>
         <download-excel class="excel" :data="tableData" name="filename.xls">
           <el-button type="info">엑셀 저장</el-button>
         </download-excel>
       </div>
     </div>
-    <div class="statistics-table__body__table">
-      <el-table :data="tableData" header-align="center">
-        <el-table-column label="구분" align="center">
-          <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
-          <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
-          <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
-        </el-table-column>
-        <el-table-column prop="입퇴원증명서" label="입퇴원 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="통원증명서" label="통원 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="납입증명서" label="납입 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="장애인증명서" label="장애인 증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="입원영수증" label="입원진료비 영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="외래진료비" label="외래진료비 영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="응급진료비" label="응급진료비 영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      </el-table>
-      <div class="statistics-table__body__paging">
-        <el-pagination :page-size="15" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination>
-        <div class="button-group">
-          <el-button type="info">데이터 조회</el-button>
-          <download-excel class="excel" :data="tableData" name="filename.xls">
-            <el-button type="info">엑셀 저장</el-button>
-          </download-excel>
-        </div>
+    <OutPatient v-if="menuType === 'out-patient'"/> <!-- 외래&입원 수납 Data -->
+    <Leaves v-else-if="menuType === 'leaves'" /> <!-- 증명서 발급 Data -->
+    <Week v-else-if="menuType === 'week'" /> <!-- 도착확인 Data -->
+    <Certification v-else-if="menuType === 'certification'" /> <!-- 신체계측 Data -->
+    <WaitTime v-else-if="menuType === 'wait-time'" /> <!-- 실패 Data -->
+    <Arrive v-else-if="menuType === 'arrive'" /> <!-- 실패 Data -->
+    <Measurements v-else-if="menuType === 'measurements'" /> <!-- 실패 Data -->
+    <div class="statistics-table__body__paging">
+      <!-- <el-pagination :page-size="15" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination> -->
+      <div class="button-group">
+        <el-button type="info" @click="fetchData">데이터 조회</el-button>
+        <download-excel class="excel" :data="tableData" name="filename.xls">
+          <el-button type="info">엑셀 저장</el-button>
+        </download-excel>
       </div>
     </div>
   </div>
@@ -53,21 +43,48 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
+import { SettingsModule } from '@/store/modules/settings/store'
+import OutPatient from './OutPatient/index.vue'
+import Leaves from './Leaves/index.vue'
+import Week from './Week/index.vue'
+import Certification from './Certification/index.vue'
+import WaitTime from './WaitTime/index.vue'
+import Arrive from './Arrive/index.vue'
+import Measurements from './Measurements/index.vue'
 
 @Component({
-  name: 'TableList'
+  name: 'TableList',
+  components: { 
+    OutPatient,
+    Leaves,
+    Week,
+    Certification,
+    WaitTime,
+    Arrive,
+    Measurements
+  }
 })
 export default class extends Vue {
-  private page: number = 1
-  private selectDate: number = 0
-  public type: string = 'certification'
-  public data: []
+  // @Prop({ default: {label:{from:"", to:""}} }) private dateRange!: {}
+  // @Prop({ default: [] }) private dateList!: []
+  @Prop({ default: 'dashboard' }) private menuType!: String
+  @Prop({ default: [] }) private typeList!: []
+  @Prop({ default: 0 }) private selectDate!: Number
+  @Prop({ default: 0 }) private selectType!: Number
+  @Prop({ default: 25 }) private pageNum!: Number
+
+private page: number = 1
+public data: []
 
   created() {
     this.getDateRange()
-    this.fetchData()
+    // this.fetchData()
   }
-
+  
+  get comboIndex() {
+    return StatisticsStoreModule.comboIndex
+  }
+  
   get dateList() {
     return StatisticsStoreModule.dateList
   }
@@ -76,10 +93,15 @@ export default class extends Vue {
     return StatisticsStoreModule.dateRange
   }
 
-  private async handleDateChange(value: number) {
+  get menuPosition() {
+    console.log('menuPosition:::::', SettingsModule.menuPosition)
+    return SettingsModule.menuPosition
+  }
+
+private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
-    this.fetchData()
+    // this.fetchData()
   }
 
   private async getDateRange() {
@@ -88,10 +110,11 @@ export default class extends Vue {
     }
     await StatisticsStoreModule.GetDateRange(payload)
   }
-
+  
   get tableData() {
     return StatisticsStoreModule.tableList
   }
+
   get totalCount() {
     return StatisticsStoreModule.tableListTotalCount
   }
@@ -106,10 +129,10 @@ export default class extends Vue {
 
   private async getTablePagination() {
     await StatisticsStoreModule.GetTableData({
-        data: this.data,
-        page: this.page,
-        limit: 15
-      })
+      data: this.data,
+      page: this.page,
+      limit: this.pageNum
+    })
   }
 
   private async handleCurrentChange(value: number) {
@@ -118,10 +141,27 @@ export default class extends Vue {
   }
 
   private async fetchData() {
-    await StatisticsStoreModule.RawTableData({
-      type: this.type,
-      range: this.dateRange
+    if(this.menuType  === undefined) return;
+    // if(this.typeList[this.selectType] === undefined) return;
+    if(this.selectDate === undefined) return;
+    if(this.dateRange === undefined) return;
+
+    console.log(this.menuType, this.typeList, this.selectType, this.typeList[this.selectType], this.selectDate, this.dateRange)
+
+    let option;
+    if(this.typeList[this.selectType] === undefined){
+      option = []
+    }else{
+      option = this.typeList[this.selectType]
+    }
+
+    await StatisticsStoreModule.RawTableData({      
+      type: this.menuType,
+      option: option,
+      range: this.dateRange.date,
+      position: this.menuPosition.join(",")
     }).then( (result: any) => {
+      console.log(result)
       this.data = result
       this.handleCurrentChange(1)
     })
@@ -140,9 +180,11 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .statistics-table {
+  height: calc(100% - #{setViewport('vh', 90)});
   // padding: 20px 30px 30px;
+  // border-radius: 10px;
   padding: setViewport('vw', 20) setViewport('vw', 30) setViewport('vw', 30);
-  border-radius: 10px;
+  border-radius: setViewport('vw', 10);
   box-shadow: 0 4px 10px 0 rgba(68, 68, 68, 0.1);
   border: solid 2px $lightGray;
   background-color: #fff;
@@ -171,7 +213,118 @@ export default class extends Vue {
       color: #999;
     }
   }
-  &__body {
+}
+</style>
+
+<style lang="scss">
+.el-dropdown-menu__item {
+  line-height: 1.4 !important;
+  padding: setViewport('vw', 3) setViewport('vw', 16) !important;
+  font-size: setViewport('vw', 14) !important;
+  width: setViewport('vw', 100);
+  text-align: center;
+}
+.statistics-table {
+  .el-table {
+      border-top-left-radius: setViewport('vw', 6);
+      border-top-right-radius: setViewport('vw', 6);
+    .caret-wrapper {
+      width: setViewport('vw', 24);
+    }
+  }
+  table {
+    thead {
+      tr:nth-child(1) {
+        display: none;
+      }
+      th {
+        padding: 0;
+
+        &:nth-child(2n-1){
+          border: solid 1px #333;
+          background-color: #333;
+        }
+        &:nth-child(2n){
+          border: solid 1px #555;
+          background-color: #555;
+        }
+      }
+      .cell {
+        height: setViewport('vh', 32);
+        vertical-align: unset;
+        font-size: setViewport('vw', 16);
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 0.88;
+        letter-spacing: normal;
+        text-align: center;
+        color: #fff;
+        padding-left: 0 !important;
+        padding-right: 0;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    tbody {
+      td {
+        padding: 0;
+        .cell {
+          height: setViewport('vh', 32);
+          vertical-align: unset;
+          font-size: setViewport('vw', 16);
+          font-weight: 500;
+          font-stretch: normal;
+          font-style: normal;
+          letter-spacing: normal;
+          text-align: center;
+          padding-left: 0 !important;
+          padding-right: 0;
+        }
+      }
+    }
+  }
+  .el-table__empty-block {
+    font-size: setViewport('vw', 16);
+  }
+
+  .el-pagination {
+    height: 100%;
+    display: flex;
+    button {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      color: $paginationText;
+    }
+    .el-icon {
+      line-height: none;
+      // font-size: 24px;
+      font-size: setViewport('vw', 24);
+    }
+    .el-pager li {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // width: 36px;
+      // height: 36px;
+      // font-size: 16px;
+      width: setViewport('vw', 36);
+      height: setViewport('vh', 36);
+      font-size: setViewport('vw', 16);
+      font-weight: bold;
+      line-height: 1.5;
+      color: $paginationText;
+      &.active {
+        // border-radius: 4px;
+        border-radius: setViewport('vw', 4);
+        color: $subMenuActiveText;
+        background-color: $buttonActiveBg;
+      }
+    }
+  }
+
+  .statistics-table__body {
     height: 100%;
     background-color: #fff;
     border-bottom-left-radius: 5px;
@@ -180,6 +333,10 @@ export default class extends Vue {
     margin-bottom: 100px;
     &__table {
       padding: 0%;
+      height: calc(100% - #{setViewport('vh', 137)});
+      .el-table, .el-table__body-wrapper {
+        height: 100%;
+      }
     }
     &__paging {
       width: 100%;
@@ -225,7 +382,8 @@ export default class extends Vue {
       padding: 0px setViewport('vw', 15);
       background-color: $buttonBg;
       border-color: $buttonBg;
-      border-radius: 4px;
+      // border-radius: 4px;
+      border-radius: setViewport('vw', 4);
       &:hover, &:active, &.active {
         background-color: $buttonActiveBg;
         border-color: $buttonActiveBg;
@@ -236,8 +394,24 @@ export default class extends Vue {
       height: 100%;
       // margin-right: 10px;
       margin-right: setViewport('vw', 10);
+      // font-size: 14px;
+      font-size: setViewport('vw', 14);
+      & > .el-button {
+        width: setViewport('vw', 100);
+        padding: 0px setViewport('vw', 15);
+        background-color: $subMenuBg;
+        color: $darkGrayText;
+        border: 1px solid $lightGray;
+        &:hover, &:focus {
+          background-color: $subMenuBg;
+        }
+        &:hover, &:focus {
+          color: $darkGrayText;
+          border-color: $lightGray;
+        }
+      }
     }
-    & > .el-button {
+    & .el-button {
       height: 100%;
       // margin-right: 4px;
       // padding: 0px 15px;
@@ -245,59 +419,17 @@ export default class extends Vue {
       margin-right: setViewport('vw', 4);
       padding: 0px setViewport('vw', 15);
       border-radius: setViewport('vw', 4);
+      // font-size: 14px;
+      font-size: setViewport('vw', 14);
       background-color: $buttonBg;
       border-color: $buttonBg;
-      border-radius: 4px;
       &:hover, &:active, &.active {
         background-color: $buttonActiveBg;
         border-color: $buttonActiveBg;
       }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-.statistics-table {
-  table {
-    thead {
-      tr:nth-child(1) {
-        // display: none;
-      }
-    }
-  }
-
-  .el-pagination {
-    height: 100%;
-    display: flex;
-    button {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      color: $paginationText;
-    }
-    .el-icon {
-      line-height: none;
-      // font-size: 24px;
-      font-size: setViewport('vw', 24);
-    }
-    .el-pager li {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      // width: 36px;
-      // height: 36px;
-      // font-size: 16px;
-      width: setViewport('vw', 36);
-      height: setViewport('vh', 36);
-      font-size: setViewport('vw', 16);
-      font-weight: bold;
-      line-height: 1.5;
-      color: $paginationText;
-      &.active {
-        border-radius: 4px;
-        color: $subMenuActiveText;
-        background-color: $buttonActiveBg;
+      .el-icon-arrow-down {
+        position: absolute;
+        right: setViewport('vw', 12);
       }
     }
   }

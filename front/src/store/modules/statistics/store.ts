@@ -1,51 +1,169 @@
 import store from '@/store'
-import { 
-  statisticsOutPatient, 
-  statisticsInPatient, 
-  statisticsCertification, 
-  statisticsWeek, 
-  statisticsWaitTime 
-} from '@/api/statistics-api'
+import { statistics } from '@/api/statistics-api'
 import { StatisticsStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
 import dayjs from 'dayjs'
 
-@Module({ dynamic: true, store, name: 'statisticsStore', namespaced: true })
+@Module({ dynamic: true, store, name: 'StatisticsStore', namespaced: true })
 class StatisticsStore extends VuexModule implements StatisticsStoreState {
   public tableList = []
   public tableListTotalCount = 0
-  public dateList = ['전체 날짜', '당월', '1개월', '2개월', '3개월', '연간 조회', '기간 조회']
-  public typeList = ['수납 전체', '외래 수납', '중간금 수납', '퇴원 수납']
-  public dateRange = {}
+  public dateRange = {
+    date: {
+      type: 'all',
+      term: 'weekly',
+      from: dayjs().format('YYYY-MM-DD'),
+      to: dayjs().format('YYYY-MM-DD')
+    }
+  }
   public dateToday = dayjs(new Date())
-  public crntMonth = {
-    term: 'weekly',
-    from: dayjs(this.dateToday)
-      .date(1)
-      .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
-  }
-  public PrevMonth = {
-    term: 'weekly',
-    from: dayjs(this.dateToday)
-      .subtract(1, 'month')
-      .date(1)
-      .format('YYYY-MM-DD'),
-      to: dayjs(this.dateToday)
-      .subtract(1, 'month')
-      .date(this.dateToday.daysInMonth())
-      .format('YYYY-MM-DD')
-  }
-  public PrevYear = {
-    term: 'monthly',
-    from: dayjs(this.dateToday)
-      // .subtract(1, 'year')
-      .set('month', 0)
-      .date(1)
-      .format('YYYY-MM-DD'),
-    to: this.dateToday.format('YYYY-MM-DD')
-  }
+  public dateList = [
+    {
+      label: {
+        text: '전체 날짜',
+        from: this.dateToday.format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'all',
+        from: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    },
+    {
+      label: {
+        text: '당월 조회',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD'),
+      }
+    },
+    {
+      label: {
+        text: '전월 조회',
+        from: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(this.dateToday.daysInMonth())
+          .format('YYYY년 MM월 DD일'),
+      },
+      date: {
+        term: 'weekly',
+        from: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(this.dateToday.daysInMonth())
+          .format('YYYY-MM-DD'),
+      }
+    },
+    {
+      label: {
+        text: '연간 조회',
+        from: dayjs(this.dateToday)
+          .set('month', 0)
+          .date(1)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일'),
+      },
+      date: {
+        term: 'monthly',
+        from: dayjs(this.dateToday)
+          .set('month', 0)
+          .date(1)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD'),
+      }
+    },
+    {
+      label: {
+        text: '기간 조회',
+        from: dayjs(this.dateToday)
+          .format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
+      },
+      date: {
+        term: 'term',
+        from: dayjs(this.dateToday)
+          .format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
+      }
+    }
+  ]
+  public typeLabel = [
+    {
+      id: 'out-patient',
+      label: ''
+    },
+    {
+      id: 'leaves',
+      label: ''
+    },
+    {
+      id: 'week',
+      label: ''
+    },
+    {
+      id: 'certification',
+      label: ''
+    },
+    {
+      id: 'wait-time',
+      label: ''
+    },
+    {
+      id: 'arrive',
+      label: ''
+    },
+    {
+      id: 'measurements',
+      label: ''
+    },
+  ]
+  public typeList = [
+    {
+      id: 'out-patient',
+      list: []
+    },
+    {
+      id: 'leaves',
+      list: []
+    },
+    {
+      id: 'week',
+      list: []
+    },
+    {
+      id: 'certification',
+      list: []
+    },
+    {
+      id: 'wait-time',
+      list: []
+    },
+    {
+      id: 'arrive',
+      list: []
+    },
+    {
+      id: 'measurements',
+      list: ['신체계측 전체', '신체계측(혈압)', '신체계측(신장체중)']
+    },
+  ]
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {
@@ -56,39 +174,24 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
   }
 
   @Action({ rawError: true })
-  public RawTableData(data: { type: string, range: {}}) {
-    let resultCd
-    switch (data.type) {
-      case 'out-patient':
-        resultCd = statisticsOutPatient(data.range)
-      break
-      case 'in-patient':
-        resultCd = statisticsInPatient(data.range)
-      break
-      case 'certification':
-        resultCd = statisticsCertification(data.range)
-      break
-      case 'week':
-        resultCd = statisticsWeek(data.range)
-      break
-        case 'wait-time':
-        resultCd = statisticsWaitTime(data.range)
-      break
+  public RawTableData(payload: any) {
+    let params = {
+      type: payload.type,
+      option: payload.option,
+      position: payload.position,
+      dateTerm: payload.range.term,
+      startDate: payload.range.from,
+      endDate: payload.range.to,
     }
-
+    let resultCd = statistics(params)
     return new Promise(resolve => {
-      resolve(resultCd)      
+      resolve(resultCd)
     })
   }
 
   @Action({ rawError: true })
   public ChangeValue(payload: { key: string; value: any }) {
     this.SET_CHANGE_VALUE(payload)
-  }
-
-  @Action({ rawError: true })
-  public GetNumFormat(payload: number) {
-    // return payload.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
   }
 
   @Action({ rawError: true })
@@ -109,25 +212,10 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
 
   @Action({ rawError: true })
   public GetDateRange(payload: any) {
-    const selectDate = payload.date
-    let date = this.crntMonth
-
-    switch (selectDate) {
-      case 0:
-        date = this.crntMonth
-        break
-      case 1:
-        date = this.PrevMonth
-        break
-      case 2:
-        date = this.PrevYear
-        break
-      default:
-        date = this.crntMonth
-        break
-    }
+    let date = this.dateList[payload.date]
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
+
 }
 
 export const StatisticsStoreModule = getModule(StatisticsStore)

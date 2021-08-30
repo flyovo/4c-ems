@@ -219,8 +219,11 @@ const dashboard = {
 			//   ) AS UNSIGNED INTEGER) AS pm ` + 
 
 			query += ` FROM ${db.device_op_info.name} INNER JOIN ${db.ticket_daily_cnt.name} ON ${db.device_op_info.name}.dev_id = ${db.ticket_daily_cnt.name}.dev_id ` +
-					 ` WHERE ${db.ticket_daily_cnt.name}.workno = 1 ` ;
-			// ` AND ${db.device_op_info.name}.site = '세브란스(신촌)' ` + 
+					 ` WHERE ${db.ticket_daily_cnt.name}.workno = 1 `;
+			
+			if(req.query.site){
+				query += ` AND ${db.device_op_info.name}.site = '${req.query.site}' ` ;
+			}
 			if(true){
 				// -- 기간 선택
 				// -- 전체 날짜일 경우 사용 안함

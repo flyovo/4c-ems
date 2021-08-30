@@ -16,10 +16,10 @@ class Settings extends VuexModule implements SettingsState {
   public sidebarTextTheme = defaultSettings.sidebarTextTheme
   public loginTime = defaultSettings.loginTime
   public menuListTree = defaultSettings.menuListTree
-  public menuList = defaultSettings.menuList
   public userEditStatus = false
   public loginTimeStatus = false
   public menuText = ""
+  public menuPosition = []
 
   @Action({ rawError: true })
   public ChangeSetting(payload: { key: string; value: any }) {
@@ -40,11 +40,15 @@ class Settings extends VuexModule implements SettingsState {
   }
 
   @Action({ rawError: true })
+  public SetMenuPosition(payload: any) {
+    this.CHANGE_SETTING({ key: 'menuPosition', value: payload })
+  }
+
+  @Action({ rawError: true })
   public GetSite(payload: any) {
     let resultCd = getSite(payload)
 
     return new Promise(resolve => {
-      console.log('resultCd user ::::::', resultCd)
       resolve(resultCd)
     })
   }

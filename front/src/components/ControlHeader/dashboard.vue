@@ -4,10 +4,10 @@
     <div class="control_header__title">기관 선택</div>
     <el-dropdown>
         <el-button>
-            기관 선택<i class="el-icon-arrow-down el-icon--right"></i>
+            {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" >{{ item.label }}</el-dropdown-item>
+            <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" @click.native="handleSiteChange(item)" >{{ item.label }}</el-dropdown-item>
         </el-dropdown-menu>
     </el-dropdown>
     <div class="control_header__date">
@@ -53,19 +53,32 @@ export default class extends Vue {
   @AsyncComputed()
   // 기관 리스트
   async siteList() {
-    return await SettingsModule.GetSite({
+    let list = await SettingsModule.GetSite({
       site: 'site', 
       position: [], 
-      state: JSON.parse(localStorage.getItem('4c-userState')), 
+      ...JSON.parse(localStorage.getItem('4c-userState')), 
       auth: localStorage.getItem('4c-userAuth') 
     }).then((result: any) => {
       return result
     })
+    return [ ...list ]
+  }
+
+  // 사이트 텍스트
+  get siteLabel() {
+    return DashboardStoreModule.selectedSite
   }
 
   // 날짜 텍스트
   get dateRange() {
     return DashboardStoreModule.dateRange
+  }
+
+  // 사이트 버튼 선택 -> vuex에 저장
+  private async handleSiteChange(value: Object) {
+    const payload = value
+    console.log('handleSiteChange : ', payload)
+    await DashboardStoreModule.GetSite(payload)
   }
 
   // 날짜 버튼 선택
@@ -84,6 +97,17 @@ export default class extends Vue {
 }
 </script>
 
+<style lang="scss">
+.el-dropdown-menu {
+  // width: setViewport('vw', 100);
+  padding: setViewport('vh', 6) 0;
+  .el-dropdown-menu__item {
+    padding: 0 setViewport('vw', 17);
+    font-size: setViewport('vw', 14);
+        // /* padding: 0 17px;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .control_header {
   width: 100%;
@@ -98,18 +122,24 @@ export default class extends Vue {
     }
     .el-dropdown {
       // margin: 0 20px;
-      margin: 0 setViewport('vw', 20);
+      margin-left: setViewport('vw', 12);
+      margin-right: setViewport('vw', 22);
       flex-grow: 0;
       .el-button {
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         // width: 96px;
-        // height: 36px;
-        width: setViewport('vw', 96);
-        height: setViewport('vh', 36);
+        // width: setViewport('vw', 100);
+        height: 100%;
         border-radius: 4px;
         border: 1px solid $lightGray;
-        padding: 0;
+        // padding: 0 setViewport('vw', 25) 0 setViewport('vw', 12);
+        padding: 0 setViewport('vw', 12);
         // font-size: 14px;
         font-size: setViewport('vw', 14);
+        text-align: left;
         font-weight: normal;
         font-stretch: normal;
         font-style: normal;
@@ -119,12 +149,17 @@ export default class extends Vue {
         &:hover, &:focus {
           background-color: $subMenuBg;
         }
+        // .el-icon-arrow-down {
+        //   position: absolute;
+        //   right: 0;
+        // }
       }
     }
   }
   &__title {
     display: flex;
     align-items: center;
+    width: setViewport('vw', 78);
     // font-size: 20px;
     font-size: setViewport('vw', 20);
     font-weight: bold;
@@ -144,10 +179,8 @@ export default class extends Vue {
       justify-content: space-between;
       .date__buttons {
         button {
-          // width: 85px;
-          width: setViewport('vw', 85);
           height: 100%;
-          padding: 0;
+          padding: 0px setViewport('vw', 12);
           border-radius: 2px;
           margin-left: 0;
           background-color: $subMenuBg;

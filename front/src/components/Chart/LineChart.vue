@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import echarts, { ECharts, EChartOption } from 'echarts'
 import commonScss from '@/styles/common.scss'
 
@@ -34,6 +34,14 @@ export default class extends Vue {
   @Prop({ default: '500px' }) private height!: string
   private chart!: ECharts
 
+  @Watch('chartItems', {immediate: true, deep: true})
+  public onInitChartChange(val: any, oldVal: any) {
+    if (this.chart) {
+      this.chart.clear();
+    }
+    this.setOptions(this.chartItems)
+  }
+
   mounted() {
     this.initProcess()
     this.$nextTick(function() {
@@ -51,7 +59,7 @@ export default class extends Vue {
       return
     }
     this.chart.dispose()
-    this.chart = null
+    // this.chart = null
   }
 
   private async initProcess() {

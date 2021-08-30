@@ -16,13 +16,23 @@
       <el-button type="text" @click.native="logout()"><img src="@/assets/images/ic-export.svg"/></el-button>
     </div>
     <div class="sidebar-logo-menu">
-      <el-tree :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick" />
+      <el-tree 
+        ref="tree"
+        node-key="id"
+        :highlight-current="true"
+        :render-after-expand="false"
+        :default-expand-all="true"
+        :data="menuListTree" 
+        :props="defaultProps" 
+        @node-click="handleNodeClick" 
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import AsyncComputed from 'vue-async-computed-decorator'
 import { UserStoreModule } from '@/store/modules/user/store'
 import { SettingsModule } from '@/store/modules/settings/store'
 import { Loading } from 'element-ui'
@@ -33,9 +43,11 @@ export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
   public userId = localStorage.getItem('4c-userId')
   public userAuth = ''
+  public initMenu = {}
   public menuActive = 'dashboard'
   public defaultProps = {
     children: 'children',
+    id: 'id',
     label: 'label',
   }
   public menuUrl = []
@@ -52,7 +64,16 @@ export default class extends Vue {
       default: this.userAuth = '기관 / 부서 관리자'
       break;
     }
-    // this.handleNodeClick
+
+    if(this.$route.path.split('/')[1] != 'dashboard'){
+      this.setCheckedNodes().then(result => {
+        this.$refs.tree.setCurrentKey(result);
+      })
+    }else{
+      this.$nextTick(() => {
+        this.$refs.tree.setCurrentKey('dashboard');
+      })
+    }
   }
   get getterSetter() {
     return this.userAuth;
@@ -79,11 +100,7 @@ export default class extends Vue {
 
 
   get menuListTree() {
-    console.log('get menuListTree')
     return SettingsModule.menuListTree
-  }
-  get menuList() {
-    return SettingsModule.menuList
   }
   private handleFunctionCall(funcName, funcParam) {
     this.menuActive = funcName;
@@ -98,20 +115,148 @@ export default class extends Vue {
     this.$router.push(path)
   }
 
+  // @AsyncComputed()
+  // 기관 리스트
+  // siteList() {
+  //   return async(type, position) => {
+  private async siteList(type, position) {
+    // return async() => {
+      let list = await SettingsModule.GetSite({
+        site: type, 
+        position: position, 
+        ...JSON.parse(localStorage.getItem('4c-userState')), 
+        auth: localStorage.getItem('4c-userAuth') 
+      }).then((result: any) => {
+        return result
+      })
+      return [ ...list ]
+    // }
+  }
+
+  private async append(data, newChild) {
+    if (!data.children) {
+      this.$set(data, 'children', []);
+    }
+    data.children = newChild;
+  }
+  private setCheckedNodes() {
+    return new Promise(async(resolve, reject) => {
+      await SettingsModule.SetMenuText([]);
+
+      let path = this.$route.path.split('/');
+      path.shift();
+      for(let [index, p] of path.entries()){
+        path[index] = decodeURIComponent(p);
+      }
+
+      let text = [];
+      let position = path.slice();
+      if(position[0] == 'dashboard'){
+        return ;
+      }else{
+        position = position.slice(2);
+      }
+
+      for(let [index, p] of path.entries()){
+        let type = '';
+        if(index == 0){
+          this.initMenu = this.menuListTree.filter(tree => {
+            return tree.id === p
+          })[0]
+        }else if(index == 1){
+          type = 'site';
+          this.initMenu = this.initMenu.children.filter(tree => {
+            return tree.id === p
+          })[0]
+        }else if(index == 2){
+          type = 'pos_1'
+          this.initMenu = this.initMenu.children.filter(tree => {
+            return tree.id === p
+          })[0]
+        }else if(index == 3){
+          type = 'pos_2'
+          this.initMenu = this.initMenu.children.filter(tree => {
+            return tree.id === p
+          })[0]
+        }else if(index == 4){
+          type = 'pos_3'
+          this.initMenu = this.initMenu.children.filter(tree => {
+            return tree.id === p
+          })[0]
+        }
+
+        let pos = position.join(',');
+        if(type !== ''){
+          await this.siteList(type, pos).then(async res => {
+            if(index < path.length){
+              if(res){
+                this.$set(this.initMenu, 'children', res);
+              }
+            }
+          })
+        }
+        if(path.length > 2){
+          if(index == path.length-1){
+            let strong = path.slice().pop();
+            text.push(`<span>${strong}</span>`);
+            await SettingsModule.SetMenuText(text)
+          }else if(index > 1){
+            text.push(p);
+          }
+        }
+      }
+      console.log(position)
+      console.log('SetMenuPosition::::::', position)
+      await SettingsModule.SetMenuPosition(position)
+      resolve(path[path.length-1]);
+    })
+  }
   private async handleNodeClick(data, checked, indeterminate) {
     this.menuUrl = [];
     this.menuText = [];
 
     this.parseJson(checked);
     let url = this.menuUrl.reverse();
-    let text = this.menuText.reverse().slice(1);
-    
-    if(text.length > 0){
-      text.push(`<span>${text.pop()}</span>`);
-      await SettingsModule.SetMenuText(text)
+    let text = this.menuText.reverse().slice(2);
+
+    let type = '';
+    if(checked.level == 2){
+      type = 'site'
+    }else if(checked.level == 3){
+      type = 'pos_1'
+    }else if(checked.level == 4){
+      type = 'pos_2'
+    }else if(checked.level == 5){
+      type = 'pos_3'
+    }
+    // if(type === ''){
+    //   return;
+    // }
+
+    let position = this.menuUrl.slice(1).join(',');
+    if(url[0] !== 'dashboard'){
+      position = this.menuUrl.slice(2).join(',');
+      if(type !== ''){
+        await this.siteList(type, position).then(async res => {
+          if(!data.children && res.length > 0){
+            this.append(data, res)
+          }
+        })
+      }
+
+      if(text.length > 0){
+        text.push(`<span>${text.pop()}</span>`);
+        await SettingsModule.SetMenuText(text)
+      }else{
+        await SettingsModule.SetMenuText([])
+      }
+      console.log('position:::', position)
+      await SettingsModule.SetMenuPosition(position.split(','))
     }
     
-    this.$router.push(`/${url.join('/')}`)
+    // if(url[0] === 'dashboard' || checked.level == 6){
+      this.$router.push(`/${url.join('/')}`)
+    // }
   }
 
   private parseJson(node) {
@@ -136,6 +281,9 @@ export default class extends Vue {
       }
     }
     // background-color: #fafafa; 
+    .el-tree-node__content {
+      min-height: 3.3333333333vh;
+    }
     .is-current {
       &>.el-tree-node__content {
         color: $menuActiveText;
@@ -179,10 +327,6 @@ export default class extends Vue {
       // font-size: 16px;
       font-size: setViewport('vw', 16);
       font-weight: bold;
-      & > div {
-        // min-height: 40px;
-        min-height: setViewport('vh', 40);
-      }
     }
   }
 }
@@ -261,7 +405,7 @@ export default class extends Vue {
   & .sidebar-logo-menu {
     width: 100%;
     // height: calc(100vh - 250px);
-    height: calc(100vh - #{setViewport('vh', 250)});
+    height: calc(100% - #{setViewport('vh', 171)});
     background-color: $subMenuBg;
     overflow: scroll;
   }

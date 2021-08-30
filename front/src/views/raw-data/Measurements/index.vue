@@ -2,15 +2,19 @@
 <div typeList class="raw-data-table__body__table">
   <el-table :data="tableData" header-align="center">
     <el-table-column label="row" align="center">
+      <el-table-column prop="타입" label="타입" sortable align="center"></el-table-column>
       <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
-      <el-table-column prop="요일" label="요일" sortable align="center"></el-table-column>
       <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
-      <el-table-column prop="창구코드" label="창구코드" sortable align="center"></el-table-column>
-      <el-table-column prop="층수" label="층수" sortable align="center"></el-table-column>
-      <!-- <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column> -->
-      <el-table-column prop="등록번호" label="환자등록번호" sortable align="center"></el-table-column>
-      <el-table-column prop="증명서 종류" label="증명서 종류" sortable align="center"></el-table-column>
-      <el-table-column prop="발급건수" label="발급건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
+      <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+      <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
+      <el-table-column prop="관리부서" label="관리부서" sortable align="center"></el-table-column>
+      <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
+      <el-table-column prop="Model" label="Model" sortable align="center"></el-table-column>
+      <el-table-column prop="등록번호" label="등록번호" sortable align="center"></el-table-column>
+      <el-table-column prop="예약진료수" label="예약진료수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="신체계측성공" label="신체계측성공" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="신체계측실패" label="신체계측실패" sortable :formatter="getNumFormat" align="center"></el-table-column>
     </el-table-column>
   </el-table>
 </div>
@@ -21,10 +25,9 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 
 @Component({
-  name: 'Certification'
+  name: 'Measurements'
 })
 export default class extends Vue {
-  // @Prop({ default: [] }) private tableData!: []
   private page: number = 1
   private selectDate: number = 0
   public type: string = 'receipt'
@@ -43,10 +46,6 @@ export default class extends Vue {
     return RawDataStoreModule.dateRange
   }
 
-  get tableData() {
-    return RawDataStoreModule.tableList
-  }
-
   private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
@@ -58,6 +57,10 @@ export default class extends Vue {
       date: this.selectDate
     }
     await RawDataStoreModule.GetDateRange(payload)
+  }
+  
+  get tableData() {
+    return RawDataStoreModule.tableList
   }
 
   get totalCount() {

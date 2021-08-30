@@ -1,5 +1,5 @@
 import store from '@/store'
-import { rawDataCertification, rawDataReceipt } from '@/api/rawdata-api'
+import { rawData, rawDataCombo } from '@/api/rawdata-api'
 import { RawDataStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
@@ -9,28 +9,31 @@ import dayjs from 'dayjs'
 class RawDataStore extends VuexModule implements RawDataStoreState {
   public tableList = []
   public tableListTotalCount = 0
-  public dateRange = {}
+  public dateRange = {
+    date: {
+      type: 'all',
+      term: 'weekly',
+      from: dayjs().format('YYYY-MM-DD'),
+      to: dayjs().format('YYYY-MM-DD')
+    }
+  }
   public dateToday = dayjs(new Date())
   public dateList = [
     {
       label: {
         text: '전체 날짜',
-        from: dayjs(this.dateToday)
-          .date(1)
-          .format('YYYY년 MM월 DD일'),
+        from: this.dateToday.format('YYYY년 MM월 DD일'),
         to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
-        term: 'weekly',
-        from: dayjs(this.dateToday)
-          .date(1)
-          .format('YYYY-MM-DD'),
+        term: 'all',
+        from: this.dateToday.format('YYYY-MM-DD'),
         to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
       label: {
-        text: '당월',
+        text: '당월 조회',
         from: dayjs(this.dateToday)
           .date(1)
           .format('YYYY년 MM월 DD일'),
@@ -41,91 +44,113 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
         from: dayjs(this.dateToday)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD')
+        to: this.dateToday.format('YYYY-MM-DD'),
       }
     },
     {
       label: {
-        text: '1개월',
+        text: '전월 조회',
         from: dayjs(this.dateToday)
+          .subtract(1, 'month')
           .date(1)
           .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일')
+        to: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(this.dateToday.daysInMonth())
+          .format('YYYY년 MM월 DD일'),
       },
       date: {
         term: 'weekly',
         from: dayjs(this.dateToday)
+          .subtract(1, 'month')
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD')
-      }
-    },
-    {
-      label: {
-        text: '2개월',
-        from: dayjs(this.dateToday)
-          .date(1)
-          .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일')
-      },
-      date: {
-        term: 'weekly',
-        from: dayjs(this.dateToday)
-          .date(1)
+        to: dayjs(this.dateToday)
+          .subtract(1, 'month')
+          .date(this.dateToday.daysInMonth())
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD')
-      }
-    },
-    {
-      label: {
-        text: '3개월',
-        from: dayjs(this.dateToday)
-          .date(1)
-          .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일')
-      },
-      date: {
-        term: 'weekly',
-        from: dayjs(this.dateToday)
-          .date(1)
-          .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
       label: {
         text: '연간 조회',
         from: dayjs(this.dateToday)
+          .set('month', 0)
           .date(1)
           .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일')
+        to: this.dateToday.format('YYYY년 MM월 DD일'),
       },
       date: {
-        term: 'weekly',
+        term: 'monthly',
         from: dayjs(this.dateToday)
+          .set('month', 0)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD')
+        to: this.dateToday.format('YYYY-MM-DD'),
       }
     },
     {
       label: {
         text: '기간 조회',
         from: dayjs(this.dateToday)
-          .date(1)
           .format('YYYY년 MM월 DD일'),
         to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
-        term: 'weekly',
+        term: 'term',
         from: dayjs(this.dateToday)
-          .date(1)
           .format('YYYY-MM-DD'),
         to: this.dateToday.format('YYYY-MM-DD')
       }
     }
   ]
-  public typeList = ['수납 전체', '외래 수납', '중간금 수납', '퇴원 수납']
+  public typeLabel = [
+    {
+      id: 'hospital-storage',
+      label: '수납 타입 선택'
+    },
+    {
+      id: 'certification',
+      label: '증명서 타입 선택'
+    },
+    {
+      id: 'arrive',
+      label: ''
+    },
+    {
+      id: 'measurements',
+      label: '신체계측 타입 선택'
+    },
+    {
+      id: 'failure',
+      label: '타입 선택'
+    },
+  ]
+  public typeList = [
+    {
+      id: 'hospital-storage',
+      list: ['수납 전체', '외래 수납', '중간금 수납', '퇴원 수납']
+    },
+    {
+      id: 'certification',
+      list: ['증명서 전체', '입퇴원증명서', '통원증명서', '납입증명서(타기관)', '장애인증명서',
+        '입원영수증', '외래진료비', '응급진료비', '납입증명서(연말정산)', '납입증명서(난임진료)', '예비']
+    },
+    {
+      id: 'arrive',
+      list: []
+    },
+    {
+      id: 'measurements',
+      list: ['신체계측 전체', '신체계측(혈압)', '신체계측(신장체중)']
+    },
+    {
+      id: 'failure',
+      list: []
+    },
+  ]
+  public comboIndex = 0
+  public comboList = []
 
 
   @Mutation
@@ -137,19 +162,18 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
   }
 
   @Action({ rawError: true })
-  public RawTableData(data: { type: string, range: {}}) {
-    let resultCd
-    switch (data.type) {
-      case 'certification':
-        resultCd = rawDataCertification(data.range)
-      break
-      case 'receipt':
-        resultCd = rawDataReceipt(data.range)
-      break
+  public RawTableData(payload: any) {
+    let params = {
+      type: payload.type,
+      option: payload.option,
+      position: payload.position,
+      dateTerm: payload.range.term,
+      startDate: payload.range.from,
+      endDate: payload.range.to,
     }
-
+    let resultCd = rawData(params)
     return new Promise(resolve => {
-      resolve(resultCd)      
+      resolve(resultCd)
     })
   }
 
@@ -176,11 +200,23 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
 
   @Action({ rawError: true })
   public GetDateRange(payload: any) {
-    // const selectDate = payload.date
-    console.log('RawDataStoreModule:::::::', payload.date)
-    console.log(this.dateList[payload.date].date)
     let date = this.dateList[payload.date]
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
+  }
+
+  @Action({ rawError: true })
+  public GetComboList(payload: any) {
+    let resultCd = rawDataCombo(payload)
+    new Promise(resolve => {
+      return resolve(resultCd)
+    }).then(result => {
+      this.SET_CHANGE_VALUE({ key: 'comboList', value: result })
+    })
+  }
+
+  @Action({ rawError: true })
+  public SetComboIndex(payload: any) {
+    this.SET_CHANGE_VALUE({ key: 'comboIndex', value: payload.index })
   }
 }
 

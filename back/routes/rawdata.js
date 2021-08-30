@@ -5,16 +5,34 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 module.exports = function () {
 	router.get(
-		"/rawdata/receipt",
+		"/rawdata/hospital-storage",
 		isLoggedIn,
-		api.rawdata.getReceipt
-	);
-	
+		api.rawdata.getStorage
+	);	
 	router.get(
 		"/rawdata/certification",
 		isLoggedIn,
 		api.rawdata.getCertification
 	);
-
+	router.get(
+		"/rawdata/arrive",
+		isLoggedIn,
+		api.rawdata.getArrive
+	);
+	router.get(
+		"/rawdata/measurements",
+		isLoggedIn,
+		api.rawdata.getMeasurements
+	);
+	router.get(
+		"/rawdata/failure",
+		isLoggedIn,
+		api.rawdata.getFailure
+	);
+	router.get(
+		"/rawdata/combo",
+		isLoggedIn,
+		api.rawdata.getCombobox
+	);
 	return router;
 };

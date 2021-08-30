@@ -1,48 +1,100 @@
 <template>
   <div class="raw-data-wrapper">
     <div class="raw-data-wrapper__header">
-      <control-header-table @selectCenter="fetchCenter" @selectDate="fetchDate"/>
+      <control-header-table 
+        :dateRange="dateRange" 
+        :dateList="dateList" 
+        :typeLabel="typeLabel" 
+        :typeList="typeList" 
+        :selectDate="date" 
+        :selectType="type" 
+        :menuType="routeData" 
+        @selectCenter="fetchCenter" 
+        @selectDate="fetchDate"
+      />
     </div>
-    <!-- <data-table :initData="mock" @fetch="fetchData"></data-table> -->
-    <data-table></data-table>
-    <!-- <back-to-top :visibility-height="300" :back-position="50" transition-name="fade" /> -->
+    <data-table 
+      :dateRange="dateRange" 
+      :dateList="dateList" 
+      :typeList="typeList" 
+      :selectDate="date" 
+      :selectType="type" 
+      :menuType="routeData" 
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import ControlHeaderTable from '@/components/ControlHeader/table.vue'
-// import { dashboard } from '../../../router/modules/router-constants'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { RawDataStoreModule } from '@/store/modules/rawdata/store'
+import ControlHeaderTable from '@/components/ControlHeader/rawData.vue'
 import DataTable from './DataTable.vue'
-// import BackToTop from '@/components/BackToTop/index.vue'
-// import { MOCK_RAW_DATA_CERTIFICATION } from '@/store/modules/rawdata/mock/rawdata-certification'
 
 @Component({
   name: 'rawData',
   components: { 
     DataTable, 
     ControlHeaderTable
-    // BackToTop
   }
 })
 export default class extends Vue {
-  // private mock: any = MOCK_RAW_DATA_CERTIFICATION
+  public routeData: String
+  private date: number = 0
+  private type: number = 0
 
-  private async fetchCenter(value: number) {
-    console.log(value)
-    // this.selectDate = await value
-    // this.getDateRange()
+  created() {
+    this.routeData = decodeURIComponent(this.$route.path.split('/')[2])
+    console.log(this.routeData)
   }
-  private async fetchDate(value: number) {
-    console.log(value)
-    // this.selectDate = await value
-    // this.getDateRange()
+
+  private async selectDate(value: number) {
+    this.date = await value
+  }
+
+  get fetchDate() {
+    return (value: number) => {
+      this.date = value
+      const payload = {
+        date: value
+      }
+      return RawDataStoreModule.GetDateRange(payload)
+    }
+  }
+
+  get fetchCenter() {
+    return (value: number) => {
+      this.type = value
+      return RawDataStoreModule.typeList.filter(list => {
+        if(list.id === this.routeData){
+          console.log('>>> ', list.id, this.routeData)
+        }
+        return list.id === this.routeData
+      })[0].list[value]
+    }
+  }
+
+  get dateList() {
+    return RawDataStoreModule.dateList
+  }
+  get typeLabel() {
+    return RawDataStoreModule.typeLabel.filter(list => {
+      return list.id === this.routeData
+    })[0].label
+  }
+  get typeList() {
+    return RawDataStoreModule.typeList.filter(list => {
+      return list.id === this.routeData
+    })[0].list
+  }
+  get dateRange() {
+    return RawDataStoreModule.dateRange
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .raw-data-wrapper {
+  height: 100%;
   &__header {
     display: flex;
     // height: 90px;

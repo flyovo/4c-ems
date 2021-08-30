@@ -1,15 +1,15 @@
 import request from '@/utils/request'
 
-export const rawDataCertification = (data: any) =>
+export const rawData = (data: any) =>
   request({
-    url: '/rawdata/certification',
+    url: `/rawdata/${data.type}`,
     method: 'get',
     params: data
   })
 
-export const rawDataReceipt = (data: any) =>
+export const rawDataCombo = (data: any) =>
   request({
-    url: '/rawdata/receipt',
+    url: `/rawdata/combo`,
     method: 'get',
     params: data
   })

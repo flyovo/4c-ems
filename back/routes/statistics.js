@@ -11,9 +11,15 @@ module.exports = function () {
 	);
 	
 	router.get(
-		"/statistics/in-patient",
+		"/statistics/leaves",
 		isLoggedIn,
-		api.statistics.getInPatient
+		api.statistics.getLeaves
+	);
+
+	router.get(
+		"/statistics/week",
+		isLoggedIn,
+		api.statistics.getWeek
 	);
 	
 	router.get(
@@ -23,15 +29,21 @@ module.exports = function () {
 	);
 
 	router.get(
-		"/statistics/week",
+		"/statistics/wait-time",
 		isLoggedIn,
-		api.statistics.getWeek
+		api.statistics.getWaitTime
 	);
 
 	router.get(
-		"/statistics/wait",
+		"/statistics/arrive",
 		isLoggedIn,
-		api.statistics.getWaitTime
+		api.statistics.getArrive
+	);
+
+	router.get(
+		"/statistics/measurement",
+		isLoggedIn,
+		api.statistics.getMeasurement
 	);
 
 	return router;

@@ -69,44 +69,45 @@ const user = {
 
 	getSite: async function (req, res, next) {
 		try {
+			let position = req.query.position ? req.query.position.split(",") : "";
 			// req.query
-			// { site: 'site', position: ['site', 'pos_1', 'pos_2'], 
+			// { site: 'site', position: ['site', 'pos_1', 'pos_2'] -> text, 
 			//   state: {organ, pos_4}, auth: localStorage.getItem('4c-userAuth') }
 
-			// let organ = req.query.state.organ ? ` pos_1 = ${req.query.state.organ} ` : "";
-			// let pos_4 = req.query.state.pos_4 ? ` pos_4 = ${req.query.state.pos_4} ` : "";
+			// let organ = req.query.organ ? ` pos_1 = '${req.query.organ}' ` : "";
+			// let pos_4 = req.query.pos_4 ? ` pos_4 = '${req.query.pos_4}' ` : "";
 
-			let query = ` SELECT ${req.query.site} FROM ${db.device_op_info.name} `;
+			let query = ` SELECT ${req.query.site} AS label FROM ${db.device_op_info.name} `;
 			switch(req.query.site){
 				case "site" : // 사이트
 					if(req.query.auth === "P"){
 						// query += (!organ && !pos_4) ?  
-						query += ` WHERE pos_1 = ${req.query.state.organ} AND pos_4 = ${req.query.state.pos_4} `;
+						query += ` WHERE pos_1 = '${req.query.organ}' AND pos_4 = '${req.query.pos_4}' `;
 					}else if(req.query.auth === "A"){
-						query += req.query.state.pos_4 ? ` WHERE pos_4 = ${req.query.state.pos_4} ` : "";
+						query += req.query.pos_4 ? ` WHERE pos_4 = '${req.query.pos_4}' ` : "";
 					}
 					break;
 				case "pos_1" : // 기관명
-					query += ` WHERE site = ${req.query.position[0]} `;
+					query += ` WHERE site = '${position[0]}' `;
 					if(req.query.auth === "P"){
-						query += ` AND pos_1 = ${req.query.state.organ} AND pos_4 = ${req.query.state.pos_4} `;
+						query += ` AND pos_1 = '${req.query.organ}' AND pos_4 = '${req.query.pos_4}' `;
 					}else if(req.query.auth === "A"){
-						query += ` AND pos_4 = ${req.query.state.pos_4} `;
+						query += req.query.pos_4 ? ` AND pos_4 = '${req.query.pos_4}' ` : "";
 					}
 					break;
 				case "pos_2" : // 층
-					query += ` WHERE site = ${req.query.position[0]} `;
-					query += ` AND pos_1 = ${req.query.position[1]} `;
+					query += ` WHERE site = '${position[0]}' `;
+					query += ` AND pos_1 = '${position[1]}' `;
 					if(req.query.auth === "P" || req.query.auth === "A"){
-						query += ` AND pos_4 = ${req.query.state.pos_4} `;
+						query += req.query.pos_4 ? ` AND pos_4 = '${req.query.pos_4}' ` : "";
 					}
 					break;
 				case "pos_3" : // 부서
-					query += ` WHERE site = ${req.query.position[0]} `;
-					query += ` AND pos_1 = ${req.query.position[1]} `;
-					query += ` AND pos_2 = ${req.query.position[2]} `;
+					query += ` WHERE site = '${position[0]}' `;
+					query += ` AND pos_1 = '${position[1]}' `;
+					query += ` AND pos_2 = '${position[2]}' `;
 					if(req.query.auth === "P" || req.query.auth === "A"){
-						query += ` AND pos_4 = ${req.query.state.pos_4} `;
+						query += req.query.pos_4 ? ` AND pos_4 = '${req.query.pos_4}' ` : "";
 					}
 					break;
 			}
@@ -119,9 +120,9 @@ const user = {
 				// get columns & data
 				rows.forEach(row => {
 					result.push({
-						id: row.dataValues.site,
-						label: row.dataValues.site,
-						children: []
+						id: row.dataValues.label,
+						label: row.dataValues.label
+						// children: []
 					});
 				});
 			});

@@ -51,13 +51,13 @@ export default class extends Vue {
     this.breadcrumbs = this.getPath(path)
   }
 
-  get menuList(): object[] {
-    return SettingsModule.menuList
+  get menuListTree(): object[] {
+    return SettingsModule.menuListTree
   }
 
   private getPath(path: string[]) {
     let temp = []
-    this.menuList.forEach(item => {
+    this.menuListTree.forEach(item => {
       if (item.menu === path[1]) {
         temp = temp.concat({
           redirect: path[1] === 'dashboard' ? 'redirect' : 'noredirect',

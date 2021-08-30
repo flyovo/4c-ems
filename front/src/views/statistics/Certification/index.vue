@@ -1,16 +1,19 @@
 <template>
-<div typeList class="raw-data-table__body__table">
+<div typeList class="statistics-table__body__table">
   <el-table :data="tableData" header-align="center">
     <el-table-column label="row" align="center">
-      <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
-      <el-table-column prop="요일" label="요일" sortable align="center"></el-table-column>
-      <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
-      <el-table-column prop="창구코드" label="창구코드" sortable align="center"></el-table-column>
-      <el-table-column prop="층수" label="층수" sortable align="center"></el-table-column>
-      <!-- <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column> -->
-      <el-table-column prop="등록번호" label="환자등록번호" sortable align="center"></el-table-column>
-      <el-table-column prop="증명서 종류" label="증명서 종류" sortable align="center"></el-table-column>
-      <el-table-column prop="발급건수" label="발급건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="구분" label="구분" sortable align="center">
+        <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
+        <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+      </el-table-column>
+      <el-table-column prop="입퇴원증명서" label="입퇴원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="통원증명서" label="통원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="납입증명서" label="납입증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="장애인증명서" label="장애인증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="입원진료비영수증" label="입원진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="외래비진료비영수증" label="외래비진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="응급진료비영수증" label="응급진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
     </el-table-column>
   </el-table>
 </div>

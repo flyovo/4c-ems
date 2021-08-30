@@ -8,9 +8,11 @@
       <el-table-column prop="창구코드" label="창구코드" sortable align="center"></el-table-column>
       <el-table-column prop="층수" label="층수" sortable align="center"></el-table-column>
       <!-- <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column> -->
+      <el-table-column prop="Model" label="모델명" sortable align="center"></el-table-column>
       <el-table-column prop="등록번호" label="환자등록번호" sortable align="center"></el-table-column>
-      <el-table-column prop="증명서 종류" label="증명서 종류" sortable align="center"></el-table-column>
-      <el-table-column prop="발급건수" label="발급건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="수납시간" label="수납시간" sortable align="center"></el-table-column>
+      <el-table-column prop="수납건수" label="수납건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="수납금액" label="수납금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
     </el-table-column>
   </el-table>
 </div>
@@ -21,10 +23,9 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 
 @Component({
-  name: 'Certification'
+  name: 'Hospitalization'
 })
 export default class extends Vue {
-  // @Prop({ default: [] }) private tableData!: []
   private page: number = 1
   private selectDate: number = 0
   public type: string = 'receipt'
@@ -43,10 +44,6 @@ export default class extends Vue {
     return RawDataStoreModule.dateRange
   }
 
-  get tableData() {
-    return RawDataStoreModule.tableList
-  }
-
   private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
@@ -58,6 +55,10 @@ export default class extends Vue {
       date: this.selectDate
     }
     await RawDataStoreModule.GetDateRange(payload)
+  }
+  
+  get tableData() {
+    return RawDataStoreModule.tableList
   }
 
   get totalCount() {

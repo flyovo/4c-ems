@@ -28,6 +28,9 @@ export default class extends Vue {
 
   @Watch('chartItems', {immediate: true, deep: true})
   public onInitChartChange(val: any, oldVal: any) {
+    if (this.chart) {
+      this.chart.clear();
+    }
     this.setOptions(this.chartItems)
   }
 
@@ -48,7 +51,7 @@ export default class extends Vue {
       return
     }
     this.chart.dispose()
-    this.chart = null
+    // this.chart = null
   }
 
   private async initProcess() {

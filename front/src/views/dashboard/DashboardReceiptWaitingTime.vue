@@ -29,6 +29,17 @@ export default class extends Vue {
     series: []
   }
  
+  // 사이트 변경
+  @Watch('selectedSite', {immediate: true, deep: true})
+  public onInitSiteChange(val: any, oldVal: any) {
+    console.log('onInitSiteChange:::', val)
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.fetchData()
+  }
+
+  // 날짜 범위 변경
   @Watch('dateRange', {immediate: true, deep: true})
   public onInitDateChange(val: any, oldVal: any) {
     if (this.interval) {
@@ -37,6 +48,12 @@ export default class extends Vue {
     this.fetchData()
   }
   
+  // 사이트 텍스트
+  get selectedSite() {
+    return DashboardStoreModule.selectedSite
+  }
+
+  // 날짜 텍스트
   get dateRange() {
     return DashboardStoreModule.dateRange
   }
@@ -44,7 +61,8 @@ export default class extends Vue {
   private async fetchData() {
     DashboardStoreModule.Dashboard({
       type: this.type,
-      range: this.dateRange.date
+      site: this.selectedSite.id,
+      ...this.dateRange.date
     }).then(async (result: any) => {
       this.data = result
       await this.setChart()

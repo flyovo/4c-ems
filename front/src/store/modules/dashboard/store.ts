@@ -1,5 +1,5 @@
 import store from '@/store'
-import { dashCertificate, dashKiosk, dashWaitTime, dashMenuUse } from '@/api/dashboard-api'
+import { dashChartData } from '@/api/dashboard-api'
 import { DashboardStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 class DashboardStore extends VuexModule implements DashboardStoreState {
   public dashboardList = []
   public dashboardListTotalCount = 0
+  public selectedSite = { id: '', label: '기관 선택' }
   public dateRange = {}
   public dateToday = dayjs(new Date())
   public dateList = [
@@ -81,29 +82,11 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   }
 
   @Action({ rawError: true })
-  // public Dashboard(data: { type: string, range: {}}) {
-  public Dashboard(data: { type: string, range: {}}) {
-    console.log(data.type, data.range)
-    let resultCd
-    switch (data.type) {
-      case 'certificate':
-        resultCd = dashCertificate(data.range)
-      break
-      case 'kiosk':
-          resultCd = dashKiosk(data.range)
-      break
-      case 'wait':
-        resultCd = dashWaitTime(data.range)
-      break
-      case 'menu':
-        resultCd = dashMenuUse(data.range)
-      break
-      default:
-        resultCd = dashCertificate(data.range)
-      break
+  public Dashboard(data: Object) {
+    if(data.site == ""){
+      delete data.site
     }
-    console.log('resultCd dash::::::', resultCd)
-
+    let resultCd = dashChartData(data)
     return new Promise(resolve => {
       resolve(resultCd)      
     })
@@ -137,9 +120,16 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   }
 
   @Action({ rawError: true })
+  public GetSite(payload: any) {
+    console.log('Action GetSite : ', payload)
+    this.SET_CHANGE_VALUE({ key: 'selectedSite', value: payload })
+  }
+
+  @Action({ rawError: true })
   public GetDateRange(payload: any) {
     // const selectDate = payload.date
     let date = this.dateList[payload.date]
+    console.log('Action GetDateRange : ', date)
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
 }
