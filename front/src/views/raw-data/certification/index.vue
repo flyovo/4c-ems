@@ -21,7 +21,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 
 @Component({
-  name: 'raw-data-Certification'
+  name: 'Certification'
 })
 export default class extends Vue {
   // @Prop({ default: [] }) private tableData!: []

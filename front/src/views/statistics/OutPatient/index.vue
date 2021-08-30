@@ -30,7 +30,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 
 @Component({
-  name: 'Measurements'
+  name: 'OutPatient'
 })
 export default class extends Vue {
   private page: number = 1

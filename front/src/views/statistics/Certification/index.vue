@@ -24,7 +24,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 
 @Component({
-  name: 'statistics-Certification'
+  name: 'Certification'
 })
 export default class extends Vue {
   // @Prop({ default: [] }) private tableData!: []
