@@ -10,7 +10,7 @@
       <el-table-column prop="관리부서" label="부서" sortable align="center"></el-table-column>
       <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
       <el-table-column prop="Model" label="Model" sortable align="center"></el-table-column>
-      <el-table-column prop="Type" label="Type" sortable align="center"></el-table-column>
+      <el-table-column prop="TYPE" label="Type" sortable align="center"></el-table-column>
       <el-table-column prop="예약진료수" label="예약진료수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       <el-table-column prop="신체계측성공" label="신체계측성공" sortable :formatter="getNumFormat" align="center"></el-table-column>
       <el-table-column prop="신체계측실패" label="신체계측실패" sortable :formatter="getNumFormat" align="center"></el-table-column>

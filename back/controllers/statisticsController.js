@@ -26,27 +26,27 @@ const statistics = {
 			}
 
 			let query = " SELECT " + 
-			" a.pos_1 AS '기관' " + 
-			" , a.pos_2 AS '층' " + 
+			" a.site AS '센터명' " +
+			" , a.pos_1 AS '기관' " + 
+			" , a.pos_2 AS '층수' " + 
 			" , a.pos_3 AS '구역' " + 
 			" , a.op_prog AS '용도' " + 
 			",( " + 
 				"  SELECT COUNT(DISTINCT a1.dev_id) " + 
 				`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-				`  ${queryPosText} ` +
 				`  ${queryPosText === "" ? 
 					" WHERE b1.sunap_type like '%외래%' " : 
 					queryPosText + " AND b1.sunap_type like '%외래%' " } ` + 
 			" ) AS `대수` " + 
-			" , CAST(SUM(b.cnt_his_query) AS UNSIGNED INTEGER) AS '수납가능건수' " + 
-			" , CAST(SUM(b.cnt_sunap) AS UNSIGNED INTEGER) AS '수납건수' " + 
-			" , CAST(SUM(b.cnt_sunap_x) AS UNSIGNED INTEGER) AS '수납불가' " + 
-			" , CAST(SUM(b.amount) AS UNSIGNED INTEGER) AS '금액' " + 
-			" , CAST(SUM(b.cnt_prescription) AS UNSIGNED INTEGER) AS '처방전 발급 건수' " + 
-			" , CAST(SUM(b.cnt_pharm) AS UNSIGNED INTEGER) AS '약국 전송 건수' " + 
-			" , CAST(SUM(b.cnt_parking_reg) AS UNSIGNED INTEGER) AS '주차등록' " + 
-			" , CAST(SUM(b.cnt_parking_chg) AS UNSIGNED INTEGER) AS '차량등록/변경' " + 
-			" , CAST(SUM(b.cnt_self_eval) AS UNSIGNED INTEGER) AS '진료전자기평가' " + 
+			" , CAST(IFNULL(SUM(b.cnt_his_query), 0) AS UNSIGNED INTEGER) AS '수납가능건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_sunap), 0) AS UNSIGNED INTEGER) AS '수납건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_sunap_x), 0) AS UNSIGNED INTEGER) AS '수납불가' " + 
+			" , CAST(IFNULL(SUM(b.amount), 0) AS UNSIGNED INTEGER) AS '금액' " + 
+			" , CAST(IFNULL(SUM(b.cnt_prescription), 0) AS UNSIGNED INTEGER) AS '처방전 발급 건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_pharm), 0) AS UNSIGNED INTEGER) AS '약국 전송 건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_parking_reg), 0) AS UNSIGNED INTEGER) AS '주차등록' " + 
+			" , CAST(IFNULL(SUM(b.cnt_parking_chg), 0) AS UNSIGNED INTEGER) AS '차량등록/변경' " + 
+			" , CAST(IFNULL(SUM(b.cnt_self_eval), 0) AS UNSIGNED INTEGER) AS '진료전자기평가' " + 
 			` FROM ${db.device_op_info.name} a LEFT JOIN ${db.sunap_daily_cnt.name} b ON a.dev_id = b.dev_id `;
 
 
@@ -122,7 +122,7 @@ const statistics = {
 
 			let query = " SELECT " + 
 			" a.pos_1 AS '기관' " + 
-			" , a.pos_2 AS '층' " + 
+			" , a.pos_2 AS '층수' " + 
 			" , a.pos_3 AS '구역' " + 
 			",( " + 
 				"  SELECT COUNT(DISTINCT b1.cnt_sunap) " + 
@@ -166,13 +166,13 @@ const statistics = {
 					" WHERE (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%') " : 
 					queryPosText + " AND (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%') " } ` + 
 			" ) AS `입퇴원비불능건수` " +
-			" , CAST(SUM(b.cnt_parking_reg) AS UNSIGNED INTEGER) AS '주차등록건수' " + 
-			" , CAST(SUM(b.cnt_parking_chg) AS UNSIGNED INTEGER) AS '주차변경건수' " + 
-			" , CAST(SUM(b.cnt_bob_ins) AS UNSIGNED INTEGER) AS '보호자밥신청건수' " + 
-			" , CAST(SUM(b.cnt_bob_chg) AS UNSIGNED INTEGER) AS '보호자밥변경건수' " + 
-			" , CAST(SUM(b.cnt_bob_can) AS UNSIGNED INTEGER) AS '보호자밥취소건수' " + 
-			" , CAST(SUM(b.cnt_bob_inq) AS UNSIGNED INTEGER) AS '보호자밥조회건수' " + 
-			" , CAST(SUM(b.cnt_op_guide) AS UNSIGNED INTEGER) AS '수술진행안내건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_parking_reg), 0) AS UNSIGNED INTEGER) AS '주차등록건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_parking_chg), 0) AS UNSIGNED INTEGER) AS '주차변경건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_bob_ins), 0) AS UNSIGNED INTEGER) AS '보호자밥신청건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_bob_chg), 0) AS UNSIGNED INTEGER) AS '보호자밥변경건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_bob_can), 0) AS UNSIGNED INTEGER) AS '보호자밥취소건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_bob_inq), 0) AS UNSIGNED INTEGER) AS '보호자밥조회건수' " + 
+			" , CAST(IFNULL(SUM(b.cnt_op_guide), 0) AS UNSIGNED INTEGER) AS '수술진행안내건수' " + 
 			` FROM ${db.device_op_info.name} a LEFT JOIN ${db.sunap_daily_cnt.name} b ON a.dev_id = b.dev_id `;
 
 			// " WHERE " ;
@@ -432,7 +432,7 @@ const statistics = {
 	getCertification: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
-
+ 
 			// 위치 조회
 			let queryPos = [];
 			let queryPosText = "";
@@ -450,58 +450,80 @@ const statistics = {
 				queryPosText += `  WHERE ${queryPos.JOIN(" AND ")} `;
 			}
 
+			// let query = " SELECT " + 
+			// " a.pos_1 AS '기관' " + 
+			// " , a.pos_2 AS '층' " + 
+			// " , a.pos_3 AS '구역' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_01), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '입퇴원증명서' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '입퇴원증명서' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_02), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '통원증명서' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '통원증명서' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_03), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '납입증명서' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '납입증명서' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_04), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '장애인증명서' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '장애인증명서' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_05), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '입원영수증' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '입원영수증' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_06), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '외래진료비' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '외래진료비' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_07), 0) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '응급진료비' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '응급진료비' " + 
+			// " , " + 
+			// " CAST(( " + 
+			// "  SELECT IFNULL(( SELECT SUM(b1.cnt_01) + SUM(b1.cnt_02) + SUM(b1.cnt_03) + SUM(b1.cnt_04) + SUM(b1.cnt_05) + SUM(b1.cnt_06) + SUM(b1.cnt_07) " + 
+			// `  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
+			// `  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '계' ` + 
+			// " ) AS UNSIGNED INTEGER) AS '계' " + 
+			// ` FROM ${db.device_op_info.name} a LEFT JOIN ${db.certificate_daily_cnt.name} b ON a.dev_id = b.dev_id `;
+			
 			let query = " SELECT " + 
 			" a.pos_1 AS '기관' " + 
 			" , a.pos_2 AS '층' " + 
 			" , a.pos_3 AS '구역' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_01), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '입퇴원증명서' ` + 
-			" ) AS UNSIGNED INTEGER) AS '입퇴원증명서' " + 
+			" CAST( IFNULL(SUM(b.cnt_01), 0) AS UNSIGNED INTEGER) AS '입퇴원증명서' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_02), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '통원증명서' ` + 
-			" ) AS UNSIGNED INTEGER) AS '통원증명서' " + 
+			" CAST( IFNULL(SUM(b.cnt_02), 0) AS UNSIGNED INTEGER) AS '통원증명서' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_03), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '납입증명서' ` + 
-			" ) AS UNSIGNED INTEGER) AS '납입증명서' " + 
+			" CAST( IFNULL(SUM(b.cnt_03), 0) AS UNSIGNED INTEGER) AS '납입증명서' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_04), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '장애인증명서' ` + 
-			" ) AS UNSIGNED INTEGER) AS '장애인증명서' " + 
+			" CAST( IFNULL(SUM(b.cnt_04), 0) AS UNSIGNED INTEGER) AS '장애인증명서' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_05), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '입원영수증' ` + 
-			" ) AS UNSIGNED INTEGER) AS '입원영수증' " + 
+			" CAST( IFNULL(SUM(b.cnt_05), 0) AS UNSIGNED INTEGER) AS '입원영수증' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_06), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '외래진료비' ` + 
-			" ) AS UNSIGNED INTEGER) AS '외래진료비' " + 
+			" CAST( IFNULL(SUM(b.cnt_06), 0) AS UNSIGNED INTEGER) AS '외래진료비' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT IFNULL(SUM(b1.cnt_07), 0) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '응급진료비' ` + 
-			" ) AS UNSIGNED INTEGER) AS '응급진료비' " + 
+			" CAST( IFNULL(SUM(b.cnt_07), 0) AS UNSIGNED INTEGER) AS '응급진료비' " + 
 			" , " + 
-			" CAST(( " + 
-			"  SELECT IFNULL(( SELECT SUM(b1.cnt_01) + SUM(b1.cnt_02) + SUM(b1.cnt_03) + SUM(b1.cnt_04) + SUM(b1.cnt_05) + SUM(b1.cnt_06) + SUM(b1.cnt_07) " + 
-			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.certificate_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`  ${queryPosText} GROUP BY a1.pos_1, a1.pos_2 ), 0) AS '계' ` + 
-			" ) AS UNSIGNED INTEGER) AS '계' " + 
+			" CAST( IFNULL(SUM(b.cnt_01), 0) + IFNULL(SUM(b.cnt_02), 0) + IFNULL(SUM(b.cnt_03), 0) + IFNULL(SUM(b.cnt_04), 0) + IFNULL(SUM(b.cnt_05), 0) + IFNULL(SUM(b.cnt_06), 0) + IFNULL(SUM(b.cnt_07), 0) AS UNSIGNED INTEGER) AS '계' " + 
 			` FROM ${db.device_op_info.name} a LEFT JOIN ${db.certificate_daily_cnt.name} b ON a.dev_id = b.dev_id `;
 
 			let where = [];
@@ -584,47 +606,48 @@ const statistics = {
 			}
 
 			let query = " SELECT " + 
-			" a.pos_1 AS '기관' " + 
+			" a.site AS '센터명' " +
+			" , a.pos_1 AS '기관' " + 
 			" , a.pos_2 AS '층' " + 
 			" , a.pos_3 AS '구역' " + 
 			" , b1.q_date AS '발행날짜' " + 
 			" , CAST(( " + 
 			"  SELECT IFNULL(( SELECT SUM(b1.t_q_cnt) " + 
 			`    FROM ${db.device_op_info.name} a1 INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`    WHERE ${queryPosText} ` + 
+			`    ${queryPosText} ` + 
 			"  ), 0) AS '발행건수' " +  
 			" ) AS UNSIGNED INTEGER) AS '발행건수' " + 
 			",( " + 
 			"  SELECT IFNULL(( " +
 			"    SELECT CONCAT(LPAD(ROUND((SUM(b1.t_wtime_avg) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD(AUM(b1.t_wtime_avg), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD(AUM(b1.t_wtime_avg), 60)), '2', '0')) " + 
 			`    FROM ${db.device_op_info.name} a1 INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`    WHERE ${queryPosText} ` + 
+			`    ${queryPosText} ` + 
 			"  ), 0) AS '평균대기시간' " +
 			" ) AS '평균대기시간' " + 
 			",CAST(( " + 
 			"  SELECT IFNULL(( SELECT SUM(b1.ticket_cnt_1000) + SUM(b1.ticket_cnt_1100) + SUM(b1.ticket_cnt_1200) " + 
 			`    FROM ${db.device_op_info.name} a1 INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`    WHERE ${queryPosText} ` + 
+			`    ${queryPosText} ` + 
 			"  ), 0) AS '오전발행건수' " +
 			" ) AS UNSIGNED INTEGER) AS '오전발행건수' " + 
 			",( " + 
 			"  select CONCAT(LPAD(ROUND(((sum(b1.time_avg_1000) + sum(b1.time_avg_1100) + sum(b1.time_avg_1200)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((sum(b1.time_avg_1000) + sum(b1.time_avg_1100) + sum(b1.time_avg_1200)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((sum(b1.time_avg_1000) + sum(b1.time_avg_1100) + sum(b1.time_avg_1200)), 60)), '2', '0')) " + 
 			`    FROM ${db.device_op_info.name} a1 INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`    WHERE ${queryPosText} ` + 
+			`    ${queryPosText} ` + 
 			"  ), 0) AS '오전대기시간' " +
 			" ) AS '오전대기시간' " + 
 			" , " + 
 			" CAST(( " + 
 			"  SELECT IFNULL(( select sum(b1.ticket_cnt_1400) + sum(b1.ticket_cnt_1500) + sum(b1.ticket_cnt_1600) " + 
 			`    FROM ${db.device_op_info.name} a1 INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`    WHERE ${queryPosText} ` + 
+			`    ${queryPosText} ` + 
 			"  ), 0) AS '오후발행건수' " +
 			" ) AS UNSIGNED INTEGER) AS '오후발행건수' " + 
 			" , " + 
 			" ( " + 
 			"  SELECT IFNULL(( select CONCAT(LPAD(ROUND(((sum(b1.time_avg_1400) + sum(b1.time_avg_1500) + sum(b1.time_avg_1600)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((sum(b1.time_avg_1400) + sum(b1.time_avg_1500) + sum(b1.time_avg_1600)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((sum(b1.time_avg_1400) + sum(b1.time_avg_1500) + sum(b1.time_avg_1600)), 60)), '2', '0')) " + 
 			`    FROM ${db.device_op_info.name} a1 INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			`    WHERE ${queryPosText} ` + 
+			`    ${queryPosText} ` + 
 			"  ), 0) AS '오후대기시간' " +
 			" ) AS '오후대기시간' " + 
 			` FROM ${db.device_op_info.name} a INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a.dev_id = b1.dev_id `;
@@ -751,7 +774,7 @@ const statistics = {
 
 			let query = " SELECT " + 
 			" b.act_type '타입' " + 
-			" , DARE_FORMAT(b.act_date, '%Y-%m-%d') AS 날짜 " + 
+			" , DATE_FORMAT(b.act_date, '%Y-%m-%d') AS '날짜' " + 
 			" , a.site AS '센터명' " + 
 			" , a.pos_1 AS '기관' " + 
 			" , a.pos_2 AS '층' " + 

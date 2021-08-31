@@ -1,17 +1,18 @@
 <template>
   <div typeList class="statistics-table__body__table">
-    <el-table :data="tableData" header-align="center">
-        <el-table-column prop="구분" label="구분" sortable align="center">
-          <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
+    <el-table :data="tableData" header-align="center" :span-method="objectSpanMethod">
+        <el-table-column label="구분" sortable align="center">
+          <el-table-column prop="기관" label="센터명" sortable align="center"></el-table-column>
+          <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
           <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
         </el-table-column>
         <el-table-column prop="입퇴원증명서" label="입퇴원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="통원증명서" label="통원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="납입증명서" label="납입증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="장애인증명서" label="장애인증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="입원진료비영수증" label="입원진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="외래비진료비영수증" label="외래비진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="응급진료비영수증" label="응급진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="입원영수증" label="입원진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="외래진료비" label="외래비진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="응급진료비" label="응급진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
     </el-table>
   </div>
@@ -103,6 +104,22 @@ export default class extends Vue {
     }
     value = typeof value === 'string' ? value : value.toString()
     return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+  }
+  
+  objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+    if (columnIndex === 0) {
+      if (rowIndex % 2 === 0) {
+        return {
+          rowspan: 2,
+          colspan: 1
+        };
+      } else {
+        return {
+          rowspan: 0,
+          colspan: 0
+        };
+      }
+    }
   }
 }
 </script>

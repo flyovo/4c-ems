@@ -8,33 +8,27 @@
         <el-table-column prop="용도" label="용도" sortable align="center"></el-table-column>
         <el-table-column prop="대수" label="대수" sortable align="center"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column :label="`월(일수:${dayOfWeek[1]})`" align="center"> -->
-      <el-table-column :label="`월`" align="center">
+      <el-table-column :label="`월(${dayOfWeek[1]})`" align="center">
         <el-table-column prop="월건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="월금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column :label="`화(일수:${dayOfWeek[2]})`" align="center"> -->
-      <el-table-column :label="`화`" align="center">
+      <el-table-column :label="`화(${dayOfWeek[2]})`" align="center">
         <el-table-column prop="화건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="화금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column :label="`수(일수:${dayOfWeek[3]})`" align="center"> -->
-      <el-table-column :label="`수`" align="center">
+      <el-table-column :label="`수(${dayOfWeek[3]})`" align="center">
         <el-table-column prop="수건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="수금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column :label="`목(일수:${dayOfWeek[4]})`" align="center"> -->
-      <el-table-column :label="`목`" align="center">
+      <el-table-column :label="`목(${dayOfWeek[4]})`" align="center">
         <el-table-column prop="목건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="목금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column :label="`금(일수:${dayOfWeek[5]})`" align="center"> -->
-      <el-table-column :label="`금`" align="center">
+      <el-table-column :label="`금(${dayOfWeek[5]})`" align="center">
         <el-table-column prop="금건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="금금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
-      <!-- <el-table-column :label="`토(일수:${dayOfWeek[6]})`" align="center"> -->
-      <el-table-column :label="`토`" align="center">
+      <el-table-column :label="`토(${dayOfWeek[6]})`" align="center">
         <el-table-column prop="토건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="토금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
@@ -43,8 +37,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Watch, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
+import dayjs from 'dayjs'
 
 @Component({
   name: 'Week'
@@ -55,70 +50,20 @@ export default class extends Vue {
   private selectDate: number = 0
   public type: string = 'receipt'
   public data: []
-
-  created() {
-    this.getDateRange()
-    // this.fetchData()
-  }
-
-  get dateList() {
-    return StatisticsStoreModule.dateList
-  }
+  public dayOfWeek: Array<number> = [0,0,0,0,0,0,0]
 
   get dateRange() {
     return StatisticsStoreModule.dateRange
   }
 
   get tableData() {
+    this.countDayOfWeek()
     return StatisticsStoreModule.tableList
   }
 
-  private async handleDateChange(value: number) {
-    this.selectDate = value
-    await this.getDateRange()
-    // this.fetchData()
-  }
-
-  private async getDateRange() {
-    const payload = {
-      date: this.selectDate
-    }
-    await StatisticsStoreModule.GetDateRange(payload)
-  }
-
-  get totalCount() {
-    return StatisticsStoreModule.tableListTotalCount
-  }
-
-  get currentPage() {
-    return this.page
-  }
-
-  set currentPage(value) {
-    this.$emit('update:page', value)
-  }
-
-  private async getTablePagination() {
-    await StatisticsStoreModule.GetTableData({
-      data: this.data,
-      page: this.page,
-      limit: 15
-    })
-  }
-
-  private async handleCurrentChange(value: number) {
-    this.page = await value
-    this.getTablePagination()
-  }
-
-  private async fetchData() {
-    await StatisticsStoreModule.RawTableData({
-      type: this.type,
-      range: this.dateRange
-    }).then((result: any) => {
-      this.data = result
-      this.handleCurrentChange(1)
-    })
+  @Watch('dateRange', { immediate: true, deep: true })
+  public onDayCount(val: any, oldVal: any) {
+    this.countDayOfWeek()
   }
 
   private getNumFormat(row: any, column: any) {
@@ -128,6 +73,15 @@ export default class extends Vue {
     }
     value = typeof value === 'string' ? value : value.toString()
     return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+  }
+
+  private countDayOfWeek(){
+    this.dayOfWeek = this.dayOfWeek.fill(0) // 일, 월, 화, 수, 목, 금, 토
+    let from = this.dateRange.date.from;
+    do {
+      this.dayOfWeek[dayjs(from).day()] += 1;
+      from = dayjs(from).add(1, 'day').format('YYYY-MM-DD')
+    } while (from <= this.dateRange.date.to)
   }
 }
 </script>

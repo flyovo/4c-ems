@@ -219,6 +219,12 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     let type= this.typeList[payload.type]
     this.SET_CHANGE_VALUE({ key: 'typeIndex', value: type })
   }
+
+  @Action({ rawError: true })
+  public SetInitDataList(payload: any) {
+    this.SET_CHANGE_VALUE({ key: 'tableList', value: [] })
+    this.SET_CHANGE_VALUE({ key: 'tableListTotalCount', value: 0 })
+  }
 }
 
 export const StatisticsStoreModule = getModule(StatisticsStore)

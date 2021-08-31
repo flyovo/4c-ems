@@ -5,7 +5,7 @@
         <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
         <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
         <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
-        <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+        <el-table-column prop="층수" label="층" sortable align="center"></el-table-column>
         <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
         <el-table-column prop="관리부서" label="관리부서" sortable align="center"></el-table-column>
         <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>

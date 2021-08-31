@@ -276,14 +276,14 @@ const dashboard = {
 		try {
 			const query = " SELECT " + 
 							// ` ${db.sunap_daily_cnt.name}.sunap_type, CAST(SUM(${db.sunap_daily_cnt.name}.cnt_sunap) AS UNSIGNED INTEGER) AS cnt ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_sunap) AS UNSIGNED INTEGER) AS '수납건수', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_sunap_x) AS UNSIGNED INTEGER) AS '수납불가', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_prescription) AS UNSIGNED INTEGER) AS '처방전 발급 건수', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_pharm) AS UNSIGNED INTEGER) AS '약국 전송 건수', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_parking_reg) AS UNSIGNED INTEGER) AS '주차등록', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_parking_chg) AS UNSIGNED INTEGER) AS '차량등록/변경', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_ticket) AS UNSIGNED INTEGER) AS '번호표발권', ` + 
-							` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_self_eval) AS UNSIGNED INTEGER) AS '진료전자기평가' ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_sunap), 0) AS UNSIGNED INTEGER) AS '수납건수', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_sunap_x), 0) AS UNSIGNED INTEGER) AS '수납불가', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_prescription), 0) AS UNSIGNED INTEGER) AS '처방전 발급 건수', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_pharm), 0) AS UNSIGNED INTEGER) AS '약국 전송 건수', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_parking_reg), 0) AS UNSIGNED INTEGER) AS '주차등록', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_parking_chg), 0) AS UNSIGNED INTEGER) AS '차량등록/변경', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_ticket), 0) AS UNSIGNED INTEGER) AS '번호표발권', ` + 
+							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_self_eval), 0) AS UNSIGNED INTEGER) AS '진료전자기평가' ` + 
 							` FROM ${db.sunap_daily_cnt.name} ` +
 							" WHERE " +
 							` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date , '%Y-%m-%d') BETWEEN '${req.query.from}' AND '${req.query.to}' `;

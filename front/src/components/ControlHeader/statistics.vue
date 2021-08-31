@@ -129,9 +129,11 @@ export default class extends Vue {
 
       &.is-disabled {
         input.el-range-input {
-          width: 70px;
+          width: setViewport('vw', 70);
+          min-width: 50px;
           font-size: setViewport('vw', 14);
           letter-spacing: -0.84px;
+          text-align: left;
         }
       }
       &:not(.is-disabled) {
@@ -171,13 +173,17 @@ export default class extends Vue {
 .control_header {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 
   .control_header_group {
-    width: 65%;
+    // width: 65%;
     & + div {
-      width: 35%;
+      // width: 35%;
+      display: flex;
+      align-items: center;
+      height: setViewport('vh', 36);
     }
   }
 
@@ -227,10 +233,10 @@ export default class extends Vue {
   &__title {
     display: flex;
     align-items: center;
-    // min-width: 63px;
+    min-width: 40px;
     // margin-right: 20px;
     // font-size: 16px;
-    min-width: setViewport('vw', 63);
+    width: setViewport('vw', 63);
     margin-right: setViewport('vw', 20);
     font-size: setViewport('vw', 16);
     font-weight: bold;

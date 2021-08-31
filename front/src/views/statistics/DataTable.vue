@@ -7,7 +7,7 @@
       </div>
       <div class="button-group">
         <el-dropdown>
-          <el-button> 25개씩<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+          <el-button>{{ pageSize }}개씩<i class="el-icon-arrow-down el-icon--right"></i></el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>25개씩</el-dropdown-item>
             <el-dropdown-item>30개씩</el-dropdown-item>
@@ -34,7 +34,7 @@
     <Measurements v-else-if="menuType === 'measurements'" />
     <!-- 실패 Data -->
     <div class="statistics-table__body__paging">
-      <!-- <el-pagination :page-size="15" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination> -->
+      <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
         <download-excel class="excel" :data="tableData" name="filename.xls">
@@ -78,12 +78,12 @@ export default class extends Vue {
   @Prop({ default: 0 }) private selectType!: Number
   @Prop({ default: 25 }) private pageNum!: Number
 
+  public pageSize: number = 25
   private page: number = 1
   public data: []
 
   created() {
     this.getDateRange()
-    // this.fetchData()
   }
 
   get dateList() {
@@ -102,7 +102,6 @@ export default class extends Vue {
   private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
-    // this.fetchData()
   }
 
   private async getDateRange() {
@@ -128,11 +127,15 @@ export default class extends Vue {
     this.$emit('update:page', value)
   }
 
+  private async handleCommand(command) {
+    this.pageSize = Number(command);
+  }
+
   private async getTablePagination() {
     await StatisticsStoreModule.GetTableData({
       data: this.data,
       page: this.page,
-      limit: this.pageNum
+      limit: this.pageSize
     })
   }
 
@@ -166,6 +169,7 @@ export default class extends Vue {
       console.log(result)
       this.data = result
       this.handleCurrentChange(1)
+      
     })
   }
 
@@ -182,7 +186,8 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .statistics-table {
-  height: calc(100% - #{setViewport('vh', 90)});
+  min-height: calc(100% - #{setViewport('vh', 90)});
+  height: 1px;
   // padding: 20px 30px 30px;
   // border-radius: 10px;
   padding: setViewport('vw', 20) setViewport('vw', 30) setViewport('vw', 30);
@@ -221,9 +226,10 @@ export default class extends Vue {
 <style lang="scss">
 .el-dropdown-menu__item {
   line-height: 1.4 !important;
-  padding: setViewport('vw', 3) setViewport('vw', 16) !important;
+  padding: 0px setViewport('vw', 15) !important;
   font-size: setViewport('vw', 14) !important;
   width: setViewport('vw', 100);
+  min-width: 55px;
   text-align: center;
 }
 .statistics-table {
@@ -255,7 +261,6 @@ export default class extends Vue {
         font-weight: 500;
         font-stretch: normal;
         font-style: normal;
-        line-height: 0.88;
         letter-spacing: normal;
         text-align: center;
         color: #fff;
@@ -302,9 +307,9 @@ export default class extends Vue {
       font-size: setViewport('vw', 24);
     }
     .el-pager li {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
       // width: 36px;
       // height: 36px;
       // font-size: 16px;
@@ -312,7 +317,6 @@ export default class extends Vue {
       height: setViewport('vh', 36);
       font-size: setViewport('vw', 16);
       font-weight: bold;
-      line-height: 1.5;
       color: $paginationText;
       &.active {
         // border-radius: 4px;
@@ -332,7 +336,8 @@ export default class extends Vue {
     margin-bottom: 100px;
     &__table {
       padding: 0%;
-      height: calc(100% - #{setViewport('vh', 137)});
+      min-height: calc(100% - #{setViewport('vh', 137)});
+      height: 1px;
       .el-table,
       .el-table__body-wrapper {
         height: 100%;
@@ -400,9 +405,11 @@ export default class extends Vue {
       font-size: setViewport('vw', 14);
       & > .el-button {
         width: setViewport('vw', 100);
-        padding: 0px setViewport('vw', 15);
+        min-width: 55px;
+        padding: 0;
         background-color: $subMenuBg;
         color: $darkGrayText;
+        text-align: left;
         border: 1px solid $lightGray;
         &:hover,
         &:focus {
@@ -412,6 +419,9 @@ export default class extends Vue {
         &:focus {
           color: $darkGrayText;
           border-color: $lightGray;
+        }
+        > span{
+          padding: 0px setViewport('vw', 15);
         }
       }
     }

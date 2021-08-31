@@ -5,8 +5,8 @@
         <el-table-column prop="요일" label="요일" sortable align="center"></el-table-column>
         <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
         <el-table-column prop="창구코드" label="창구코드" sortable align="center"></el-table-column>
-        <el-table-column prop="층수" label="층수" sortable align="center"></el-table-column>
-        <!-- <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column> -->
+        <el-table-column prop="층수" label="층" sortable align="center"></el-table-column>
+        <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column>
         <el-table-column prop="Model" label="모델명" sortable align="center"></el-table-column>
         <el-table-column prop="등록번호" label="환자등록번호" sortable align="center"></el-table-column>
         <el-table-column prop="수납시간" label="수납시간" sortable align="center"></el-table-column>

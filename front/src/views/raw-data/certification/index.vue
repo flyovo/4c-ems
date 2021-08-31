@@ -6,7 +6,7 @@
         <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
         <el-table-column prop="창구코드" label="창구코드" sortable align="center"></el-table-column>
         <el-table-column prop="층수" label="층수" sortable align="center"></el-table-column>
-        <!-- <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column> -->
+        <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column>
         <el-table-column prop="등록번호" label="환자등록번호" sortable align="center"></el-table-column>
         <el-table-column prop="증명서 종류" label="증명서 종류" sortable align="center"></el-table-column>
         <el-table-column prop="발급건수" label="발급건수" sortable :formatter="getNumFormat" align="center"></el-table-column>

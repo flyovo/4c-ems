@@ -108,7 +108,7 @@ const rawData = {
 			" , b.chart_no AS '등록번호' " + 
 			" , DATE_FORMAT(b.certificate_date, '%H:%i') AS '발급시간' " + 
 			" , b.certificate_name AS '증명서 종류' " + 
-			" , CAST(b.cnt_certificate AS UNSIGNED INTEGER) AS '발급건수' " + 
+			" , CAST(IFNULL(b.cnt_certificate, 0) AS UNSIGNED INTEGER) AS '발급건수' " + 
 			" , a.del_type AS '폐기여부' " + 
 			` FROM ${db.device_op_info.name} a INNER JOIN ${db.certificate_rt_log.name} b ON a.dev_id = b.dev_id `;
 

@@ -100,9 +100,9 @@ export default class extends Vue {
   // width: setViewport('vw', 100);
   padding: setViewport('vh', 6) 0;
   .el-dropdown-menu__item {
-    padding: 0 setViewport('vw', 17);
+    padding: 0px setViewport('vw', 15) !important;
     font-size: setViewport('vw', 14);
-    // /* padding: 0 17px;
+    text-align: center;
   }
 }
 </style>
@@ -158,7 +158,10 @@ export default class extends Vue {
   &__title {
     display: flex;
     align-items: center;
-    width: setViewport('vw', 78);
+    min-width: 40px;
+    // margin-right: 20px;
+    // font-size: 16px;
+    width: setViewport('vw', 63);
     // font-size: 20px;
     font-size: setViewport('vw', 20);
     font-weight: bold;

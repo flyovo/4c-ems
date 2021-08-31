@@ -3,21 +3,21 @@
     <el-table :data="tableData" header-align="center">
       <el-table-column label="구분" align="center">
         <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
-        <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+        <el-table-column prop="층수" label="층" sortable align="center"></el-table-column>
         <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column>
         <el-table-column prop="용도" label="용도" sortable align="center"></el-table-column>
         <el-table-column prop="대수" label="대수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
       <el-table-column label="수납관련사항" align="center">
-        <el-table-column prop="건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="수납건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="불능건수" label="불능건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="단순조회건수" label="단순조회건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="수납불가" label="불능건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="수납가능건수" label="단순조회건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
       <el-table-column label="기타사항" align="center">
-        <el-table-column prop="약처방전발행건수" label="약처방전발행 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="약처방전전송" label="약처방전전송 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="주차등록건수" label="주차등록 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="처방전 발급 건수" label="약처방전발행 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="약국 전송 건수" label="약처방전전송 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="주차등록" label="주차등록 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="차량등록/변경" label="차량등록 변경건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="진료전자기평가" label="진료전자기 평가건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>

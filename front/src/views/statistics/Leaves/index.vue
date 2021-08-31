@@ -1,32 +1,31 @@
 <template>
   <div typeList class="statistics-table__body__table">
     <el-table :data="tableData" header-align="center">
-      <el-table-column prop="구분" label="구분" sortable align="center"></el-table-column>
-      <el-table-column prop="구분(각1대)" label="구분(각1대)" sortable :formatter="getNumFormat" align="center"></el-table-column>
+      <el-table-column prop="기관" label="구분" sortable align="center"></el-table-column>
+      <el-table-column prop="구역" label="구분(각1대)" sortable :formatter="getNumFormat" align="center"></el-table-column>
       <el-table-column label="입퇴원비 수납" align="center">
         <el-table-column label="중간수납" align="center">
-          <el-table-column prop="중간수납건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-          <el-table-column prop="중간수납금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="중간건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="중간금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
         </el-table-column>
         <el-table-column label="퇴원수납" align="center">
-          <el-table-column prop="퇴원수납건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-          <el-table-column prop="퇴원수납금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="퇴원건수" label="건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+          <el-table-column prop="퇴원금액" label="금액" sortable :formatter="getNumFormat" align="center"></el-table-column>
         </el-table-column>
-        <el-table-column prop="불능건수" label="불능건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
       <el-table-column label="입퇴원비 조회" align="center">
-        <el-table-column prop="조회건수" label="조회건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="불능건수" label="불능건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="입퇴원비조회건수" label="조회건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="입퇴원비불능건수" label="불능건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
       <el-table-column label="주차등록/변경" align="center">
-        <el-table-column prop="등록건수" label="등록건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="변경건수" label="변경건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="주차등록건수" label="등록건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="주차변경건수" label="변경건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
       <el-table-column label="보호자 밥(죽) 건수" align="center">
-        <el-table-column prop="신청건" label="신청건" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="변경건" label="변경건" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="취소건" label="취소건" sortable :formatter="getNumFormat" align="center"></el-table-column>
-        <el-table-column prop="조회건" label="조회건" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="보호자밥신청건수" label="신청건" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="보호자밥변경건수" label="변경건" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="보호자밥취소건수" label="취소건" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="보호자밥조회건수" label="조회건" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
       <el-table-column prop="수술진행안내건수" label="수술진행안내건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
     </el-table>

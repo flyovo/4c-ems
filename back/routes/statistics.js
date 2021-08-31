@@ -41,7 +41,7 @@ module.exports = function () {
 	);
 
 	router.get(
-		"/statistics/measurement",
+		"/statistics/measurements",
 		isLoggedIn,
 		api.statistics.getMeasurement
 	);

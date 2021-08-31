@@ -221,6 +221,12 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
   public SetComboIndex(payload: any) {
     this.SET_CHANGE_VALUE({ key: 'comboIndex', value: payload.index })
   }
+
+  @Action({ rawError: true })
+  public SetInitDataList(payload: any) {
+    this.SET_CHANGE_VALUE({ key: 'tableList', value: [] })
+    this.SET_CHANGE_VALUE({ key: 'tableListTotalCount', value: 0 })
+  }
 }
 
 export const RawDataStoreModule = getModule(RawDataStore)

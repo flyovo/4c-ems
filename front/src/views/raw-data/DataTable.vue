@@ -136,7 +136,7 @@ export default class extends Vue {
     await RawDataStoreModule.GetTableData({
       data: this.data,
       page: this.page,
-      limit: this.pageNum
+      limit: this.pageSize
     })
   }
 
@@ -227,9 +227,10 @@ export default class extends Vue {
 <style lang="scss">
 .el-dropdown-menu__item {
   line-height: 1.4 !important;
-  padding: setViewport('vw', 3) setViewport('vw', 16) !important;
+  padding: 0px setViewport('vw', 15) !important;
   font-size: setViewport('vw', 14) !important;
   width: setViewport('vw', 100);
+  min-width: 55px;
   text-align: center;
 }
 .raw-data-table {
@@ -400,9 +401,11 @@ export default class extends Vue {
       font-size: setViewport('vw', 14);
       & > .el-button {
         width: setViewport('vw', 100);
-        padding: 0px setViewport('vw', 15);
+        min-width: 55px;
+        padding: 0;
         background-color: $subMenuBg;
         color: $darkGrayText;
+        text-align: left;
         border: 1px solid $lightGray;
         &:hover,
         &:focus {
@@ -412,6 +415,9 @@ export default class extends Vue {
         &:focus {
           color: $darkGrayText;
           border-color: $lightGray;
+        }
+        > span{
+          padding: 0px setViewport('vw', 15);
         }
       }
     }

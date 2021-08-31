@@ -38,6 +38,8 @@ export default class extends Vue {
   created() {
     this.routeData = this.$route.path.split('/')[2].replace(`${this.$route.path.split('/')[1]}-`, '')
     console.log(this.routeData)
+
+    StatisticsStoreModule.SetInitDataList()
   }
 
   private async selectDate(value: number) {
@@ -102,7 +104,7 @@ export default class extends Vue {
     display: flex;
     // height: 90px;
     // margin-bottom: 20px;
-    height: setViewport('vh', 90);
+    // height: setViewport('vh', 90);
     margin-bottom: setViewport('vh', 20);
   }
 }
