@@ -1,7 +1,6 @@
 <template>
   <div typeList class="statistics-table__body__table">
     <el-table :data="tableData" header-align="center">
-      <el-table-column label="row" align="center">
         <el-table-column prop="구분" label="구분" sortable align="center">
           <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
           <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
@@ -14,7 +13,6 @@
         <el-table-column prop="외래비진료비영수증" label="외래비진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="응급진료비영수증" label="응급진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      </el-table-column>
     </el-table>
   </div>
 </template>
