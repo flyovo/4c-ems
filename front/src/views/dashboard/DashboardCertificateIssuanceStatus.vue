@@ -31,20 +31,20 @@ export default class extends Vue {
   }
 
   // 사이트 변경
-  @Watch('selectedSite', {immediate: true, deep: true})
+  @Watch('selectedSite', { immediate: true, deep: true })
   public onInitSiteChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     console.log('selectedSite::::', val)
     this.fetchData()
   }
 
   // 날짜 범위 변경
-  @Watch('dateRange', {immediate: true, deep: true})
+  @Watch('dateRange', { immediate: true, deep: true })
   public onInitDateChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     console.log('dateRange::::', val)
     this.fetchData()
@@ -80,38 +80,40 @@ export default class extends Vue {
         this.data = result
         await this.setChart()
       })
-    }, 1000 * 60 * 1);
+    }, 1000 * 60 * 1)
   }
 
   private async setChart() {
     // init
-    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin));
+    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin))
 
-    for(let col of this.data.column){
+    for (let col of this.data.column) {
       col = col.replace(' ', '\n')
       this.chartItems.yAxisData.push(col)
     }
-    this.chartItems.series = [{
-      name: '발급 수',
-      type: 'bar',
-      stack: 'total',
-      // data: [10, 22, 30, 24, 39],
-      data: this.data.data,
-      barWidth: this.barWidth,
-      label: {
-        show: true,
-        valueAnimation: true,
-        position: 'right',
-        formatter: d => {
-          let value = d.value
-          if (value == undefined) {
-              return "";
+    this.chartItems.series = [
+      {
+        name: '발급 수',
+        type: 'bar',
+        stack: 'total',
+        // data: [10, 22, 30, 24, 39],
+        data: this.data.data,
+        barWidth: this.barWidth,
+        label: {
+          show: true,
+          valueAnimation: true,
+          position: 'right',
+          formatter: d => {
+            let value = d.value
+            if (value === undefined) {
+              return ''
+            }
+            value = typeof value === 'string' ? value : value.toString()
+            return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
           }
-          value = typeof value === 'string' ? value : value.toString()
-          return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
         }
       }
-    }]
+    ]
   }
 }
 </script>

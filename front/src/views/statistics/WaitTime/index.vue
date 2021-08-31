@@ -1,23 +1,23 @@
 <template>
-<div typeList class="statistics-table__body__table">
-  <el-table :data="tableData" header-align="center">
-    <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
-    <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
-    <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column>
-    <el-table-column label="1일" align="center">
-      <el-table-column prop="발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="평균대기시간" label="평균대기시간" sortable align="center"></el-table-column>
-    </el-table-column>
-    <el-table-column label="오전(10:00~12:00)" align="center">
-      <el-table-column prop="오전발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="오전대기시간" label="평균대기시간" sortable align="center"></el-table-column>
-    </el-table-column>
-    <el-table-column label="오후(14:00~16:00)" align="center">
-      <el-table-column prop="오후발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="오후대기시간" label="평균대기시간" sortable align="center"></el-table-column>
-    </el-table-column>
-  </el-table>
-</div>
+  <div typeList class="statistics-table__body__table">
+    <el-table :data="tableData" header-align="center">
+      <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
+      <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+      <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column>
+      <el-table-column label="1일" align="center">
+        <el-table-column prop="발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="평균대기시간" label="평균대기시간" sortable align="center"></el-table-column>
+      </el-table-column>
+      <el-table-column label="오전(10:00~12:00)" align="center">
+        <el-table-column prop="오전발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="오전대기시간" label="평균대기시간" sortable align="center"></el-table-column>
+      </el-table-column>
+      <el-table-column label="오후(14:00~16:00)" align="center">
+        <el-table-column prop="오후발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="오후대기시간" label="평균대기시간" sortable align="center"></el-table-column>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -78,10 +78,10 @@ export default class extends Vue {
 
   private async getTablePagination() {
     await StatisticsStoreModule.GetTableData({
-        data: this.data,
-        page: this.page,
-        limit: 15
-      })
+      data: this.data,
+      page: this.page,
+      limit: 15
+    })
   }
 
   private async handleCurrentChange(value: number) {
@@ -93,19 +93,19 @@ export default class extends Vue {
     await StatisticsStoreModule.RawTableData({
       type: this.type,
       range: this.dateRange
-    }).then( (result: any) => {
+    }).then((result: any) => {
       this.data = result
       this.handleCurrentChange(1)
     })
   }
 
-  private getNumFormat(row:any, column:any) {
-    let value = row[column.property];
-    if (value == undefined) {
-        return "";
+  private getNumFormat(row: any, column: any) {
+    let value = row[column.property]
+    if (value === undefined) {
+      return ''
     }
     value = typeof value === 'string' ? value : value.toString()
-    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 </script>

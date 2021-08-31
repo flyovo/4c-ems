@@ -1,40 +1,40 @@
 <template>
-<div class="control_header">
-  <div class="control_header_group">
-    <div class="control_header_wrapper">
-      <div class="control_header__title">기간 선택</div>
-      <div class="control_header__date">
+  <div class="control_header">
+    <div class="control_header_group">
+      <div class="control_header_wrapper">
+        <div class="control_header__title">기간 선택</div>
+        <div class="control_header__date">
           <div class="date-warpper">
-              <div class="date__buttons">
-                  <el-button v-for="(item, index) in dateList" :key="index" type="info" :class="{ active: selectDate === index }" @click.native="handleDateChange(index)">{{ item.label.text }}</el-button>
-              </div>
-              <div class="date__buttons calendar">
-                <el-date-picker
-                  size="mini"
-                  :disabled="selectDate !== dateList.length-1"
-                  v-model="calendarDate"
-                  type="daterange"
-                  range-separator="~"
-                  :start-placeholder="dateRange.date.from"
-                  :end-placeholder="dateRange.date.to"
-                />
-              </div>
+            <div class="date__buttons">
+              <el-button v-for="(item, index) in dateList" :key="index" type="info" :class="{ active: selectDate === index }" @click.native="handleDateChange(index)">{{ item.label.text }}</el-button>
+            </div>
+            <div class="date__buttons calendar">
+              <el-date-picker
+                size="mini"
+                :disabled="selectDate !== dateList.length - 1"
+                v-model="calendarDate"
+                type="daterange"
+                range-separator="~"
+                :start-placeholder="dateRange.date.from"
+                :end-placeholder="dateRange.date.to"
+              />
+            </div>
           </div>
+        </div>
+      </div>
+      <div class="control_header_wrapper">
+        <div class="control_header__title">{{ typeLabel }}</div>
+        <div class="control_header__date">
+          <div class="date-warpper">
+            <div class="date__buttons">
+              <el-button v-for="(item, index) in typeList" :key="index" type="info" :class="{ active: selectType === index }" @click.native="handleTypeChange(index)">{{ item }}</el-button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="control_header_wrapper">
-      <div class="control_header__title">{{ typeLabel }}</div>
-      <div class="control_header__date">
-          <div class="date-warpper">
-              <div class="date__buttons">
-                  <el-button v-for="(item, index) in typeList" :key="index" type="info" :class="{ active: selectType === index }" @click.native="handleTypeChange(index)">{{ item }}</el-button>
-              </div>
-          </div>
-      </div>
-    </div>
+    <div class="type_text" v-html="menuText"></div>
   </div>
-  <div class="type_text" v-html="menuText"></div>
-</div>
 </template>
 
 <script lang="ts">
@@ -46,24 +46,20 @@ import dayjs from 'dayjs'
   name: 'ControlHeaderDashboard-statistics'
 })
 export default class extends Vue {
-  @Prop({ default: {label:{from:new Date(), to:new Date()}} }) private dateRange!: {}
+  @Prop({ default: { label: { from: new Date(), to: new Date() } } }) private dateRange!: {}
   @Prop({ default: [] }) private dateList!: []
-  @Prop({ default: "" }) private typeLabel!: String
+  @Prop({ default: '' }) private typeLabel!: String
   @Prop({ default: [] }) private typeList!: []
   @Prop({ default: 0 }) private selectDate!: Number
   @Prop({ default: 0 }) private selectType!: Number
   @Prop({ default: 'dashboard' }) private menuType!: String
 
-  created() {
-    // if(this.menuType === 'failure'){
-    // }
-  }
 
   get menuPosition() {
     console.log('menuPosition get :::::', SettingsModule.menuPosition)
     return SettingsModule.menuPosition
   }
-  
+
   get menuText() {
     return SettingsModule.menuText
   }
@@ -73,7 +69,7 @@ export default class extends Vue {
   }
   public set calendarDate(arr: any) {
     console.log(arr)
-    this.dateList[this.dateList.length-1] = {
+    this.dateList[this.dateList.length - 1] = {
       label: {
         text: '기간 조회',
         from: dayjs(arr[0]).format('YYYY년 MM월 DD일'),
@@ -85,14 +81,14 @@ export default class extends Vue {
         to: dayjs(arr[1]).format('YYYY-MM-DD')
       }
     }
-    this.handleDateChange(this.dateList.length-1)
+    this.handleDateChange(this.dateList.length - 1)
   }
 
   private async handleDateChange(value: number) {
-    if(this.dateList.length-1 === value){
-      await this.$emit("selectDate", value)
-    }else{
-      await this.$emit("selectDate", value)
+    if (this.dateList.length - 1 === value) {
+      await this.$emit('selectDate', value)
+    } else {
+      await this.$emit('selectDate', value)
     }
   }
 }
@@ -177,7 +173,7 @@ export default class extends Vue {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   .control_header_group {
     width: 65%;
     & + div {
@@ -195,7 +191,7 @@ export default class extends Vue {
       // margin-bottom: 12px;
       margin-bottom: setViewport('vh', 12);
     }
-  
+
     .el-button--primary {
       border-color: none;
     }
@@ -221,7 +217,8 @@ export default class extends Vue {
         letter-spacing: normal;
         color: $subMenuText;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background-color: $subMenuBg;
         }
       }
@@ -270,8 +267,8 @@ export default class extends Vue {
           line-height: 1;
           letter-spacing: normal;
           color: $subMenuText;
-          &:not(.is-disabled):hover, 
-          &:not(.is-disabled):active, 
+          &:not(.is-disabled):hover,
+          &:not(.is-disabled):active,
           &:not(.is-disabled).active {
             background-color: $menuActiveText;
             color: $subMenuActiveText;

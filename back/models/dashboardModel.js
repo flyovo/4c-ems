@@ -15,7 +15,7 @@ const dashboardModel = {
 							` JOIN ${db.RoomSet.name} on ${db.RoomPatList.name}.ROOM_NO = ${db.RoomSet.name}.ROOM_NO ` +
 							` WHERE ${db.RoomPatList.name}.PAT_NO = :pat_no ` +
 							` ORDER BY ${db.RoomPatList.name}.ROOM_NO `;
-		return new Promise(async (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			const result = await db.sequelize.query(query, {
 				model: db.RoomPatList,
 				replacements: { pat_no: req.params.PAT_NO }

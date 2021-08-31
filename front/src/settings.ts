@@ -5,8 +5,8 @@ interface Menu {
 }
 interface MenuListTree {
   children?: Array<MenuListTree>
-  label: string,
-  id: string,
+  label: string
+  id: string
 }
 interface ISettings {
   title: string // Overrides the default title
@@ -36,32 +36,32 @@ const settings: ISettings = {
   menuListTree: [
     {
       id: 'dashboard',
-      label: 'HOME',
+      label: 'HOME'
     },
     {
       id: 'raw-data',
       label: 'RawData 조회',
       children: [
         {
-          id: 'hospital-storage',
-          label: '외래&입원 수납 Data',
+          id: 'raw-data-hospital-storage',
+          label: '외래&입원 수납 Data'
         },
         {
-          id: 'certification',
-          label: '증명서 발급 Data',
+          id: 'raw-data-certification',
+          label: '증명서 발급 Data'
         },
         {
-          id: 'arrive',
-          label: '도착확인 Data',
+          id: 'raw-data-arrive',
+          label: '도착확인 Data'
         },
         {
-          id: 'measurements',
-          label: '신체계측 Data',
+          id: 'raw-data-measurements',
+          label: '신체계측 Data'
         },
         {
-          id: 'failure',
-          label: '실패 Data',
-        },
+          id: 'raw-data-failure',
+          label: '실패 Data'
+        }
       ]
     },
     {
@@ -69,32 +69,32 @@ const settings: ISettings = {
       label: '통계 조회',
       children: [
         {
-          id: 'out-patient',
-          label: '외래수납',
+          id: 'statistics-out-patient',
+          label: '외래수납'
         },
         {
-          id: 'leaves',
-          label: '퇴원수납',
+          id: 'statistics-leaves',
+          label: '퇴원수납'
         },
         {
-          id: 'week',
-          label: '요일별수납',
+          id: 'statistics-week',
+          label: '요일별수납'
         },
         {
-          id: 'certification',
-          label: '증명서발급',
+          id: 'statistics-certification',
+          label: '증명서발급'
         },
         {
-          id: 'wait-time',
-          label: '수납대기시간',
+          id: 'statistics-wait-time',
+          label: '수납대기시간'
         },
         {
-          id: 'arrive',
-          label: '도착확인',
+          id: 'statistics-arrive',
+          label: '도착확인'
         },
         {
-          id: 'measurements',
-          label: '신체계측',
+          id: 'statistics-measurements',
+          label: '신체계측'
         }
       ]
     }

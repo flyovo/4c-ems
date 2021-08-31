@@ -31,7 +31,7 @@ class UserStore extends VuexModule implements UserStoreState {
   public async Login(userInfo: { userId: string; userPwd: string }) {
     let { userId, userPwd } = userInfo
     userId = userId.trim()
-    const { data, resultCd } = await login({ userId, userPwd })    
+    const { data, resultCd } = await login({ userId, userPwd })
     // this.userState.organ = data.organ
     // this.userState.pos_4 = data.pos_4
     // this.SET_CHANGE_VALUE({ key: 'userState', value: {organ: data.organ, pos_4: data.pos_4} })

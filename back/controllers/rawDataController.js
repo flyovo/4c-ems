@@ -30,48 +30,54 @@ const rawData = {
 			" , b.pharm_name AS '약국' " +
 			" , b.cnt_ticket AS '번호표' " +
 			" , a.del_type  AS '폐기여부' " +   
-			` FROM ${db.device_op_info.name} a INNER JOIN ${db.sunap_rt_log.name} b ON a.dev_id = b.dev_id ` +
-			" WHERE " ; 
+			` FROM ${db.device_op_info.name} a INNER JOIN ${db.sunap_rt_log.name} b ON a.dev_id = b.dev_id `;
+
+			let where = [];
 
 			// 위치 조회
 			if(position[0]){
-				query += ` a.site = '${position[0]}' `;
+				where.push(` a.site = '${position[0]}' `);
 			}
 			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
-				query += ` AND a.pos_1 = '${position[1]}' `;
+				where.push(` a.pos_1 = '${position[1]}' `);
 			}
 			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
-				query += ` AND a.pos_2 = '${position[2]}' `;
+				where.push(` a.pos_2 = '${position[2]}' `);
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
-				query += ` AND a.pos_3 = '${position[3]}' `;
+				where.push(` a.pos_3 = '${position[3]}' `);
 			}
 			
 			// 수납 타입 선택
 			// 수납 전체일 경우 사용 안함
 			if(req.query.option === "외래 수납"){ // 수납 타입(외래수납 선택)
-				query += " AND b.sunap_type LIKE '%외래%' ";
+				where.push(" b.sunap_type LIKE '%외래%' ");
 			}
 			if(req.query.option === "중간금 수납"){ // 수납 타입(중간금수납 선택)
-				query += " AND b.sunap_type LIKE '%중간%' ";
+				where.push(" b.sunap_type LIKE '%중간%' ");
 			}
 			if(req.query.option === "퇴원 수납"){ // 수납 타입(퇴원수납 선택)
-				query += " AND b.sunap_type LIKE '%퇴원%' ";
+				where.push(" b.sunap_type LIKE '%퇴원%' ");
 			}
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(b.sunap_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				where.push(` DATE_FORMAT(b.sunap_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
+				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				query += ` AND b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
+
+			where.push(" b.chart_no <> '' ");
 			
-			query += " AND b.chart_no <> '' ";
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
 			query += " ORDER BY b.sunap_date, a.pos_1, a.pos_2, a.pos_3 ";
 
 			let result = await db.sequelize.query(query, {
@@ -104,21 +110,23 @@ const rawData = {
 			" , b.certificate_name AS '증명서 종류' " + 
 			" , CAST(b.cnt_certificate AS UNSIGNED INTEGER) AS '발급건수' " + 
 			" , a.del_type AS '폐기여부' " + 
-			` FROM ${db.device_op_info.name} a INNER JOIN ${db.certificate_rt_log.name} b ON a.dev_id = b.dev_id ` + 
-			" WHERE " ;
+			` FROM ${db.device_op_info.name} a INNER JOIN ${db.certificate_rt_log.name} b ON a.dev_id = b.dev_id `;
+
+			// " WHERE " ;
+			let where = [];
 
 			// 위치 조회
 			if(position[0]){
-				query += ` a.site = '${position[0]}' `;
+				where.push(` a.site = '${position[0]}' `);
 			}
 			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
-				query += ` AND a.pos_1 = '${position[1]}' `;
+				where.push(` a.pos_1 = '${position[1]}' `);
 			}
 			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
-				query += ` AND a.pos_2 = '${position[2]}' `;
+				where.push(` a.pos_2 = '${position[2]}' `);
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
-				query += ` AND a.pos_3 = '${position[3]}' `;
+				where.push(` a.pos_3 = '${position[3]}' `);
 			}
 
 			// 증명서 타입 선택
@@ -137,24 +145,28 @@ const rawData = {
 				case "예비": col_nm = "CNT_10"; break;
 				default: col_nm = "CNT_01"; break;
 			}
-			query += ` AND b.col_nm = '${col_nm}' `;
+			where.push(` b.col_nm = '${col_nm}' `);
 				
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(b.certificate_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				where.push(` DATE_FORMAT(b.certificate_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(b.certificate_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
+				where.push(` DATE_FORMAT(b.certificate_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				query += ` AND b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
+
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
 			query += " ORDER BY b.certificate_date, a.pos_1, a.pos_2, a.pos_3 ";
 
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info
-				//replacements: { pat_no: req.query.PAT_NO }
 			});
 			res.setHeader("token", req.headers.token);
 			res.json(result);
@@ -184,43 +196,49 @@ const rawData = {
 			" , b.success_cnt AS '도착확인성공' " + 
 			" , b.fail_cnt AS '도착확인실패' " + 
 			" , a.del_type AS '폐기여부' " + 
-			` FROM ${db.device_op_info.name} a INNER JOIN ${db.etc_rt_log.name} b ON a.dev_id = b.dev_id ` + 
-			" WHERE " ;
+			` FROM ${db.device_op_info.name} a INNER JOIN ${db.etc_rt_log.name} b ON a.dev_id = b.dev_id `;
+
+			// " WHERE " ;
+			let where = [];
 
 			// 위치 조회
 			if(position[0]){
-				query += ` a.site = '${position[0]}' `;
+				where.push(` a.site = '${position[0]}' `);
 			}
 			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
-				query += ` AND a.pos_1 = '${position[1]}' `;
+				where.push(` a.pos_1 = '${position[1]}' `);
 			}
 			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
-				query += ` AND a.pos_2 = '${position[2]}' `;
+				where.push(` a.pos_2 = '${position[2]}' `);
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
-				query += ` AND a.pos_3 = '${position[3]}' `;
+				where.push(` a.pos_3 = '${position[3]}' `);
 			}
-
-			query += " AND b.act_type LIKE '%도착확인%' ";
+			
+			where.push(" b.act_type LIKE '%도착확인%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				where.push(` DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
+				where.push(` DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				query += ` AND b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
-			query += " AND b.chart_no <> '' ";
+			where.push(" b.chart_no <> '' ");
+
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
 			query += " ORDER BY b.act_date, a.pos_1, a.pos_2, a.pos_3 ";
 
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info
-			//replacements: { pat_no: req.query.PAT_NO }
 			});
 			res.setHeader("token", req.headers.token);
 			res.json(result);
@@ -248,21 +266,23 @@ const rawData = {
 			" , b.success_cnt AS '신체계측성공' " + 
 			" , b.fail_cnt AS '신체계측실패' " + 
 			" , a.del_type AS '폐기여부' " + 
-			` FROM ${db.device_op_info.name} a INNER JOIN ${db.etc_rt_log.name} b ON a.dev_id = b.dev_id ` + 
-			" WHERE " ;
+			` FROM ${db.device_op_info.name} a INNER JOIN ${db.etc_rt_log.name} b ON a.dev_id = b.dev_id `;
+
+			// " WHERE " ;
+			let where = [];
 
 			// 위치 조회
 			if(position[0]){
-				query += ` a.site = '${position[0]}' `;
+				where.push(` a.site = '${position[0]}' `);
 			}
 			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
-				query += ` AND a.pos_1 = '${position[1]}' `;
+				where.push(` a.pos_1 = '${position[1]}' `);
 			}
 			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
-				query += ` AND a.pos_2 = '${position[2]}' `;
+				where.push(` a.pos_2 = '${position[2]}' `);
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
-				query += ` AND a.pos_3 = '${position[3]}' `;
+				where.push(` a.pos_3 = '${position[3]}' `);
 			}
 
 			// 신체계측 타입 선택
@@ -273,26 +293,30 @@ const rawData = {
 				case "신체계측(신장체중)": act_type = "%신장체중%"; break;
 				default: act_type = "%신체계측%"; break;
 			}
-			query += ` AND b.act_type like '${act_type}' `;
+			where.push(` b.act_type like '${act_type}' `);
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				where.push(` DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
+				where.push(` DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				query += ` AND b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
-			query += " AND b.chart_no <> '' ";
+			where.push(" b.chart_no <> '' ");
+
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
 			query += " ORDER BY b.act_date, a.pos_1, a.pos_2, a.pos_3 ";
 
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info
-			//replacements: { pat_no: req.query.PAT_NO }
 			});
 			res.setHeader("token", req.headers.token);
 			res.json(result);
@@ -316,44 +340,51 @@ const rawData = {
 				" , b.chart_no AS '등록번호' " + 
 				" , b.fail_op_prog AS 'PGM종류' " + 
 				" , b.fail_message AS '실패Message' " + 
-				` FROM ${db.device_op_info.name} a INNER JOIN ${db.fail_daily_cnt.name} b ON a.dev_id = b.dev_id ` + 
-				" WHERE " ;
-	
+				` FROM ${db.device_op_info.name} a INNER JOIN ${db.fail_daily_cnt.name} b ON a.dev_id = b.dev_id `;
+
+			// " WHERE " ;
+			let where = [];
+
 			// 위치 조회
 			if(position[0]){
-				query += ` a.site = '${position[0]}' `;
+				where.push(` a.site = '${position[0]}' `);
 			}
 			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
-				query += ` AND a.pos_1 = '${position[1]}' `;
+				where.push(` a.pos_1 = '${position[1]}' `);
 			}
 			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
-				query += ` AND a.pos_2 = '${position[2]}' `;
+				where.push(` a.pos_2 = '${position[2]}' `);
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
-				query += ` AND a.pos_3 = '${position[3]}' `;
+				where.push(` a.pos_3 = '${position[3]}' `);
 			}
 				
 			// 콤보박스데이터
-			query += ` AND b.fail_op_prog = '${req.query.option}' `;
+			where.push(` b.fail_op_prog = '${req.query.option}' `);
 				
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(b.fail_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				where.push(` DATE_FORMAT(b.fail_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(b.fail_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
+				where.push(` DATE_FORMAT(b.fail_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				query += ` AND b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+				where.push(` b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 	
-			query += " AND b.chart_no <> '' ";
+			where.push(" b.chart_no <> '' ");
+
+
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
 			query += " ORDER BY b.fail_date, a.pos_1, a.pos_2, a.pos_3 ";
 	
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info
-				//replacements: { pat_no: req.query.PAT_NO }
 			});
 			res.setHeader("token", req.headers.token);
 			res.json(result);
@@ -368,27 +399,33 @@ const rawData = {
 			let position = req.query.position ? req.query.position.split(",") : "";
 
 			let query = " SELECT b.fail_op_prog " + 
-			` FROM ${db.device_op_info.name} a INNER JOIN ${db.fail_daily_cnt.name} b ON a.dev_id = b.dev_id ` + 
-			" WHERE ";
+			` FROM ${db.device_op_info.name} a INNER JOIN ${db.fail_daily_cnt.name} b ON a.dev_id = b.dev_id `;
+			
+			// " WHERE " ;
+			let where = [];
 
 			// 위치 조회
 			if(position[0]){
-				query += ` a.site = '${position[0]}' `;
+				where.push(` a.site = '${position[0]}' `);
 			}
 			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
-				query += ` AND a.pos_1 = '${position[1]}' `;
+				where.push(` a.pos_1 = '${position[1]}' `);
 			}
 			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
-				query += ` AND a.pos_2 = '${position[2]}' `;
+				where.push(` a.pos_2 = '${position[2]}' `);
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
-				query += ` AND a.pos_3 = '${position[3]}' `;
+				where.push(` a.pos_3 = '${position[3]}' `);
 			}
+
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
 			query += " GROUP BY b.fail_op_prog ";
 		
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info
-			//replacements: { pat_no: req.query.PAT_NO }
 			});
 
 			res.setHeader("token", req.headers.token);

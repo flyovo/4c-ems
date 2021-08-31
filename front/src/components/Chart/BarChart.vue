@@ -26,10 +26,10 @@ export default class extends Vue {
   @Prop({ default: '500px' }) private height!: string
   private chart!: ECharts
 
-  @Watch('chartItems', {immediate: true, deep: true})
+  @Watch('chartItems', { immediate: true, deep: true })
   public onInitChartChange(val: any, oldVal: any) {
     if (this.chart) {
-      this.chart.clear();
+      this.chart.clear()
     }
     this.setOptions(this.chartItems)
   }
@@ -104,7 +104,7 @@ export default class extends Vue {
           data: chartItems.xAxisData
         },
         yAxis: {
-          type: 'value',
+          type: 'value'
         },
         series: chartItems.series
       } as unknown) as EChartOption<EChartOption.SeriesBar>)

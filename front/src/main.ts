@@ -5,9 +5,8 @@ import router from '@/router'
 import i18n from '@/lang'
 import ElementUI from 'element-ui'
 import SvgIcon from 'vue-svgicon'
-import VTreeview from "v-treeview"
-import AsyncComputedPlugin from "vue-async-computed";
-
+import VTreeview from 'v-treeview'
+import AsyncComputedPlugin from 'vue-async-computed'
 
 import '@/plugins/lodash'
 import '@/plugins/vTooltip'

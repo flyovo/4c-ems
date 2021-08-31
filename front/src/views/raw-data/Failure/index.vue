@@ -1,20 +1,18 @@
 <template>
-<div typeList class="raw-data-table__body__table">
-  <el-table :data="tableData" header-align="center">
-    <el-table-column label="row" align="center">
-      <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
-      <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
-      <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
-      <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
-      <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
-      <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
-      <el-table-column prop="부서" label="부서" sortable align="center"></el-table-column>
-      <el-table-column prop="등록번호" label="등록번호" sortable align="center"></el-table-column>
-      <el-table-column prop="PGM종류" label="PGM종류" sortable align="center"></el-table-column>
-      <el-table-column prop="실패Message" label="실패Message" sortable align="center"></el-table-column>
-    </el-table-column>
-  </el-table>
-</div>
+  <div typeList class="raw-data-table__body__table">
+    <el-table :data="tableData" header-align="center">
+        <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
+        <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
+        <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
+        <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+        <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
+        <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
+        <el-table-column prop="부서" label="부서" sortable align="center"></el-table-column>
+        <el-table-column prop="등록번호" label="등록번호" sortable align="center"></el-table-column>
+        <el-table-column prop="PGM종류" label="PGM종류" sortable align="center"></el-table-column>
+        <el-table-column prop="실패Message" label="실패Message" sortable align="center"></el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -55,7 +53,7 @@ export default class extends Vue {
     }
     await RawDataStoreModule.GetDateRange(payload)
   }
-  
+
   get tableData() {
     return RawDataStoreModule.tableList
   }
@@ -74,10 +72,10 @@ export default class extends Vue {
 
   private async getTablePagination() {
     await RawDataStoreModule.GetTableData({
-        data: this.data,
-        page: this.page,
-        limit: 15
-      })
+      data: this.data,
+      page: this.page,
+      limit: 15
+    })
   }
 
   private async handleCurrentChange(value: number) {
@@ -89,19 +87,19 @@ export default class extends Vue {
     await RawDataStoreModule.RawTableData({
       type: this.type,
       range: this.dateRange
-    }).then( (result: any) => {
+    }).then((result: any) => {
       this.data = result
       this.handleCurrentChange(1)
     })
   }
 
-  private getNumFormat(row:any, column:any) {
-    let value = row[column.property];
-    if (value == undefined) {
-        return "";
+  private getNumFormat(row: any, column: any) {
+    let value = row[column.property]
+    if (value === undefined) {
+      return ''
     }
     value = typeof value === 'string' ? value : value.toString()
-    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 </script>

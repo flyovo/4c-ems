@@ -7,13 +7,11 @@
       </div>
       <div class="button-group">
         <el-dropdown>
-            <el-button>
-                25개씩<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>25개씩</el-dropdown-item>
-                <el-dropdown-item>30개씩</el-dropdown-item>
-            </el-dropdown-menu>
+          <el-button> 25개씩<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>25개씩</el-dropdown-item>
+            <el-dropdown-item>30개씩</el-dropdown-item>
+          </el-dropdown-menu>
         </el-dropdown>
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
         <download-excel class="excel" :data="tableData" name="filename.xls">
@@ -21,13 +19,20 @@
         </download-excel>
       </div>
     </div>
-    <OutPatient v-if="menuType === 'out-patient'"/> <!-- 외래&입원 수납 Data -->
-    <Leaves v-else-if="menuType === 'leaves'" /> <!-- 증명서 발급 Data -->
-    <Week v-else-if="menuType === 'week'" /> <!-- 도착확인 Data -->
-    <Certification v-else-if="menuType === 'certification'" /> <!-- 신체계측 Data -->
-    <WaitTime v-else-if="menuType === 'wait-time'" /> <!-- 실패 Data -->
-    <Arrive v-else-if="menuType === 'arrive'" /> <!-- 실패 Data -->
-    <Measurements v-else-if="menuType === 'measurements'" /> <!-- 실패 Data -->
+    <OutPatient v-if="menuType === 'out-patient'" />
+    <!-- 외래&입원 수납 Data -->
+    <Leaves v-else-if="menuType === 'leaves'" />
+    <!-- 증명서 발급 Data -->
+    <Week v-else-if="menuType === 'week'" />
+    <!-- 도착확인 Data -->
+    <Certification v-else-if="menuType === 'certification'" />
+    <!-- 신체계측 Data -->
+    <WaitTime v-else-if="menuType === 'wait-time'" />
+    <!-- 실패 Data -->
+    <Arrive v-else-if="menuType === 'arrive'" />
+    <!-- 실패 Data -->
+    <Measurements v-else-if="menuType === 'measurements'" />
+    <!-- 실패 Data -->
     <div class="statistics-table__body__paging">
       <!-- <el-pagination :page-size="15" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination> -->
       <div class="button-group">
@@ -44,17 +49,17 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 import { SettingsModule } from '@/store/modules/settings/store'
-import OutPatient from './outPatient/index.vue'
-import Leaves from './leaves/index.vue'
-import Week from './week/index.vue'
-import Certification from './certification/index.vue'
-import WaitTime from './waitTime/index.vue'
-import Arrive from './arrive/index.vue'
-import Measurements from './measurements/index.vue'
+import OutPatient from './OutPatient/index.vue'
+import Leaves from './Leaves/index.vue'
+import Week from './Week/index.vue'
+import Certification from './Certification/index.vue'
+import WaitTime from './WaitTime/index.vue'
+import Arrive from './Arrive/index.vue'
+import Measurements from './Measurements/index.vue'
 
 @Component({
   name: 'TableList',
-  components: { 
+  components: {
     OutPatient,
     Leaves,
     Week,
@@ -73,18 +78,14 @@ export default class extends Vue {
   @Prop({ default: 0 }) private selectType!: Number
   @Prop({ default: 25 }) private pageNum!: Number
 
-private page: number = 1
-public data: []
+  private page: number = 1
+  public data: []
 
   created() {
     this.getDateRange()
     // this.fetchData()
   }
-  
-  get comboIndex() {
-    return StatisticsStoreModule.comboIndex
-  }
-  
+
   get dateList() {
     return StatisticsStoreModule.dateList
   }
@@ -98,7 +99,7 @@ public data: []
     return SettingsModule.menuPosition
   }
 
-private async handleDateChange(value: number) {
+  private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
     // this.fetchData()
@@ -110,7 +111,7 @@ private async handleDateChange(value: number) {
     }
     await StatisticsStoreModule.GetDateRange(payload)
   }
-  
+
   get tableData() {
     return StatisticsStoreModule.tableList
   }
@@ -141,39 +142,40 @@ private async handleDateChange(value: number) {
   }
 
   private async fetchData() {
-    if(this.menuType  === undefined) return;
-    // if(this.typeList[this.selectType] === undefined) return;
-    if(this.selectDate === undefined) return;
-    if(this.dateRange === undefined) return;
+    if (this.menuType === undefined) return
+    if (this.selectDate === undefined) return
+    if (this.dateRange === undefined) return
 
-    console.log(this.menuType, this.typeList, this.selectType, this.typeList[this.selectType], this.selectDate, this.dateRange)
+    let index = Number(this.selectType);
 
-    let option;
-    if(this.typeList[this.selectType] === undefined){
+    console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
+
+    let option = []
+    if (this.typeList[index] === undefined) {
       option = []
-    }else{
-      option = this.typeList[this.selectType]
+    } else {
+      option = this.typeList[index]
     }
 
-    await StatisticsStoreModule.RawTableData({      
+    await StatisticsStoreModule.RawTableData({
       type: this.menuType,
       option: option,
       range: this.dateRange.date,
-      position: this.menuPosition.join(",")
-    }).then( (result: any) => {
+      position: this.menuPosition.join(',')
+    }).then((result: any) => {
       console.log(result)
       this.data = result
       this.handleCurrentChange(1)
     })
   }
 
-  private getNumFormat(row:any, column:any) {
-    let value = row[column.property];
-    if (value == undefined) {
-        return "";
+  private getNumFormat(row: any, column: any) {
+    let value = row[column.property]
+    if (value === undefined) {
+      return ''
     }
     value = typeof value === 'string' ? value : value.toString()
-    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 </script>
@@ -226,25 +228,22 @@ private async handleDateChange(value: number) {
 }
 .statistics-table {
   .el-table {
-      border-top-left-radius: setViewport('vw', 6);
-      border-top-right-radius: setViewport('vw', 6);
+    border-top-left-radius: setViewport('vw', 6);
+    border-top-right-radius: setViewport('vw', 6);
     .caret-wrapper {
       width: setViewport('vw', 24);
     }
   }
   table {
     thead {
-      tr:nth-child(1) {
-        display: none;
-      }
       th {
         padding: 0;
 
-        &:nth-child(2n-1){
+        &:nth-child(2n-1) {
           border: solid 1px #333;
           background-color: #333;
         }
-        &:nth-child(2n){
+        &:nth-child(2n) {
           border: solid 1px #555;
           background-color: #555;
         }
@@ -334,7 +333,8 @@ private async handleDateChange(value: number) {
     &__table {
       padding: 0%;
       height: calc(100% - #{setViewport('vh', 137)});
-      .el-table, .el-table__body-wrapper {
+      .el-table,
+      .el-table__body-wrapper {
         height: 100%;
       }
     }
@@ -371,7 +371,7 @@ private async handleDateChange(value: number) {
       }
     }
   }
-  
+
   .button-group {
     display: flex;
     height: 100%;
@@ -384,7 +384,9 @@ private async handleDateChange(value: number) {
       border-color: $buttonBg;
       // border-radius: 4px;
       border-radius: setViewport('vw', 4);
-      &:hover, &:active, &.active {
+      &:hover,
+      &:active,
+      &.active {
         background-color: $buttonActiveBg;
         border-color: $buttonActiveBg;
       }
@@ -402,10 +404,12 @@ private async handleDateChange(value: number) {
         background-color: $subMenuBg;
         color: $darkGrayText;
         border: 1px solid $lightGray;
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background-color: $subMenuBg;
         }
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           color: $darkGrayText;
           border-color: $lightGray;
         }
@@ -423,7 +427,9 @@ private async handleDateChange(value: number) {
       font-size: setViewport('vw', 14);
       background-color: $buttonBg;
       border-color: $buttonBg;
-      &:hover, &:active, &.active {
+      &:hover,
+      &:active,
+      &.active {
         background-color: $buttonActiveBg;
         border-color: $buttonActiveBg;
       }

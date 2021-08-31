@@ -18,7 +18,7 @@ class Settings extends VuexModule implements SettingsState {
   public menuListTree = defaultSettings.menuListTree
   public userEditStatus = false
   public loginTimeStatus = false
-  public menuText = ""
+  public menuText = ''
   public menuPosition = []
 
   @Action({ rawError: true })

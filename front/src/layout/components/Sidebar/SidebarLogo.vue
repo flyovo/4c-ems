@@ -16,16 +16,7 @@
       <el-button type="text" @click.native="logout()"><img src="@/assets/images/ic-export.svg"/></el-button>
     </div>
     <div class="sidebar-logo-menu">
-      <el-tree 
-        ref="tree"
-        node-key="id"
-        :highlight-current="true"
-        :render-after-expand="false"
-        :default-expand-all="true"
-        :data="menuListTree" 
-        :props="defaultProps" 
-        @node-click="handleNodeClick" 
-      />
+      <el-tree ref="tree" node-key="id" :highlight-current="true" :render-after-expand="false" :default-expand-all="true" :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick" />
     </div>
   </div>
 </template>
@@ -48,38 +39,42 @@ export default class extends Vue {
   public defaultProps = {
     children: 'children',
     id: 'id',
-    label: 'label',
+    label: 'label'
   }
   public menuUrl = []
   public menuText = []
 
-  created(){
-    switch(localStorage.getItem('4c-userAuth')){
-      case 'S': this.userAuth = 'Super Admin(4cgate)'
-      break;
-      case 'A': this.userAuth = '병원 총괄 관리자'
-      break;
-      case 'P': this.userAuth = '기관 / 부서 관리자'
-      break;
-      default: this.userAuth = '기관 / 부서 관리자'
-      break;
+  created() {
+    switch (localStorage.getItem('4c-userAuth')) {
+      case 'S':
+        this.userAuth = 'Super Admin(4cgate)'
+        break
+      case 'A':
+        this.userAuth = '병원 총괄 관리자'
+        break
+      case 'P':
+        this.userAuth = '기관 / 부서 관리자'
+        break
+      default:
+        this.userAuth = '기관 / 부서 관리자'
+        break
     }
 
-    if(this.$route.path.split('/')[1] != 'dashboard'){
+    if (this.$route.path.split('/')[1] !== 'dashboard') {
       this.setCheckedNodes().then(result => {
-        this.$refs.tree.setCurrentKey(result);
+        this.$refs.tree.setCurrentKey(result)
       })
-    }else{
+    } else {
       this.$nextTick(() => {
-        this.$refs.tree.setCurrentKey('dashboard');
+        this.$refs.tree.setCurrentKey('dashboard')
       })
     }
   }
   get getterSetter() {
-    return this.userAuth;
+    return this.userAuth
   }
   set getterSetter(value) {
-    this.userAuth = value;
+    this.userAuth = value
   }
 
   private async logout() {
@@ -98,12 +93,11 @@ export default class extends Vue {
     }, 100)
   }
 
-
   get menuListTree() {
     return SettingsModule.menuListTree
   }
   private handleFunctionCall(funcName, funcParam) {
-    this.menuActive = funcName;
+    this.menuActive = funcName
     if (funcName !== 'dashboard' && funcParam === '') return
     if (funcName === 'dashboard') {
       funcParam = 'dashboard'
@@ -121,179 +115,179 @@ export default class extends Vue {
   //   return async(type, position) => {
   private async siteList(type, position) {
     // return async() => {
-      let list = await SettingsModule.GetSite({
-        site: type, 
-        position: position, 
-        ...JSON.parse(localStorage.getItem('4c-userState')), 
-        auth: localStorage.getItem('4c-userAuth') 
-      }).then((result: any) => {
-        return result
-      })
-      return [ ...list ]
+    let list = await SettingsModule.GetSite({
+      site: type,
+      position: position,
+      ...JSON.parse(localStorage.getItem('4c-userState')),
+      auth: localStorage.getItem('4c-userAuth')
+    }).then((result: any) => {
+      return result
+    })
+    return [...list]
     // }
   }
 
   private async append(data, newChild) {
     if (!data.children) {
-      this.$set(data, 'children', []);
+      this.$set(data, 'children', [])
     }
-    data.children = newChild;
+    data.children = newChild
   }
   private setCheckedNodes() {
     return new Promise(async(resolve, reject) => {
-      await SettingsModule.SetMenuText([]);
+      await SettingsModule.SetMenuText([])
 
-      let path = this.$route.path.split('/');
-      path.shift();
-      for(let [index, p] of path.entries()){
-        path[index] = decodeURIComponent(p);
+      let path = this.$route.path.split('/')
+      path.shift()
+      for (let [index, p] of path.entries()) {
+        path[index] = decodeURIComponent(p)
       }
 
-      let text = [];
-      let position = path.slice();
-      if(position[0] == 'dashboard'){
-        return ;
-      }else{
-        position = position.slice(2);
+      let text = []
+      let position = path.slice()
+      if (position[0] === 'dashboard') {
+        return
+      } else {
+        position = position.slice(2)
       }
+      console.log("path :::::", path)
 
-      for(let [index, p] of path.entries()){
-        let type = '';
-        if(index == 0){
+      for (let [index, p] of path.entries()) {
+        let type = ''
+        if (index === 0) {
           this.initMenu = this.menuListTree.filter(tree => {
             return tree.id === p
           })[0]
-        }else if(index == 1){
-          type = 'site';
+        } else if (index === 1) {
+          type = 'site'
           this.initMenu = this.initMenu.children.filter(tree => {
             return tree.id === p
           })[0]
-        }else if(index == 2){
+        } else if (index === 2) {
           type = 'pos_1'
           this.initMenu = this.initMenu.children.filter(tree => {
             return tree.id === p
           })[0]
-        }else if(index == 3){
+        } else if (index === 3) {
           type = 'pos_2'
           this.initMenu = this.initMenu.children.filter(tree => {
             return tree.id === p
           })[0]
-        }else if(index == 4){
+        } else if (index === 4) {
           type = 'pos_3'
           this.initMenu = this.initMenu.children.filter(tree => {
             return tree.id === p
           })[0]
         }
 
-        let pos = position.join(',');
-        if(type !== ''){
+        let pos = position.join(',')
+        if (type !== '') {
           await this.siteList(type, pos).then(async res => {
-            if(index < path.length){
-              if(res){
-                this.$set(this.initMenu, 'children', res);
+            if (index < path.length) {
+              if (res) {
+                this.$set(this.initMenu, 'children', res)
               }
             }
           })
         }
-        if(path.length > 2){
-          if(index == path.length-1){
-            let strong = path.slice().pop();
-            text.push(`<span>${strong}</span>`);
+        if (path.length > 2) {
+          if (index === path.length - 1) {
+            let strong = path.slice().pop()
+            text.push(`<span>${strong}</span>`)
             await SettingsModule.SetMenuText(text)
-          }else if(index > 1){
-            text.push(p);
+          } else if (index > 1) {
+            text.push(p)
           }
         }
       }
       console.log(position)
       console.log('SetMenuPosition::::::', position)
       await SettingsModule.SetMenuPosition(position)
-      resolve(path[path.length-1]);
+      resolve(path[path.length - 1])
     })
   }
   private async handleNodeClick(data, checked, indeterminate) {
-    this.menuUrl = [];
-    this.menuText = [];
+    this.menuUrl = []
+    this.menuText = []
 
-    this.parseJson(checked);
-    let url = this.menuUrl.reverse();
-    let text = this.menuText.reverse().slice(2);
+    this.parseJson(checked)
+    let url = this.menuUrl.reverse()
+    let text = this.menuText.reverse().slice(2)
 
-    let type = '';
-    if(checked.level == 2){
+    let type = ''
+    if (checked.level === 2) {
       type = 'site'
-    }else if(checked.level == 3){
+    } else if (checked.level === 3) {
       type = 'pos_1'
-    }else if(checked.level == 4){
+    } else if (checked.level === 4) {
       type = 'pos_2'
-    }else if(checked.level == 5){
+    } else if (checked.level === 5) {
       type = 'pos_3'
     }
     // if(type === ''){
     //   return;
     // }
 
-    let position = this.menuUrl.slice(1).join(',');
-    if(url[0] !== 'dashboard'){
-      position = this.menuUrl.slice(2).join(',');
-      if(type !== ''){
+    let position = this.menuUrl.slice(1).join(',')
+    if (url[0] !== 'dashboard') {
+      position = this.menuUrl.slice(2).join(',')
+      if (type !== '') {
         await this.siteList(type, position).then(async res => {
-          if(!data.children && res.length > 0){
+          if (!data.children && res.length > 0) {
             this.append(data, res)
           }
         })
       }
 
-      if(text.length > 0){
-        text.push(`<span>${text.pop()}</span>`);
+      if (text.length > 0) {
+        text.push(`<span>${text.pop()}</span>`)
         await SettingsModule.SetMenuText(text)
-      }else{
+      } else {
         await SettingsModule.SetMenuText([])
       }
       console.log('position:::', position)
       await SettingsModule.SetMenuPosition(position.split(','))
     }
-    
+
     // if(url[0] === 'dashboard' || checked.level == 6){
-      this.$router.push(`/${url.join('/')}`)
+    this.$router.push(`/${url.join('/')}`)
     // }
   }
 
   private parseJson(node) {
-    if(node.data.id){
-      this.menuUrl.push(node.data.id);
-      this.menuText.push(node.data.label);
+    if (node.data.id) {
+      this.menuUrl.push(node.data.id)
+      this.menuText.push(node.data.label)
     }
-    if(node.parent){
-      this.parseJson(node.parent);
+    if (node.parent) {
+      this.parseJson(node.parent)
     }
   }
 }
 </script>
 
-
 <style lang="scss">
 .sidebar-logo-container {
   .el-tree {
-    &>.el-tree-node:first-child {
+    & > .el-tree-node:first-child {
       .el-tree-node__expand-icon {
         background-image: url('~@/assets/images/ic-home.svg');
       }
     }
-    // background-color: #fafafa; 
+    // background-color: #fafafa;
     .el-tree-node__content {
       min-height: 3.3333333333vh;
     }
     .is-current {
-      &>.el-tree-node__content {
+      & > .el-tree-node__content {
         color: $menuActiveText;
         border-left: 4px solid $menuActiveText;
         background-color: $menuActiveBg;
-        &+.el-tree-node__children {
+        & + .el-tree-node__children {
           .el-tree-node__expand-icon {
             margin-left: 16px;
             margin-left: setViewport('vw', 16);
-          }          
+          }
         }
       }
       .el-tree-node__expand-icon {
@@ -317,7 +311,7 @@ export default class extends Vue {
         transform: unset;
       }
       &.el-icon-caret-right:before {
-        content: ''
+        content: '';
       }
     }
     .el-tree-node {
@@ -345,7 +339,7 @@ export default class extends Vue {
   position: relative;
   width: $sideBarWidth;
   height: 100%;
-  
+
   & .sidebar-logo-user {
     width: 100%;
     height: 60px;

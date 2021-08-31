@@ -1,26 +1,19 @@
 <template>
   <div class="statistics-wrapper">
     <div class="statistics-wrapper__header">
-      <control-header-table 
-        :dateRange="dateRange" 
-        :dateList="dateList" 
-        :typeLabel="typeLabel" 
-        :typeList="typeList" 
-        :selectDate="date" 
-        :selectType="type" 
-        :menuType="routeData" 
-        @selectCenter="fetchCenter" 
+      <control-header-table
+        :dateRange="dateRange"
+        :dateList="dateList"
+        :typeLabel="typeLabel"
+        :typeList="typeList"
+        :selectDate="date"
+        :menuType="routeData"
+        @selectCenter="fetchCenter"
         @selectDate="fetchDate"
       />
+      <!-- :selectType="type" -->
     </div>
-    <data-table 
-      :dateRange="dateRange" 
-      :dateList="dateList" 
-      :typeList="typeList" 
-      :selectDate="date" 
-      :selectType="type" 
-      :menuType="routeData" 
-    />
+    <data-table :dateRange="dateRange" :dateList="dateList" :typeList="typeList" :selectDate="date" :selectType="type" :menuType="routeData" />
   </div>
 </template>
 
@@ -32,7 +25,7 @@ import DataTable from './DataTable.vue'
 
 @Component({
   name: 'statistics',
-  components: { 
+  components: {
     DataTable,
     ControlHeaderTable
   }
@@ -43,7 +36,7 @@ export default class extends Vue {
   private type: number = 0
 
   created() {
-    this.routeData = decodeURIComponent(this.$route.path.split('/')[2])
+    this.routeData = this.$route.path.split('/')[2].replace(`${this.$route.path.split('/')[1]}-`, '')
     console.log(this.routeData)
   }
 
@@ -61,11 +54,21 @@ export default class extends Vue {
     }
   }
 
+  get fetchType() {
+    return (value: number) => {
+      this.type = value
+      const payload = {
+        type: value
+      }
+      return StatisticsStoreModule.GetType(payload)
+    }
+  }
+
   get fetchCenter() {
     return (value: number) => {
       this.type = value
       return StatisticsStoreModule.typeList.filter(list => {
-        if(list.id === this.routeData){
+        if (list.id === this.routeData) {
           console.log('>>> ', list.id, this.routeData)
         }
         return list.id === this.routeData

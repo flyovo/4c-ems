@@ -1,22 +1,22 @@
 <template>
-<div typeList class="statistics-table__body__table">
-  <el-table :data="tableData" header-align="center">
-    <el-table-column label="row" align="center">
-      <el-table-column prop="구분" label="구분" sortable align="center">
-        <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
-        <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+  <div typeList class="statistics-table__body__table">
+    <el-table :data="tableData" header-align="center">
+      <el-table-column label="row" align="center">
+        <el-table-column prop="구분" label="구분" sortable align="center">
+          <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
+          <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
+        </el-table-column>
+        <el-table-column prop="입퇴원증명서" label="입퇴원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="통원증명서" label="통원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="납입증명서" label="납입증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="장애인증명서" label="장애인증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="입원진료비영수증" label="입원진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="외래비진료비영수증" label="외래비진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="응급진료비영수증" label="응급진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
+        <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
       </el-table-column>
-      <el-table-column prop="입퇴원증명서" label="입퇴원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="통원증명서" label="통원증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="납입증명서" label="납입증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="장애인증명서" label="장애인증명서" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="입원진료비영수증" label="입원진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="외래비진료비영수증" label="외래비진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="응급진료비영수증" label="응급진료비영수증" sortable :formatter="getNumFormat" align="center"></el-table-column>
-      <el-table-column prop="계" label="계" sortable :formatter="getNumFormat" align="center"></el-table-column>
-    </el-table-column>
-  </el-table>
-</div>
+    </el-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -77,10 +77,10 @@ export default class extends Vue {
 
   private async getTablePagination() {
     await StatisticsStoreModule.GetTableData({
-        data: this.data,
-        page: this.page,
-        limit: 15
-      })
+      data: this.data,
+      page: this.page,
+      limit: 15
+    })
   }
 
   private async handleCurrentChange(value: number) {
@@ -92,19 +92,19 @@ export default class extends Vue {
     await StatisticsStoreModule.RawTableData({
       type: this.type,
       range: this.dateRange
-    }).then( (result: any) => {
+    }).then((result: any) => {
       this.data = result
       this.handleCurrentChange(1)
     })
   }
 
-  private getNumFormat(row:any, column:any) {
-    let value = row[column.property];
-    if (value == undefined) {
-        return "";
+  private getNumFormat(row: any, column: any) {
+    let value = row[column.property]
+    if (value === undefined) {
+      return ''
     }
     value = typeof value === 'string' ? value : value.toString()
-    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 </script>

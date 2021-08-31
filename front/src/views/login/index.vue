@@ -11,7 +11,7 @@
             <!-- <svg-icon name="user" /> -->
             아이디
           </span>
-          <el-input ref="userId" v-model="loginForm.userId" name="userId" type="text" autocomplete="on" />
+          <el-input ref="userId" v-model="loginForm.userId" name="userId" type="text" autocomplete="on" placeholder="아이디를 입력해주세요."></el-input>
         </el-form-item>
 
         <el-form-item prop="userPwd">
@@ -19,11 +19,11 @@
             <!-- <svg-icon name="password" /> -->
             비밀번호
           </span>
-          <el-input :key="passwordType" ref="userPwd" v-model="loginForm.userPwd" :type="passwordType" name="userPwd" autocomplete="on" @keyup.enter.native="handleLogin" />
+          <el-input :key="passwordType" ref="userPwd" v-model="loginForm.userPwd" :type="passwordType" name="userPwd" autocomplete="on" @keyup.enter.native="handleLogin" placeholder="비밀번호를 입력해주세요."/>
         </el-form-item>
-        
+
         <el-checkbox v-model="idRemember">아이디 저장</el-checkbox>
-        
+
         <div class="login-btn">
           <el-button type="primary" @click.native="handleLogin">{{ $t('login.login') }}</el-button>
         </div>
@@ -116,10 +116,8 @@ export default class extends Vue {
     min-width: 600px;
     min-height: 600px;
     width: setViewport('vw', 600);
-    height: setViewport('vh', 600);
+    height: setViewport('vw', 600);
     margin: auto;
-    // margin-top: 110px;
-    // margin-top: setViewport('vh', 110);
     background-color: #ffffff;
     border-radius: 20px;
     box-shadow: 0 4px 10px 0 rgba(28, 41, 90, 0.1);
@@ -134,11 +132,11 @@ export default class extends Vue {
         background-color: $loginInputBg;
         -webkit-appearance: none;
 
-        color: $middleGray-c !important;
+        // color: $middleGray-c !important;
         border: solid 1px $middleGray-d;
         &:focus {
           color: $darkGrayText;
-          border: solid 2px #0058ff;          
+          border: solid 2px #0058ff;
         }
 
         &:-webkit-autofill {
@@ -146,33 +144,30 @@ export default class extends Vue {
           -webkit-text-fill-color: #fff !important;
         }
 
-        &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-          color: red;
+        &::-webkit-input-placeholder {
+          /* Chrome/Opera/Safari */
+          color: $middleGray-c;
         }
-        &::-moz-placeholder { /* Firefox 19+ */
-          color: red;
+        &::-moz-placeholder {
+          /* Firefox 19+ */
+          color: $middleGray-c;
         }
-        &:-ms-input-placeholder { /* IE 10+ */
-          color: red;
+        &:-ms-input-placeholder {
+          /* IE 10+ */
+          color: $middleGray-c;
         }
-        &:-moz-placeholder { /* Firefox 18- */
-          color: red;
+        &:-moz-placeholder {
+          /* Firefox 18- */
+          color: $middleGray-c;
         }
         &::placeholder {
-          color: red;
+          color: $middleGray-c;
         }
-      }
-      input::first-line {
-        color: $lightGray;
       }
     }
     .el-form-item {
-      // border: 1px solid rgba(255, 255, 255, 0.1);
-      // background: rgba(0, 0, 0, 0.1);
-      // border-radius: 5px;
-      // color: #454545;
-      // padding: 10px 0;
-      padding: setViewport('vh', 10) 0;
+      padding: 10px 0;
+      // padding: setViewport('vh', 10) 0;
       margin: 0;
     }
   }
@@ -184,6 +179,8 @@ export default class extends Vue {
     }
     .el-checkbox__label {
       color: $middleGray-c;
+      font-size: 14px;
+      // font-size: setViewport('vw', 14);
     }
     &.is-checked {
       & > .el-checkbox__input {
@@ -201,8 +198,8 @@ export default class extends Vue {
     .el-form-item {
       margin-top: 2%;
       label {
-        // font-size: 14px;
-        font-size: setViewport('vw', 14);
+        font-size: 14px;
+        // font-size: setViewport('vw', 14);
         width: 100px;
       }
       .el-input {
@@ -229,8 +226,8 @@ export default class extends Vue {
   background-size: cover;
   .copyright {
     width: 100%;
-    // margin-top: 30px;
-    margin-top: setViewport('vh', 30);
+    margin-top: 30px;
+    // margin-top: setViewport('vh', 30);
     text-align: center;
     &__text {
       font-size: 14px;
@@ -244,10 +241,10 @@ export default class extends Vue {
         object-fit: contain;
         vertical-align: middle;
       }
-      // margin-left: 10px;
-      // margin-right: 15px;
-      margin-left: setViewport('vw', 10);
-      margin-right: setViewport('vw', 15);
+      margin-left: 10px;
+      margin-right: 15px;
+      // margin-left: setViewport('vw', 10);
+      // margin-right: setViewport('vw', 15);
     }
   }
   .login-form {
@@ -258,7 +255,6 @@ export default class extends Vue {
     // width: setViewport('vw', 600);
     height: 100%;
     max-width: 100%;
-    // padding: 70px 35px 0;
     border-radius: 20px;
     box-shadow: 0 4px 10px 0 rgba(28, 41, 90, 0.1);
     background-color: #fff;
@@ -270,8 +266,8 @@ export default class extends Vue {
       align-items: center;
       button {
         width: 60%;
-        // height: 54px;
-        height: setViewport('vh', 54);
+        height: 54px;
+        // height: setViewport('vh', 54);
         margin: 0 18.7% 0 21.3%;
         border-radius: 6px;
         border: 0px;
@@ -281,16 +277,16 @@ export default class extends Vue {
   }
 
   .tips {
-    // font-size: 14px;
-    // margin-bottom: 10px;
-    font-size: setViewport('vw', 14);
-    margin-bottom: setViewport('vh', 10);
+    font-size: 14px;
+    // font-size: setViewport('vw', 14);
+    margin-bottom: 10px;
+    // margin-bottom: setViewport('vh', 10);
     color: #fff;
 
     span {
       &:first-of-type {
-        // margin-right: 16px;
-        margin-right: setViewport('vw', 16);
+        margin-right: 16px;
+        // margin-right: setViewport('vw', 16);
       }
     }
   }
@@ -299,10 +295,10 @@ export default class extends Vue {
     color: $darkGrayText;
     vertical-align: middle;
     width: 21.3%;
-    // padding-right: 16px;
-    // font-size: 16px;
-    padding-right: setViewport('vw', 16);
-    font-size: setViewport('vw', 16);
+    padding-right: 16px;
+    // padding-right: setViewport('vw', 16);
+    font-size: 16px;
+    // font-size: setViewport('vw', 16);
     display: inline-block;
     font-weight: bold;
     font-stretch: normal;
@@ -320,16 +316,16 @@ export default class extends Vue {
     text-align: center;
     img {
       width: 50%;
-      // margin: 78px 0;
-      margin: setViewport('vh', 78) 0;
+      margin: 78px 0;
+      // margin: setViewport('vh', 78) 0;
     }
     .title {
-      // font-size: 26px;
-      font-size: setViewport('vw', 26);
+      font-size: 26px;
+      // font-size: setViewport('vw', 26);
       color: white;
       text-shadow: offset-x offset-y blur-radius color inherit;
-      // margin: 80px auto 40px;
-      margin: setViewport('vh', 80) auto setViewport('vh', 40);
+      margin: 80px auto 40px;
+      // margin: setViewport('vh', 80) auto setViewport('vh', 40);
       text-align: center;
       font-weight: 800;
     }
@@ -338,8 +334,8 @@ export default class extends Vue {
       color: #fff;
       position: absolute;
       top: 3px;
-      // font-size: 18px;
-      font-size: setViewport('vw', 18);
+      font-size: 18px;
+      // font-size: setViewport('vw', 18);
       right: 0px;
       cursor: pointer;
     }
@@ -347,12 +343,12 @@ export default class extends Vue {
 
   .show-pwd {
     position: absolute;
-    // right: 10px;
-    // top: 7px;
-    // font-size: 16px;
-    right: setViewport('vw', 10);
-    top: setViewport('vh', 7);
-    font-size: setViewport('vw', 16);
+    right: 10px;
+    // right: setViewport('vw', 10);
+    top: 7px;
+    // top: setViewport('vh', 7);
+    font-size: 16px;
+    // font-size: setViewport('vw', 16);
     color: $darkGrayText;
     cursor: pointer;
     user-select: none;
@@ -368,22 +364,22 @@ export default class extends Vue {
   .thirdparty-button-left {
     position: absolute;
     left: 0;
-    // bottom: 6px;
-    bottom: setViewport('vh', 6);
+    bottom: 6px;
+    // bottom: setViewport('vh', 6);
   }
   .thirdparty-button-right {
     position: absolute;
     right: 0;
-    // bottom: 6px;
-    bottom: setViewport('vh', 6);
+    bottom: 6px;
+    // bottom: setViewport('vh', 6);
   }
 
   .version-btn-warpper {
     position: absolute;
-    // right: 20px;
-    // bottom: 5px;
-    right: setViewport('vw', 20);
-    bottom: setViewport('vh', 5);
+    right: 20px;
+    // right: setViewport('vw', 20);
+    bottom: 5px;
+    // bottom: setViewport('vh', 5);
   }
 
   @media only screen and (max-width: 470px) {

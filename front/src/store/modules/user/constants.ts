@@ -16,6 +16,6 @@ export const DEFAULT_DASH_USER_ITEM: DashboardUserItem = {
 }
 
 export const DEFAULT_USER_STATE: UserState = {
-  organ: "default",
-  pos_4: "default",
+  organ: 'default',
+  pos_4: 'default'
 }

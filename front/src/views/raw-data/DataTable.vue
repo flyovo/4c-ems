@@ -6,14 +6,12 @@
         조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
       </div>
       <div class="button-group">
-        <el-dropdown>
-            <el-button>
-                25개씩<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>25개씩</el-dropdown-item>
-                <el-dropdown-item>30개씩</el-dropdown-item>
-            </el-dropdown-menu>
+        <el-dropdown @command="handleCommand">
+          <el-button>{{ pageSize }}개씩<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="25">25개씩</el-dropdown-item>
+            <el-dropdown-item command="50">30개씩</el-dropdown-item>
+          </el-dropdown-menu>
         </el-dropdown>
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
         <download-excel class="excel" :data="tableData" name="filename.xls">
@@ -21,13 +19,18 @@
         </download-excel>
       </div>
     </div>
-    <HospitalStorage v-if="menuType === 'hospital-storage'"/> <!-- 외래&입원 수납 Data -->
-    <Certification v-else-if="menuType === 'certification'" /> <!-- 증명서 발급 Data -->
-    <Arrive v-else-if="menuType === 'arrive'" /> <!-- 도착확인 Data -->
-    <Measurements v-else-if="menuType === 'measurements'" /> <!-- 신체계측 Data -->
-    <Failure v-else-if="menuType === 'failure'" /> <!-- 실패 Data -->
+    <HospitalStorage v-if="menuType === 'hospital-storage'" />
+    <!-- 외래&입원 수납 Data -->
+    <Certification v-else-if="menuType === 'certification'" />
+    <!-- 증명서 발급 Data -->
+    <Arrive v-else-if="menuType === 'arrive'" />
+    <!-- 도착확인 Data -->
+    <Measurements v-else-if="menuType === 'measurements'" />
+    <!-- 신체계측 Data -->
+    <Failure v-else-if="menuType === 'failure'" />
+    <!-- 실패 Data -->
     <div class="raw-data-table__body__paging">
-      <!-- <el-pagination :page-size="15" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination> -->
+      <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
         <download-excel class="excel" :data="tableData" name="filename.xls">
@@ -42,15 +45,15 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 import { SettingsModule } from '@/store/modules/settings/store'
-import HospitalStorage from './hospitalStorage/index.vue'
-import Certification from './certification/index.vue'
-import Arrive from './arrive/index.vue'
-import Measurements from './measurements/index.vue'
-import Failure from './failure/index.vue'
+import HospitalStorage from './HospitalStorage/index.vue'
+import Certification from './Certification/index.vue'
+import Arrive from './Arrive/index.vue'
+import Measurements from './Measurements/index.vue'
+import Failure from './Failure/index.vue'
 
 @Component({
   name: 'TableList',
-  components: { 
+  components: {
     HospitalStorage,
     Certification,
     Arrive,
@@ -67,8 +70,9 @@ export default class extends Vue {
   @Prop({ default: 0 }) private selectType!: Number
   @Prop({ default: 25 }) private pageNum!: Number
 
-private page: number = 1
-public data: []
+  public pageSize: number = 25
+  private page: number = 1
+  public data: []
 
   created() {
     this.getDateRange()
@@ -78,11 +82,11 @@ public data: []
   get comboList() {
     return RawDataStoreModule.comboList
   }
-  
+
   get comboIndex() {
     return RawDataStoreModule.comboIndex
   }
-  
+
   get dateList() {
     return RawDataStoreModule.dateList
   }
@@ -92,11 +96,10 @@ public data: []
   }
 
   get menuPosition() {
-    console.log('menuPosition:::::', SettingsModule.menuPosition)
     return SettingsModule.menuPosition
   }
 
-private async handleDateChange(value: number) {
+  private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
     // this.fetchData()
@@ -108,7 +111,7 @@ private async handleDateChange(value: number) {
     }
     await RawDataStoreModule.GetDateRange(payload)
   }
-  
+
   get tableData() {
     return RawDataStoreModule.tableList
   }
@@ -125,6 +128,10 @@ private async handleDateChange(value: number) {
     this.$emit('update:page', value)
   }
 
+  private async handleCommand(command) {
+    this.pageSize = Number(command);
+  }
+  
   private async getTablePagination() {
     await RawDataStoreModule.GetTableData({
       data: this.data,
@@ -139,41 +146,42 @@ private async handleDateChange(value: number) {
   }
 
   private async fetchData() {
-    if(this.menuType  === undefined) return;
-    // if(this.typeList[this.selectType] === undefined) return;
-    if(this.selectDate === undefined) return;
-    if(this.dateRange === undefined) return;
+    if (this.menuType === undefined) return
+    if (this.selectDate === undefined) return
+    if (this.dateRange === undefined) return
 
-    console.log(this.menuType, this.typeList, this.selectType, this.typeList[this.selectType], this.selectDate, this.dateRange)
+    let index = Number(this.selectType);
 
-    let option;
-    if(this.menuType === 'failure'){ 
+    console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
+
+    let option = []
+    if (this.menuType === 'failure') {
       option = this.comboList[this.comboIndex].fail_op_prog
-    }else if(this.typeList[this.selectType] === undefined){
+    } else if (this.typeList[index] === undefined) {
       option = []
-    }else{
-      option = this.typeList[this.selectType]
+    } else {
+      option = this.typeList[index]
     }
 
-    await RawDataStoreModule.RawTableData({      
+    await RawDataStoreModule.RawTableData({
       type: this.menuType,
       option: option,
       range: this.dateRange.date,
-      position: this.menuPosition.join(",")
-    }).then( (result: any) => {
+      position: this.menuPosition.join(',')
+    }).then((result: any) => {
       console.log(result)
       this.data = result
       this.handleCurrentChange(1)
     })
   }
 
-  private getNumFormat(row:any, column:any) {
-    let value = row[column.property];
-    if (value == undefined) {
-        return "";
+  private getNumFormat(row: any, column: any) {
+    let value = row[column.property]
+    if (value === undefined) {
+      return ''
     }
     value = typeof value === 'string' ? value : value.toString()
-    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 </script>
@@ -226,25 +234,22 @@ private async handleDateChange(value: number) {
 }
 .raw-data-table {
   .el-table {
-      border-top-left-radius: setViewport('vw', 6);
-      border-top-right-radius: setViewport('vw', 6);
+    border-top-left-radius: setViewport('vw', 6);
+    border-top-right-radius: setViewport('vw', 6);
     .caret-wrapper {
       width: setViewport('vw', 24);
     }
   }
   table {
     thead {
-      tr:nth-child(1) {
-        display: none;
-      }
       th {
         padding: 0;
 
-        &:nth-child(2n-1){
+        &:nth-child(2n-1) {
           border: solid 1px #333;
           background-color: #333;
         }
-        &:nth-child(2n){
+        &:nth-child(2n) {
           border: solid 1px #555;
           background-color: #555;
         }
@@ -268,7 +273,7 @@ private async handleDateChange(value: number) {
       td {
         padding: 0;
         .cell {
-          height: setViewport('vh', 32);
+          height: setViewport('vh', 31);
           vertical-align: unset;
           font-size: setViewport('vw', 16);
           font-weight: 500;
@@ -301,9 +306,6 @@ private async handleDateChange(value: number) {
       font-size: setViewport('vw', 24);
     }
     .el-pager li {
-      display: flex;
-      justify-content: center;
-      align-items: center;
       // width: 36px;
       // height: 36px;
       // font-size: 16px;
@@ -311,7 +313,6 @@ private async handleDateChange(value: number) {
       height: setViewport('vh', 36);
       font-size: setViewport('vw', 16);
       font-weight: bold;
-      line-height: 1.5;
       color: $paginationText;
       &.active {
         // border-radius: 4px;
@@ -332,7 +333,8 @@ private async handleDateChange(value: number) {
     &__table {
       padding: 0%;
       height: calc(100% - #{setViewport('vh', 137)});
-      .el-table, .el-table__body-wrapper {
+      .el-table,
+      .el-table__body-wrapper {
         height: 100%;
       }
     }
@@ -369,7 +371,7 @@ private async handleDateChange(value: number) {
       }
     }
   }
-  
+
   .button-group {
     display: flex;
     height: 100%;
@@ -382,7 +384,9 @@ private async handleDateChange(value: number) {
       border-color: $buttonBg;
       // border-radius: 4px;
       border-radius: setViewport('vw', 4);
-      &:hover, &:active, &.active {
+      &:hover,
+      &:active,
+      &.active {
         background-color: $buttonActiveBg;
         border-color: $buttonActiveBg;
       }
@@ -400,10 +404,12 @@ private async handleDateChange(value: number) {
         background-color: $subMenuBg;
         color: $darkGrayText;
         border: 1px solid $lightGray;
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background-color: $subMenuBg;
         }
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           color: $darkGrayText;
           border-color: $lightGray;
         }
@@ -421,7 +427,9 @@ private async handleDateChange(value: number) {
       font-size: setViewport('vw', 14);
       background-color: $buttonBg;
       border-color: $buttonBg;
-      &:hover, &:active, &.active {
+      &:hover,
+      &:active,
+      &.active {
         background-color: $buttonActiveBg;
         border-color: $buttonActiveBg;
       }

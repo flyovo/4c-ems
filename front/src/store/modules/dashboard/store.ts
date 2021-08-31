@@ -26,7 +26,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
         from: dayjs(this.dateToday)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
@@ -39,7 +39,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
           .date(this.dateToday.daysInMonth())
-          .format('YYYY년 MM월 DD일'),
+          .format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'weekly',
@@ -50,7 +50,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
           .date(this.dateToday.daysInMonth())
-          .format('YYYY-MM-DD'),
+          .format('YYYY-MM-DD')
       }
     },
     {
@@ -60,7 +60,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
           .set('month', 0)
           .date(1)
           .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'monthly',
@@ -68,7 +68,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
           .set('month', 0)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
       }
     }
   ]
@@ -83,12 +83,12 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
 
   @Action({ rawError: true })
   public Dashboard(data: Object) {
-    if(data.site == ""){
+    if (data.site === '') {
       delete data.site
     }
     let resultCd = dashChartData(data)
     return new Promise(resolve => {
-      resolve(resultCd)      
+      resolve(resultCd)
     })
     // if (resultCd === 200) {
     //   return new Promise(resolve => {

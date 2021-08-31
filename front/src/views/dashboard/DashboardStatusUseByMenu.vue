@@ -24,16 +24,7 @@ export default class extends Vue {
     title: this.title,
     // legend: ['약처방전', '차량등록', '진료전 자기평가', '수납 불가', '진료비 수납', '번호표 발행'],
     legend: [],
-    colors: [
-      variables.darkBlue, 
-      variables.lightRed, 
-      variables.darkYellow, 
-      variables.darkPurple, 
-      variables.darkGreen, 
-      variables.darkTurquoise, 
-      variables.lightTurquoise, 
-      variables.lightGreen
-    ],
+    colors: [variables.darkBlue, variables.lightRed, variables.darkYellow, variables.darkPurple, variables.darkGreen, variables.darkTurquoise, variables.lightTurquoise, variables.lightGreen],
     seriesRadius: ['40%', '70%'],
     seriesMegTitle: '현황',
     seriesPosition: ['47%', '50%'],
@@ -41,20 +32,20 @@ export default class extends Vue {
   }
 
   // 사이트 변경
-  @Watch('selectedSite', {immediate: true, deep: true})
+  @Watch('selectedSite', { immediate: true, deep: true })
   public onInitSiteChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     console.log('init 사이트 변경:::', val)
     this.fetchData()
   }
 
   // 날짜 범위 변경
-  @Watch('dateRange', {immediate: true, deep: true})
+  @Watch('dateRange', { immediate: true, deep: true })
   public onInitDateChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     console.log('init 날짜 범위 변경')
     this.fetchData()
@@ -90,13 +81,13 @@ export default class extends Vue {
         this.data = result
         await this.setChart()
       })
-    }, 1000 * 60 * 1);
+    }, 1000 * 60 * 1)
   }
 
   private async setChart() {
     // init
-    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin));
-    
+    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin))
+
     this.chartItems.legend = this.data.column
     this.chartItems.seriesData = this.data.data
   }

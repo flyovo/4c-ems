@@ -19,7 +19,7 @@ export default class extends Vue {
   private interval: any
   public type: string = 'wait'
   private title: string = '수납대기 시간'
-  private chartItems: IBarChart = {}
+  private chartItems: IBarChart
   private chartItemsOrigin: IBarChart = {
     title: this.title,
     legend: ['10:00~12:00', '14:00~16:00', '1일 평균 대기시간'],
@@ -28,26 +28,26 @@ export default class extends Vue {
     xAxisData: [],
     series: []
   }
- 
+
   // 사이트 변경
-  @Watch('selectedSite', {immediate: true, deep: true})
+  @Watch('selectedSite', { immediate: true, deep: true })
   public onInitSiteChange(val: any, oldVal: any) {
     console.log('onInitSiteChange:::', val)
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     this.fetchData()
   }
 
   // 날짜 범위 변경
-  @Watch('dateRange', {immediate: true, deep: true})
+  @Watch('dateRange', { immediate: true, deep: true })
   public onInitDateChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     this.fetchData()
   }
-  
+
   // 사이트 텍스트
   get selectedSite() {
     return DashboardStoreModule.selectedSite
@@ -71,7 +71,7 @@ export default class extends Vue {
 
   private async setChart() {
     // init
-    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin));
+    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin))
 
     this.chartItems.xAxisData = this.data.column
     this.chartItems.series = [

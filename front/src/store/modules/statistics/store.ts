@@ -44,7 +44,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
         from: dayjs(this.dateToday)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
@@ -57,7 +57,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
           .date(this.dateToday.daysInMonth())
-          .format('YYYY년 MM월 DD일'),
+          .format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'weekly',
@@ -68,7 +68,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
           .date(this.dateToday.daysInMonth())
-          .format('YYYY-MM-DD'),
+          .format('YYYY-MM-DD')
       }
     },
     {
@@ -78,7 +78,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
           .set('month', 0)
           .date(1)
           .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'monthly',
@@ -86,20 +86,18 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
           .set('month', 0)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
       label: {
         text: '기간 조회',
-        from: dayjs(this.dateToday)
-          .format('YYYY년 MM월 DD일'),
+        from: dayjs(this.dateToday).format('YYYY년 MM월 DD일'),
         to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'term',
-        from: dayjs(this.dateToday)
-          .format('YYYY-MM-DD'),
+        from: dayjs(this.dateToday).format('YYYY-MM-DD'),
         to: this.dateToday.format('YYYY-MM-DD')
       }
     }
@@ -132,7 +130,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     {
       id: 'measurements',
       label: ''
-    },
+    }
   ]
   public typeList = [
     {
@@ -162,7 +160,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     {
       id: 'measurements',
       list: ['신체계측 전체', '신체계측(혈압)', '신체계측(신장체중)']
-    },
+    }
   ]
 
   @Mutation
@@ -181,7 +179,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
       position: payload.position,
       dateTerm: payload.range.term,
       startDate: payload.range.from,
-      endDate: payload.range.to,
+      endDate: payload.range.to
     }
     let resultCd = statistics(params)
     return new Promise(resolve => {
@@ -216,6 +214,11 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
 
+  @Action({ rawError: true })
+  public GetType(payload: any) {
+    let type= this.typeList[payload.type]
+    this.SET_CHANGE_VALUE({ key: 'typeIndex', value: type })
+  }
 }
 
 export const StatisticsStoreModule = getModule(StatisticsStore)

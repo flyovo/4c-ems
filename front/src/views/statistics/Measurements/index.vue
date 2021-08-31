@@ -1,7 +1,6 @@
 <template>
-<div typeList class="statistics-table__body__table">
-  <el-table :data="tableData" header-align="center">
-    <el-table-column label="row" align="center">
+  <div typeList class="statistics-table__body__table">
+    <el-table :data="tableData" header-align="center">
       <el-table-column prop="타입" label="타입" sortable align="center"></el-table-column>
       <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
       <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
@@ -15,9 +14,8 @@
       <el-table-column prop="예약진료수" label="예약진료수" sortable :formatter="getNumFormat" align="center"></el-table-column>
       <el-table-column prop="신체계측성공" label="신체계측성공" sortable :formatter="getNumFormat" align="center"></el-table-column>
       <el-table-column prop="신체계측실패" label="신체계측실패" sortable :formatter="getNumFormat" align="center"></el-table-column>
-    </el-table-column>
-  </el-table>
-</div>
+    </el-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -58,7 +56,7 @@ export default class extends Vue {
     }
     await StatisticsStoreModule.GetDateRange(payload)
   }
-  
+
   get tableData() {
     return StatisticsStoreModule.tableList
   }
@@ -77,10 +75,10 @@ export default class extends Vue {
 
   private async getTablePagination() {
     await StatisticsStoreModule.GetTableData({
-        data: this.data,
-        page: this.page,
-        limit: 15
-      })
+      data: this.data,
+      page: this.page,
+      limit: 15
+    })
   }
 
   private async handleCurrentChange(value: number) {
@@ -92,19 +90,19 @@ export default class extends Vue {
     await StatisticsStoreModule.RawTableData({
       type: this.type,
       range: this.dateRange
-    }).then( (result: any) => {
+    }).then((result: any) => {
       this.data = result
       this.handleCurrentChange(1)
     })
   }
 
-  private getNumFormat(row:any, column:any) {
-    let value = row[column.property];
-    if (value == undefined) {
-        return "";
+  private getNumFormat(row: any, column: any) {
+    let value = row[column.property]
+    if (value === undefined) {
+      return ''
     }
     value = typeof value === 'string' ? value : value.toString()
-    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
 }
 </script>

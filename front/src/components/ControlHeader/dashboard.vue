@@ -1,31 +1,29 @@
 <template>
-<div class="control_header">
-  <div class="control_header_wrapper">
-    <div class="control_header__title">기관 선택</div>
-    <el-dropdown>
-        <el-button>
-            {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i>
-        </el-button>
+  <div class="control_header">
+    <div class="control_header_wrapper">
+      <div class="control_header__title">기관 선택</div>
+      <el-dropdown>
+        <el-button> {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
         <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" @click.native="handleSiteChange(item)" >{{ item.label }}</el-dropdown-item>
+          <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" @click.native="handleSiteChange(item)">{{ item.label }}</el-dropdown-item>
         </el-dropdown-menu>
-    </el-dropdown>
-    <div class="control_header__date">
+      </el-dropdown>
+      <div class="control_header__date">
         <div class="date-warpper">
-            <div class="date__buttons">
-                <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월(주별)</el-button>
-                <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월(주별)</el-button>
-                <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간(월별)</el-button>
-            </div>
-            <div class="date_text">
-                <!-- <img src="@/assets/images/ic-calendar-bk.svg"> -->
-                <i class="el-icon-date"></i>
-                조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
-            </div>
+          <div class="date__buttons">
+            <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월(주별)</el-button>
+            <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월(주별)</el-button>
+            <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간(월별)</el-button>
+          </div>
+          <div class="date_text">
+            <!-- <img src="@/assets/images/ic-calendar-bk.svg"> -->
+            <i class="el-icon-date"></i>
+            조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
+          </div>
         </div>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script lang="ts">
@@ -39,29 +37,29 @@ import { DashboardStoreModule } from '@/store/modules/dashboard/store.ts'
 })
 export default class extends Vue {
   private selectDate: number = 0
-  public init_data: { 
-    kiosk: {}, 
-    status: {}, 
-    wait: {}, 
-    certificate: {} 
+  public initData: {
+    kiosk: {}
+    status: {}
+    wait: {}
+    certificate: {}
   }
 
   created() {
     this.getDateRange()
   }
-  
+
   @AsyncComputed()
   // 기관 리스트
   async siteList() {
     let list = await SettingsModule.GetSite({
-      site: 'site', 
-      position: [], 
-      ...JSON.parse(localStorage.getItem('4c-userState')), 
-      auth: localStorage.getItem('4c-userAuth') 
+      site: 'site',
+      position: [],
+      ...JSON.parse(localStorage.getItem('4c-userState')),
+      auth: localStorage.getItem('4c-userAuth')
     }).then((result: any) => {
       return result
     })
-    return [ ...list ]
+    return [...list]
   }
 
   // 사이트 텍스트
@@ -84,7 +82,7 @@ export default class extends Vue {
   // 날짜 버튼 선택
   private async handleDateChange(value: number) {
     this.selectDate = await value
-    this.getDateRange();
+    this.getDateRange()
   }
 
   // 날짜 버튼 선택 -> vuex에 저장
@@ -104,19 +102,19 @@ export default class extends Vue {
   .el-dropdown-menu__item {
     padding: 0 setViewport('vw', 17);
     font-size: setViewport('vw', 14);
-        // /* padding: 0 17px;
+    // /* padding: 0 17px;
   }
 }
 </style>
 <style lang="scss" scoped>
 .control_header {
   width: 100%;
-  .control_header_wrapper{
+  .control_header_wrapper {
     display: flex;
     width: 100%;
     // height: 36px;
     height: setViewport('vh', 36);
-  
+
     .el-button--primary {
       border-color: none;
     }
@@ -146,7 +144,8 @@ export default class extends Vue {
         line-height: 1;
         letter-spacing: normal;
         color: $subMenuText;
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background-color: $subMenuBg;
         }
         // .el-icon-arrow-down {
@@ -192,9 +191,11 @@ export default class extends Vue {
           line-height: 1;
           letter-spacing: normal;
           color: $subMenuText;
-          &:hover, &:active, &.active {
-              background-color: $menuActiveText;
-              color: $subMenuActiveText;
+          &:hover,
+          &:active,
+          &.active {
+            background-color: $menuActiveText;
+            color: $subMenuActiveText;
           }
         }
       }

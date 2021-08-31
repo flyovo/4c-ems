@@ -150,7 +150,7 @@ export const constantRoutes: RouteConfig[] = [
         }
       }
     ]
-  },
+  }
   // {
   //   path: '/unmannedPayment',
   //   component: routerName['Layout'],

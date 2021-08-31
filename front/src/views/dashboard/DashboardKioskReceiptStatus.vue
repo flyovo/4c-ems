@@ -29,19 +29,19 @@ export default class extends Vue {
   }
 
   // 사이트 변경
-  @Watch('selectedSite', {immediate: true, deep: true})
+  @Watch('selectedSite', { immediate: true, deep: true })
   public onInitSiteChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     this.fetchData()
   }
 
   // 날짜 범위 변경
-  @Watch('dateRange', {immediate: true, deep: true})
+  @Watch('dateRange', { immediate: true, deep: true })
   public onInitDateChange(val: any, oldVal: any) {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearInterval(this.interval)
     }
     this.fetchData()
   }
@@ -69,36 +69,34 @@ export default class extends Vue {
 
   private async setChart() {
     // init
-    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin));
+    this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin))
 
-    for(let data of this.data.column){
+    for (let data of this.data.column) {
       this.chartItems.xAxisData.push(data)
     }
-    for(let key in this.data.data){
-      let legentTitle = `${key} 키오스크 (건수)`;
+    for (let key in this.data.data) {
+      let legentTitle = `${key} 키오스크 (건수)`
 
-      this.chartItems.legend.push(legentTitle);
-      this.chartItems.series.push(
-        {
-          barGap: 0.2,
-          name: legentTitle,
-          type: 'bar',
-          stack: '',
-          label: {
-            show: true,
-            position: 'top',
-            formatter: d => {
-              let value = d.value
-              if (value == undefined) {
-                  return "";
-              }
-              value = typeof value === 'string' ? value : value.toString()
-              return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+      this.chartItems.legend.push(legentTitle)
+      this.chartItems.series.push({
+        barGap: 0.2,
+        name: legentTitle,
+        type: 'bar',
+        stack: '',
+        label: {
+          show: true,
+          position: 'top',
+          formatter: d => {
+            let value = d.value
+            if (value === undefined) {
+              return ''
             }
-          },
-          data: this.data.data[key]
-        }
-      )
+            value = typeof value === 'string' ? value : value.toString()
+            return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+          }
+        },
+        data: this.data.data[key]
+      })
     }
   }
 }

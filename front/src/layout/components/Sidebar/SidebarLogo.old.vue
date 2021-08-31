@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-logo-container">
-    <div class="navbar" :class="[{ 'is-active': isCollapse }]" v-model="isCollapse" @click="isCollapse = !isCollapse"></div>
+    <div class="navbar" :class="[{ 'is-active': isCollapse }]" @click="isCollapse = !isCollapse"></div>
     <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
       <el-menu-item index="1">
         <div class="sidebar-logo-link">
@@ -23,10 +23,10 @@
         </div>
       </el-menu-item>
       <!-- <el-submenu index="3"> -->
-        <div class="sidebar-logo-menu">
-          <el-tree :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick"/>
-        </div>
-        <!-- <template slot="title">
+      <div class="sidebar-logo-menu">
+        <el-tree :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick" />
+      </div>
+      <!-- <template slot="title">
           <i class="el-icon-location"></i>
           <span slot="title">Navigator One</span>
         </template>
@@ -64,27 +64,31 @@ export default class extends Vue {
   public menuActive = 'dashboard'
   public defaultProps = {
     children: 'children',
-    label: 'label',
+    label: 'label'
   }
   public isCollapse = false
 
-  created(){
-    switch(localStorage.getItem('4c-userAuth')){
-      case 'S': this.userAuth = 'Super Admin(4cgate)'
-      break;
-      case 'A': this.userAuth = '병원 총괄 관리자'
-      break;
-      case 'P': this.userAuth = '기관 / 부서 관리자'
-      break;
-      default: this.userAuth = '기관 / 부서 관리자'
-      break;
+  created() {
+    switch (localStorage.getItem('4c-userAuth')) {
+      case 'S':
+        this.userAuth = 'Super Admin(4cgate)'
+        break
+      case 'A':
+        this.userAuth = '병원 총괄 관리자'
+        break
+      case 'P':
+        this.userAuth = '기관 / 부서 관리자'
+        break
+      default:
+        this.userAuth = '기관 / 부서 관리자'
+        break
     }
   }
   get getterSetter() {
-    return this.userAuth;
+    return this.userAuth
   }
   set getterSetter(value) {
-    this.userAuth = value;
+    this.userAuth = value
   }
 
   private async logout() {
@@ -110,7 +114,7 @@ export default class extends Vue {
     return SettingsModule.menuList
   }
   private handleFunctionCall(funcName, funcParam) {
-    this.menuActive = funcName;
+    this.menuActive = funcName
     if (funcName !== 'dashboard' && funcParam === '') return
     if (funcName === 'dashboard') {
       funcParam = 'dashboard'
@@ -125,17 +129,16 @@ export default class extends Vue {
     return string.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
   }
   private handleNodeClick(data) {
-    console.log(data);
+    console.log(data)
   }
   private handleOpen(key, keyPath) {
-    console.log(key, keyPath);
+    console.log(key, keyPath)
   }
   private handleClose(key, keyPath) {
-    console.log(key, keyPath);
+    console.log(key, keyPath)
   }
 }
 </script>
-
 
 <style lang="scss">
 .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -151,14 +154,14 @@ export default class extends Vue {
     }
   }
   .el-tree {
-    &>.el-tree-node:first-child {
+    & > .el-tree-node:first-child {
       .el-tree-node__expand-icon {
         background-image: url('~@/assets/images/ic-home.svg');
       }
     }
-    // background-color: #fafafa; 
+    // background-color: #fafafa;
     .is-current {
-      &>.el-tree-node__content {
+      & > .el-tree-node__content {
         color: $menuActiveText;
         border-left: 4px solid $menuActiveText;
         background-color: $menuActiveBg;
@@ -179,7 +182,7 @@ export default class extends Vue {
         transform: unset;
       }
       &.el-icon-caret-right:before {
-        content: ''
+        content: '';
       }
     }
     .el-tree-node {

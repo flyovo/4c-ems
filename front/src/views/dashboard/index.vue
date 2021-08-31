@@ -27,15 +27,15 @@ import DashboardCertificateIssuanceStatus from './DashboardCertificateIssuanceSt
     DashboardKioskReceiptStatus,
     DashboardStatusUseByMenu,
     DashboardReceiptWaitingTime,
-    DashboardCertificateIssuanceStatus,
+    DashboardCertificateIssuanceStatus
   }
 })
 export default class extends Vue {
-  public init_data: { 
-    kiosk: {}, 
-    status: {}, 
-    wait: {}, 
-    certificate: {} 
+  public initData: {
+    kiosk: {}
+    status: {}
+    wait: {}
+    certificate: {}
   }
 }
 </script>

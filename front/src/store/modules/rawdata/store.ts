@@ -44,7 +44,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
         from: dayjs(this.dateToday)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
@@ -57,7 +57,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
           .date(this.dateToday.daysInMonth())
-          .format('YYYY년 MM월 DD일'),
+          .format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'weekly',
@@ -68,7 +68,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
           .date(this.dateToday.daysInMonth())
-          .format('YYYY-MM-DD'),
+          .format('YYYY-MM-DD')
       }
     },
     {
@@ -78,7 +78,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
           .set('month', 0)
           .date(1)
           .format('YYYY년 MM월 DD일'),
-        to: this.dateToday.format('YYYY년 MM월 DD일'),
+        to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'monthly',
@@ -86,20 +86,18 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
           .set('month', 0)
           .date(1)
           .format('YYYY-MM-DD'),
-        to: this.dateToday.format('YYYY-MM-DD'),
+        to: this.dateToday.format('YYYY-MM-DD')
       }
     },
     {
       label: {
         text: '기간 조회',
-        from: dayjs(this.dateToday)
-          .format('YYYY년 MM월 DD일'),
+        from: dayjs(this.dateToday).format('YYYY년 MM월 DD일'),
         to: this.dateToday.format('YYYY년 MM월 DD일')
       },
       date: {
         term: 'term',
-        from: dayjs(this.dateToday)
-          .format('YYYY-MM-DD'),
+        from: dayjs(this.dateToday).format('YYYY-MM-DD'),
         to: this.dateToday.format('YYYY-MM-DD')
       }
     }
@@ -124,7 +122,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
     {
       id: 'failure',
       label: '타입 선택'
-    },
+    }
   ]
   public typeList = [
     {
@@ -133,8 +131,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
     },
     {
       id: 'certification',
-      list: ['증명서 전체', '입퇴원증명서', '통원증명서', '납입증명서(타기관)', '장애인증명서',
-        '입원영수증', '외래진료비', '응급진료비', '납입증명서(연말정산)', '납입증명서(난임진료)', '예비']
+      list: ['증명서 전체', '입퇴원증명서', '통원증명서', '납입증명서(타기관)', '장애인증명서', '입원영수증', '외래진료비', '응급진료비', '납입증명서(연말정산)', '납입증명서(난임진료)', '예비']
     },
     {
       id: 'arrive',
@@ -147,11 +144,11 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
     {
       id: 'failure',
       list: []
-    },
+    }
   ]
+  // public typeIndex = 0
   public comboIndex = 0
   public comboList = []
-
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {
@@ -169,7 +166,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
       position: payload.position,
       dateTerm: payload.range.term,
       startDate: payload.range.from,
-      endDate: payload.range.to,
+      endDate: payload.range.to
     }
     let resultCd = rawData(params)
     return new Promise(resolve => {
@@ -202,6 +199,12 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
   public GetDateRange(payload: any) {
     let date = this.dateList[payload.date]
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
+  }
+
+  @Action({ rawError: true })
+  public GetType(payload: any) {
+    let type= this.typeList[payload.type]
+    this.SET_CHANGE_VALUE({ key: 'typeIndex', value: type })
   }
 
   @Action({ rawError: true })
