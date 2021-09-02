@@ -46,7 +46,7 @@ const user = {
 							return resolve({ token: token });
 						}
 					);
-				}).then(content => {
+				}).then(async content => {
 					let query = " select " +
 					"  a.user_id as id  " +
 					", a.authority  " +
@@ -56,14 +56,14 @@ const user = {
 					" from user_login a inner join site_pos_manage b on a.pos_4 = b.idx  " +
 					` where a.user_id = '${user.user_id}'  and a.pwd = '${user.pwd}' `;
 	
-					db.sequelize.query(query, {
+					let result = await db.sequelize.query(query, {
 						model: db.user_login
-					}).then(rows => {
-						return res.json({
-							data: rows,
-							token: content.token,
-							resultCd: 200
-						});
+					});
+					// res.setHeader("token", req.headers.token);
+					res.json({
+						data: result[0],
+						token: content.token,
+						resultCd: 200
 					});
 				});
 			});
