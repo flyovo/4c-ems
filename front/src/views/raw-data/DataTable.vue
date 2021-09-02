@@ -224,7 +224,7 @@ export default class extends Vue {
   padding: 0px setViewport('vw', 15) !important;
   font-size: setViewport('vw', 14) !important;
   width: setViewport('vw', 100);
-  min-width: 55px;
+  min-width: 80px;
   text-align: center;
 }
 .raw-data-table {

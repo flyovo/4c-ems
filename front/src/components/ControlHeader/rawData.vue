@@ -245,6 +245,7 @@ export default class extends Vue {
       .el-button {
         // width: 96px;
         // height: 36px;
+        min-width: 80px;
         width: setViewport('vw', 96);
         height: setViewport('vh', 36);
         border-radius: 4px;

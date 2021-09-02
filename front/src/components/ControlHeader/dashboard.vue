@@ -1,27 +1,5 @@
 <template>
   <div class="control_header">
-    <!-- <div class="control_header_wrapper">
-      <div class="control_header__title">기관 선택</div>
-      <el-dropdown>
-        <el-button> {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" @click.native="handleSiteChange(item)">{{ item.label }}</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <div class="control_header__date">
-        <div class="date-warpper">
-          <div class="date__buttons">
-            <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월(주별)</el-button>
-            <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월(주별)</el-button>
-            <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간(월별)</el-button>
-          </div>
-          <div class="date_text">
-            <i class="el-icon-date"></i>
-            조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
-          </div>
-        </div>
-      </div>
-    </div> -->
     <div class="control_header_wrapper">
       <div class="control_header__title">기관 선택</div>
       <el-dropdown>
@@ -132,7 +110,7 @@ export default class extends Vue {
     padding: 0px setViewport('vw', 15) !important;
     font-size: setViewport('vw', 14) !important;
     width: auto !important;
-    min-width: 55px;
+    min-width: 80px;
     text-align: center;
   }
 }
