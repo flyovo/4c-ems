@@ -97,7 +97,7 @@ export default class extends Vue {
 <style lang="scss">
 .control_header {
   .type_text {
-    font-family: NotoSansCJKKR;
+    font-family: 'NotoSansCJKKR';
     // font-size: 26px;
     font-size: setViewport('vw', 26);
     font-weight: bold;
