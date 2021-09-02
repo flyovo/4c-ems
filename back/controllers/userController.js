@@ -24,10 +24,11 @@ const user = {
 					return await next(err);
 				}
 
-				let data = user;
+				let data = user.dataValues;
 				let query = " select " +
 				"  a.user_id as id  " +
 				", a.authority  " +
+				", (select loc_name as site from site_pos_manage where type = 'site' ) as site " +
 				", (select b1.loc_name from user_login a1 inner join site_pos_manage b1 on a1.organ = b1.idx where a1.user_id = id) as organ  " +
 				", (select b1.loc_name from user_login a1 inner join site_pos_manage b1 on a1.pos_4 = b1.idx where a1.user_id = id) as pos_4 " +
 				", a.updatedate " +
@@ -38,6 +39,7 @@ const user = {
 					model: db.user_login
 				}).then(rows => {
 					if(rows.length > 0){
+						data.site = rows[0].dataValues.site;
 						data.organ = rows[0].dataValues.organ;
 						data.pos_4 = rows[0].dataValues.pos_4;
 					}
@@ -107,7 +109,9 @@ const user = {
 					}
 					break;
 				case "pos_1" : // 기관명
-					where.push(` site = '${position[0]}' `);
+					if(position[0]){
+						where.push(` site = '${position[0]}' `);
+					}
 					if(req.query.auth === "P"){
 						if(req.query.organ){
 							where.push(` pos_1 = '${req.query.organ}' `);
@@ -148,9 +152,9 @@ const user = {
 			}
 
 			query += ` group by ${req.query.site} `;
-
-			console.log("query::::::::::", query);
-
+			console.log("------------------------------------------------------------");
+			console.log(query);
+			console.log("------------------------------------------------------------");
 			let result = [];
 			await db.sequelize.query(query, {
 				model: db.device_op_info

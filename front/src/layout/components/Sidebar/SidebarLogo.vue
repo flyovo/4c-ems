@@ -115,10 +115,13 @@ export default class extends Vue {
   //   return async(type, position) => {
   private async siteList(type, position) {
     // return async() => {
+      console.log('siteList::::::::::', type)
     let list = await SettingsModule.GetSite({
       site: type,
       position: position,
-      ...JSON.parse(localStorage.getItem('4c-userState')),
+      organ: JSON.parse(localStorage.getItem('4c-userState')).organ,
+      pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
+      // ...JSON.parse(localStorage.getItem('4c-userState')),
       auth: localStorage.getItem('4c-userAuth')
     }).then((result: any) => {
       return result
@@ -134,6 +137,8 @@ export default class extends Vue {
     data.children = newChild
   }
   private setCheckedNodes() {
+    // 화면 처음 진입했을 때 tree setting
+
     return new Promise(async(resolve, reject) => {
       await SettingsModule.SetMenuText([])
 
@@ -207,6 +212,8 @@ export default class extends Vue {
     })
   }
   private async handleNodeClick(data, checked, indeterminate) {
+    // tree click event
+
     this.menuUrl = []
     this.menuText = []
 
@@ -227,12 +234,12 @@ export default class extends Vue {
     // if(type === ''){
     //   return;
     // }
+    console.log('::::::::: ', type)
 
     let position = this.menuUrl.slice(1).join(',')
     if (url[0] !== 'dashboard') {
       position = this.menuUrl.slice(2).join(',')
       if (type !== '') {
-        // position = "세브란스(신촌)"
         await this.siteList(type, position).then(async res => {
           if (!data.children && res.length > 0) {
             this.append(data, res)

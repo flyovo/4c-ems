@@ -1,6 +1,7 @@
 <template>
   <div typeList class="statistics-table__body__table" ref="tableWrapper">
-    <el-table :data="tableData" header-align="center" :max-height="getHeight" :span-method="objectSpanMethod">
+    <!-- <el-table :data="tableData" header-align="center" :max-height="getHeight" :span-method="objectSpanMethod"> -->
+    <el-table :data="tableData" header-align="center" :max-height="getHeight">
         <el-table-column label="구분" sortable align="center">
           <el-table-column prop="기관" label="센터명" sortable align="center"></el-table-column>
           <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
@@ -32,13 +33,13 @@ export default class extends Vue {
   public type: string = 'receipt'
   public data: []
   public getHeight: number = 300
-  public rowSpan: string = ''
-  public rowSpanIndex: number = 0
+  // public rowSpan: string = ''
+  // public rowSpanIndex: number = 0
+  // public rowSpanArray: string[] = []
 
 
   created() {
     this.getDateRange()
-    // this.fetchData()
   }
 
   get dateList() {
@@ -50,6 +51,17 @@ export default class extends Vue {
   }
 
   get tableData() {
+    // if(StatisticsStoreModule.tableList.length > 0){
+    //   this.rowSpanArray = StatisticsStoreModule.tableList.reduce((acc, cur) => {
+    //     const languageCount = acc[cur['기관']];
+    //     const count = languageCount || 0 ;
+        
+    //     return {
+    //       ...acc,
+    //       [cur['기관']]: count + 1,
+    //     };
+    //   }, {});
+    // }
     return StatisticsStoreModule.tableList
   }
 
@@ -121,52 +133,38 @@ export default class extends Vue {
 		});
   }
   
-  objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-    console.log(row, column, rowIndex, columnIndex)
-    console.log(row['기관'], column, rowIndex, columnIndex)
-    
-    if (columnIndex === 0) {
-      if (rowIndex % 2 === 0) {
-        return {
-          rowspan: 2,
-          colspan: 1
-        };
-      } else {
-        return {
-          rowspan: 0,
-          colspan: 0
-        };
-      }
+  // objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+  //   console.log(rowIndex)
+  //   if(rowIndex === 0 && columnIndex === 0){
+  //     this.rowSpanIndex += Number(this.rowSpanArray[row['기관']])
+  //   }
 
-    // if (columnIndex === 0) {
-      // if(this.rowSpan !== row['기관']){
-      //   this.rowSpan = row['기관']
-      //   this.rowSpanIndex = 0;
+  //   if(this.rowSpan !== row['기관']){
+  //     this.rowSpan = row['기관']
+  //   }
 
-      //   return {
-      //     rowspan: 0,
-      //     colspan: 0
-      //   };
-      // }else{
-      //   this.rowSpanIndex += 1;
-
-      //   return {
-      //     rowspan: this.rowSpanIndex,
-      //     colspan: 1
-      //   };
-      // }
-      // if (rowIndex === this.rowSpanIndex) {
-      //   return {
-      //     rowspan: this.rowSpanIndex,
-      //     colspan: 1
-      //   };
-      // } else {
-      //   return {
-      //     rowspan: 0,
-      //     colspan: 0
-      //   };
-      // }
-    // }
-  }
+  //   if (columnIndex === 0) {
+  //     console.log(rowIndex % this.rowSpanIndex)
+  //     if (rowIndex % this.rowSpanIndex === 0) {
+  //       if(rowIndex > 0){
+  //         this.rowSpanIndex += Number(this.rowSpanArray[row['기관']])
+  //       }
+  //       console.log('if :::: ', rowIndex, {
+  //         rowspan: Number(this.rowSpanArray[row['기관']]),
+  //         colspan: 1
+  //       })
+  //       return {
+  //         rowspan: Number(this.rowSpanArray[row['기관']]),
+  //         colspan: 1
+  //       };
+  //     }else{
+  //       console.log('else :::: ', rowIndex)
+  //       return {
+  //         rowspan: 0,
+  //         colspan: 0
+  //       };
+  //     }
+  //   }
+  // }
 }
 </script>

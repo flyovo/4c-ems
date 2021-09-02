@@ -8,13 +8,17 @@
 @import './dialog-page.scss';
 /* Global scss */
 
-body {
+
+body{
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   // font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
   // font-family: 'Noto Sans KR',-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-  // font-family: $font-family;
+  font-family: 'NotoSansCJKkr', Arial, Helvetica, sans-serif !important;
+}
+* {
+  font-family: 'NotoSansCJKkr', Arial, Helvetica, sans-serif !important;
 }
 
 html {

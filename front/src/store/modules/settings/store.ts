@@ -46,6 +46,7 @@ class Settings extends VuexModule implements SettingsState {
 
   @Action({ rawError: true })
   public GetSite(payload: any) {
+    console.log('GetSite::::::::::', payload)
     let resultCd = getSite(payload)
 
     return new Promise(resolve => {

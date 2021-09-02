@@ -46,7 +46,7 @@ export default class extends Vue {
     this.fetchData()
   }
 
-  // 사이트 텍스트
+  // 사이트 텍스트 (site? pos_1?)
   get selectedSite() {
     return DashboardStoreModule.selectedSite
   }
@@ -57,9 +57,20 @@ export default class extends Vue {
   }
 
   private async fetchData() {
+    let position = []
+
+    // site
+    if( JSON.parse(localStorage.getItem('4c-userState')).site ){
+      position.push( JSON.parse(localStorage.getItem('4c-userState')).site )
+    }else{
+      position.push('')
+    }
+    // pos_1
+    position.push(this.selectedSite.id)
+    
     DashboardStoreModule.Dashboard({
       type: this.type,
-      site: this.selectedSite.id,
+      position: position.join(','),
       dateTerm: this.dateRange.date.term,
       startDate: this.dateRange.date.from,
       endDate: this.dateRange.date.to

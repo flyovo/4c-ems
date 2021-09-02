@@ -51,11 +51,17 @@ export default class extends Vue {
   @AsyncComputed()
   // 기관 리스트
   async siteList() {
+    let position = [];
+    if( JSON.parse(localStorage.getItem('4c-userState')).site ){
+      position.push( JSON.parse(localStorage.getItem('4c-userState')).site )
+    }
+    
     let list = await SettingsModule.GetSite({
-      // site: 'site',
-      site: 'pos_4',
-      position: [],
-      ...JSON.parse(localStorage.getItem('4c-userState')),
+      site: 'pos_1',
+      position: position.join(','),
+      organ: JSON.parse(localStorage.getItem('4c-userState')).organ,
+      pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
+      // ...JSON.parse(localStorage.getItem('4c-userState')),
       auth: localStorage.getItem('4c-userAuth')
     }).then((result: any) => {
       return result
@@ -101,8 +107,11 @@ export default class extends Vue {
   // width: setViewport('vw', 100);
   padding: setViewport('vh', 6) 0;
   .el-dropdown-menu__item {
+    line-height: 2.4 !important;
     padding: 0px setViewport('vw', 15) !important;
-    font-size: setViewport('vw', 14);
+    font-size: setViewport('vw', 14) !important;
+    width: auto !important;
+    min-width: 55px;
     text-align: center;
   }
 }

@@ -121,7 +121,7 @@ export default class extends Vue {
 
   private async handleCommand(command) {
     this.pageSize = Number(command);
-    this.getTablePagination()
+    this.handleCurrentChange(1)
   }
 
   private async getTablePagination() {
@@ -216,7 +216,7 @@ export default class extends Vue {
 
 <style lang="scss">
 .el-dropdown-menu__item {
-  line-height: 1.4 !important;
+  line-height: 2.4 !important;
   padding: 0px setViewport('vw', 15) !important;
   font-size: setViewport('vw', 14) !important;
   width: setViewport('vw', 100);

@@ -6,6 +6,8 @@ const dayjs = require("dayjs");
 const dashboard = {
 	getKiosk: async function (req, res, next) {
 		try {
+			let position = req.query.position ? req.query.position.split(",") : "";
+
 			let query = " SELECT ";
 			if(req.query.dateTerm === "weekly"){
 				// 당월 조회 or 전월 조회 
@@ -21,8 +23,9 @@ const dashboard = {
 					` FROM ${db.sunap_daily_cnt.name} LEFT JOIN ${db.device_op_info.name} ON ${db.sunap_daily_cnt.name}.dev_id = ${db.device_op_info.name}.dev_id ` +
 					" WHERE " +
 					` ${db.sunap_daily_cnt.name}.sunap_type like '%외래%' `;
+
 			//권한에따라 달라짐
-			query += ` AND ${db.device_op_info.name}.pos_1 = '본관' `;
+			query += ` AND ${db.device_op_info.name}.pos_1 = '${position[1]}' `;
 
 			if(req.query.dateTerm === "weekly"){
 				// 당월 조회 or 전월 조회 
@@ -112,6 +115,8 @@ const dashboard = {
 
 	getWait: async function (req, res, next) {
 		try {
+			let position = req.query.position ? req.query.position.split(",") : "";
+
 			// req.query.endDate = "2021-07-14";
 			let query = " SELECT " + 
 			// 기관
@@ -192,8 +197,11 @@ const dashboard = {
 			query += ` FROM ${db.device_op_info.name} INNER JOIN ${db.ticket_daily_cnt.name} ON ${db.device_op_info.name}.dev_id = ${db.ticket_daily_cnt.name}.dev_id ` +
 					 ` WHERE ${db.ticket_daily_cnt.name}.workno = 1 `;
 			
-			if(req.query.site){
-				query += ` AND ${db.device_op_info.name}.site = '${req.query.site}' ` ;
+			if(position[0]){
+				query += ` AND ${db.device_op_info.name}.site = '${position[0]}' ` ;
+			}
+			if(position[1]){
+				query += ` AND ${db.device_op_info.name}.pos_1 = '${position[1]}' ` ;
 			}
 
 			// 기간 선택

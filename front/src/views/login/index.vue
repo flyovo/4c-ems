@@ -102,7 +102,10 @@ export default class extends Vue {
       if (valid) {
         await UserStoreModule.Login(this.loginForm).then(async (resolve: any) => {
           if (resolve === 200) {
-            this.idRemember = false
+            // this.idRemember = false
+            if(this.idRemember){
+              localStorage.setItem('4c-saveId', this.loginForm.userId)
+            }
 
             await this.$router.push(
               {
