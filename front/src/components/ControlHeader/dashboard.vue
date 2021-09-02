@@ -168,7 +168,7 @@ export default class extends Vue {
   &__title {
     display: flex;
     align-items: center;
-    min-width: 40px;
+    // min-width: 40px;
     // margin-right: 20px;
     // font-size: 16px;
     // width: setViewport('vw', 63);
@@ -183,8 +183,8 @@ export default class extends Vue {
   &__date {
     // width: calc(100% - 212px);
     // width: calc(100% - #{setViewport('vw', 212)});
-    // min-width: calc(100% - 212px);
-    width: 100%;
+    min-width: calc(100% - 212px);
+    // width: 100%;
     height: 100%;
     .date-warpper {
       width: 100%;
