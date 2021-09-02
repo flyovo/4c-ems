@@ -152,7 +152,7 @@ export default class extends Vue {
 
     let index = Number(this.selectType);
 
-    console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
+    // console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
 
     let option = []
     if (this.typeList[index] === undefined) {
@@ -169,8 +169,8 @@ export default class extends Vue {
     }).then((result: any) => {
       console.log(result)
       this.data = result
+      this.page = 1
       this.handleCurrentChange(1)
-      
     })
   }
 

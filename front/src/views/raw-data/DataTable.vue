@@ -172,6 +172,7 @@ export default class extends Vue {
     }).then((result: any) => {
       console.log(result)
       this.data = result
+      this.page = 1
       this.handleCurrentChange(1)
     })
   }

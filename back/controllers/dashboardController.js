@@ -215,9 +215,6 @@ const dashboard = {
 				// query += ` GROUP BY ${db.device_op_info.name}.pos_1 , DATE_FORMAT(${db.device_op_info.name}.q_date , '%Y-%m-%d') `;
 				query += " GROUP BY '기관' , '발행날짜' ";
 			}
-			console.log("::::::::::::::::::::::::::::::::::::::");
-			console.log(query);
-			console.log("::::::::::::::::::::::::::::::::::::::");
 			let result = {
 				data: {
 					am: [],
