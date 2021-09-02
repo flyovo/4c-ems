@@ -268,7 +268,7 @@ export default class extends Vue {
       td {
         padding: 0;
         .cell {
-          height: setViewport('vh', 32);
+          min-height: setViewport('vh', 32);
           font-size: setViewport('vw', 16);
           font-weight: 500;
           font-stretch: normal;
