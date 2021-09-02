@@ -47,13 +47,25 @@ const user = {
 						}
 					);
 				}).then(content => {
-					return res.json({
-						data: user,
-						token: content.token,
-						resultCd: 200
+					let query = " select " +
+					"  a.user_id as id  " +
+					", a.authority  " +
+					", (select b1.loc_name from user_login a1 inner join site_pos_manage b1 on a1.organ = b1.idx where a1.user_id = id) as organ  " +
+					", (select b1.loc_name from user_login a1 inner join site_pos_manage b1 on a1.pos_4 = b1.idx where a1.user_id = id) as pos_4 " +
+					", a.updatedate " +
+					" from user_login a inner join site_pos_manage b on a.pos_4 = b.idx  " +
+					` where a.user_id = '${user.user_id}'  and a.pwd = ${user.pwd} `;
+	
+					db.sequelize.query(query, {
+						model: db.user_login
+					}).then(rows => {
+						return res.json({
+							data: rows,
+							token: content.token,
+							resultCd: 200
+						});
 					});
 				});
-				//});
 			});
 		})(req, res, next);
 	},
@@ -78,40 +90,66 @@ const user = {
 			// let pos_4 = req.query.pos_4 ? ` pos_4 = '${req.query.pos_4}' ` : "";
 
 			let query = ` SELECT ${req.query.site} AS label FROM ${db.device_op_info.name} `;
+			let where = [];
 			switch(req.query.site){
 				case "site" : // 사이트
 					if(req.query.auth === "P"){
-						// query += (!organ && !pos_4) ?  
-						query += ` WHERE pos_1 = '${req.query.organ}' AND pos_4 = '${req.query.pos_4}' `;
+						if(req.query.organ){
+							where.push(` pos_1 = '${req.query.organ}' `);
+						}
+						if(req.query.pos_4){
+							where.push(` pos_4 = '${req.query.pos_4}' `);
+						}
 					}else if(req.query.auth === "A"){
-						query += req.query.pos_4 ? ` WHERE pos_4 = '${req.query.pos_4}' ` : "";
+						if(req.query.pos_4){
+							where.push(` pos_4 = '${req.query.pos_4}' `);
+						}
 					}
 					break;
 				case "pos_1" : // 기관명
-					query += ` WHERE site = '${position[0]}' `;
+					where.push(` site = '${position[0]}' `);
 					if(req.query.auth === "P"){
-						query += ` AND pos_1 = '${req.query.organ}' AND pos_4 = '${req.query.pos_4}' `;
+						if(req.query.organ){
+							where.push(` pos_1 = '${req.query.organ}' `);
+						}
+						if(req.query.pos_4){
+							where.push(` pos_4 = '${req.query.pos_4}' `);
+						}
 					}else if(req.query.auth === "A"){
-						query += req.query.pos_4 ? ` AND pos_4 = '${req.query.pos_4}' ` : "";
+						if(req.query.pos_4){
+							where.push(` pos_4 = '${req.query.pos_4}' `);
+						}
 					}
 					break;
 				case "pos_2" : // 층
-					query += ` WHERE site = '${position[0]}' `;
-					query += ` AND pos_1 = '${position[1]}' `;
+					where.push(` site = '${position[0]}' `);
+					where.push(` pos_1 = '${position[1]}' `);
 					if(req.query.auth === "P" || req.query.auth === "A"){
-						query += req.query.pos_4 ? ` AND pos_4 = '${req.query.pos_4}' ` : "";
+						if(req.query.pos_4){
+							where.push(` pos_4 = '${req.query.pos_4}' `);
+						}
 					}
 					break;
 				case "pos_3" : // 부서
-					query += ` WHERE site = '${position[0]}' `;
-					query += ` AND pos_1 = '${position[1]}' `;
-					query += ` AND pos_2 = '${position[2]}' `;
+					where.push(` site = '${position[0]}' `);
+					where.push(` pos_1 = '${position[1]}' `);
+					where.push(` pos_2 = '${position[2]}' `);
 					if(req.query.auth === "P" || req.query.auth === "A"){
-						query += req.query.pos_4 ? ` AND pos_4 = '${req.query.pos_4}' ` : "";
+						if(req.query.pos_4){
+							where.push(` pos_4 = '${req.query.pos_4}' `);
+						}
 					}
 					break;
 			}
+
+			if(where.length > 0){
+				query += " WHERE ";
+				query += where.join(" AND ");
+			}
+
 			query += ` group by ${req.query.site} `;
+
+			console.log("query::::::::::", query);
 
 			let result = [];
 			await db.sequelize.query(query, {

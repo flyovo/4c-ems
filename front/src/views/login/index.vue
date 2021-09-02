@@ -51,6 +51,7 @@ import { Form as ElForm, Input } from 'element-ui'
 import { UserStoreModule } from '@/store/modules/user/store'
 // import { isValidUsername } from '@/utils/validate'
 import VersionPopup from './VersionPopup.vue'
+import { ElStep } from 'element-ui/types/step'
 
 @Component({
   name: 'Login',
@@ -60,8 +61,10 @@ import VersionPopup from './VersionPopup.vue'
 })
 export default class extends Vue {
   private loginForm = {
-    userId: 'admin',
-    userPwd: '1234'
+    // userId: 'admin',
+    // userPwd: '1234'
+    userId: '',
+    userPwd: ''
   }
   private passwordType = 'password'
   private idRemember = false
@@ -78,13 +81,29 @@ export default class extends Vue {
       this.otherQuery = this.getOtherQuery(query)
     }
   }
-  mounted() {}
+  @Watch('idRemember', { immediate: true })
+  private onIdRememberChange() {
+    if(this.idRemember){
+      localStorage.setItem('4c-saveId', this.loginForm.userId)
+    }
+  }
+
+  mounted() {
+    if (localStorage.getItem('4c-saveId')) {
+      this.idRemember = true;
+      this.loginForm.userId = localStorage.getItem('4c-saveId');
+    }else{
+      localStorage.removeItem('4c-saveId')
+    }
+  }
 
   private handleLogin() {
-    ;(this.$refs.loginForm as ElForm).validate(async (valid: boolean) => {
+    (this.$refs.loginForm as ElForm).validate(async (valid: boolean) => {
       if (valid) {
         await UserStoreModule.Login(this.loginForm).then(async (resolve: any) => {
           if (resolve === 200) {
+            this.idRemember = false
+
             await this.$router.push(
               {
                 path: '/'

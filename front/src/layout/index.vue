@@ -4,7 +4,7 @@
     <!-- <div v-if="sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
     <div class="container">
       <sidebar class="sidebar-container" />
-      <div :class="{ hasTagsView: showTagsView }" class="main-container">
+      <div :class="{ hasTagsView: showTagsView }" class="main-container" id="main-container">
         <navbar />
         <div :class="{ 'fixed-header': fixedHeader }">
           <tags-view v-if="showTagsView" />

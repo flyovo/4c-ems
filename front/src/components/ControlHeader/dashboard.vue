@@ -52,7 +52,8 @@ export default class extends Vue {
   // 기관 리스트
   async siteList() {
     let list = await SettingsModule.GetSite({
-      site: 'site',
+      // site: 'site',
+      site: 'pos_4',
       position: [],
       ...JSON.parse(localStorage.getItem('4c-userState')),
       auth: localStorage.getItem('4c-userAuth')
