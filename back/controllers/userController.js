@@ -33,10 +33,7 @@ const user = {
 				" from user_login a inner join site_pos_manage b on a.pos_4 = b.idx  " +
 				` where a.user_id = '${user.user_id}'  and a.pwd = '${user.pwd}' `;
 
-				return new Promise(async (resolve, reject) => {
-					let result = await db.sequelize.query(query, {
-						model: db.user_login
-					});
+				return new Promise((resolve, reject) => {
 					const secret = req.app.get("jwt-secret");
 					const expired = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7days
 					jwt.sign(
@@ -54,13 +51,17 @@ const user = {
 						(err, token) => {
 							if (err) {return reject({ error: err });}
 
-							return resolve(
-								res.json({ 
-									data: result[0],
-									token: token,
-									resultCd: 200
-								})
-							);
+							return db.sequelize.query(query, {
+								model: db.user_login
+							}).then(result => {
+								return resolve(
+									res.json({ 
+										data: result[0],
+										token: token,
+										resultCd: 200
+									})
+								);
+							});
 						}
 					);
 				});					
