@@ -1,6 +1,6 @@
 <template>
   <div class="control_header">
-    <div class="control_header_wrapper">
+    <!-- <div class="control_header_wrapper">
       <div class="control_header__title">기관 선택</div>
       <el-dropdown>
         <el-button> {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
@@ -16,12 +16,33 @@
             <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간(월별)</el-button>
           </div>
           <div class="date_text">
-            <!-- <img src="@/assets/images/ic-calendar-bk.svg"> -->
             <i class="el-icon-date"></i>
             조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
           </div>
         </div>
       </div>
+    </div> -->
+    <div class="control_header_wrapper">
+      <div class="control_header__title">기관 선택</div>
+      <el-dropdown>
+        <el-button> {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" @click.native="handleSiteChange(item)">{{ item.label }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <div class="control_header__date">
+        <div class="date-warpper">
+          <div class="date__buttons">
+            <el-button type="info" :class="{ active: selectDate === 0 }" @click="handleDateChange(0)">당월(주별)</el-button>
+            <el-button type="info" :class="{ active: selectDate === 1 }" @click="handleDateChange(1)">전월(주별)</el-button>
+            <el-button type="info" :class="{ active: selectDate === 2 }" @click="handleDateChange(2)">연간(월별)</el-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="date_text">
+      <i class="el-icon-date"></i>
+      조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
     </div>
   </div>
 </template>
@@ -119,9 +140,11 @@ export default class extends Vue {
 <style lang="scss" scoped>
 .control_header {
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+
   .control_header_wrapper {
     display: flex;
-    width: 100%;
     // height: 36px;
     height: setViewport('vh', 36);
 
@@ -181,17 +204,13 @@ export default class extends Vue {
     color: $subMenuText;
   }
   &__date {
-    // width: calc(100% - 212px);
-    // width: calc(100% - #{setViewport('vw', 212)});
-    min-width: calc(100% - 212px);
-    // width: 100%;
     height: 100%;
+
     .date-warpper {
       width: 100%;
       height: 100%;
-      display: flex;
-      justify-content: space-between;
       .date__buttons {
+        height: 100%;
         button {
           height: 100%;
           padding: 0px setViewport('vw', 12);
@@ -199,7 +218,6 @@ export default class extends Vue {
           margin-left: 0;
           background-color: $subMenuBg;
           border: 1px solid $lightGray;
-          font-size: setViewport('vw', 14);
           font-weight: normal;
           font-stretch: normal;
           font-style: normal;
@@ -212,34 +230,37 @@ export default class extends Vue {
             background-color: $menuActiveText;
             color: $subMenuActiveText;
           }
+          > span {
+            font-size: setViewport('vw', 14);
+          }
         }
       }
-      .date_text {
-        display: flex;
-        align-items: center;
-        // font-size: 14px;
-        font-size: setViewport('vw', 14);
-        font-weight: normal;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: -0.84px;
-        text-align: right;
-        color: $darkGrayText;
-        img {
-          // width: 24px;
-          // height: 24px;
-          // margin: 0 4px 0 0;
-          width: setViewport('vw', 24);
-          height: setViewport('vh', 24);
-          margin: 0 setViewport('vw', 4) 0 0;
-          object-fit: contain;
-        }
-        i {
-          margin: 0 4px 0 0;
-          object-fit: contain;
-        }
-      }
+    }
+  }
+  .date_text {
+    display: flex;
+    align-items: center;
+    // font-size: 14px;
+    font-size: setViewport('vw', 14);
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.84px;
+    text-align: right;
+    color: $darkGrayText;
+    img {
+      // width: 24px;
+      // height: 24px;
+      // margin: 0 4px 0 0;
+      width: setViewport('vw', 24);
+      height: setViewport('vh', 24);
+      margin: 0 setViewport('vw', 4) 0 0;
+      object-fit: contain;
+    }
+    i {
+      margin: 0 4px 0 0;
+      object-fit: contain;
     }
   }
 }
