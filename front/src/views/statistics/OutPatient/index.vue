@@ -125,5 +125,9 @@ export default class extends Vue {
 		});
   }
 
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+  
 }
 </script>

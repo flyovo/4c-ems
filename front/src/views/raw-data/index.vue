@@ -83,8 +83,6 @@ export default class extends Vue {
     return RawDataStoreModule.dateList
   }
   get typeLabel() {
-    console.log(RawDataStoreModule.typeLabel)
-    console.log(this.routeData)
     return RawDataStoreModule.typeLabel.filter(list => {
       return list.id === this.routeData
     })[0].label

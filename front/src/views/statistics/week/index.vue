@@ -52,13 +52,68 @@ export default class extends Vue {
   public dayOfWeek: Array<number> = [0,0,0,0,0,0,0]
   public getHeight: number = 300
 
+  created() {
+    this.getDateRange()
+  }
+
+  get dateList() {
+    return StatisticsStoreModule.dateList
+  }
+
   get dateRange() {
     return StatisticsStoreModule.dateRange
   }
 
+  private async handleDateChange(value: number) {
+    this.selectDate = value
+    await this.getDateRange()
+    // this.fetchData()
+  }
+
+  private async getDateRange() {
+    const payload = {
+      date: this.selectDate
+    }
+    await StatisticsStoreModule.GetDateRange(payload)
+  }
+
   get tableData() {
-    this.countDayOfWeek()
     return StatisticsStoreModule.tableList
+  }
+
+  get totalCount() {
+    return StatisticsStoreModule.tableListTotalCount
+  }
+
+  get currentPage() {
+    return this.page
+  }
+
+  set currentPage(value) {
+    this.$emit('update:page', value)
+  }
+
+  private async getTablePagination() {
+    await StatisticsStoreModule.GetTableData({
+      data: this.data,
+      page: this.page,
+      limit: 15
+    })
+  }
+
+  private async handleCurrentChange(value: number) {
+    this.page = await value
+    this.getTablePagination()
+  }
+
+  private async fetchData() {
+    await StatisticsStoreModule.RawTableData({
+      type: this.type,
+      range: this.dateRange
+    }).then((result: any) => {
+      this.data = result
+      this.handleCurrentChange(1)
+    })
   }
 
   @Watch('dateRange', { immediate: true, deep: true })
@@ -95,5 +150,8 @@ export default class extends Vue {
 		});
   }
 
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  }
 }
 </script>

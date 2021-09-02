@@ -84,6 +84,24 @@ const statistics = {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
 
+			let subPos = [];
+			// 위치 조회
+			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
+				subPos.push(` a1.pos_1 = '${position[1]}' `);
+			}else{
+				subPos.push(" a1.pos_1 = a.pos_1 ");
+			}
+			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
+				subPos.push(` a1.pos_2 = '${position[2]}' `);
+			}else{
+				subPos.push(" a1.pos_2 = a.pos_2 ");
+			}
+			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
+				subPos.push(` a1.pos_3 = '${position[3]}' `);
+			}else{
+				subPos.push(" a1.pos_3 = a.pos_3 ");
+			}
+
 			let query = " SELECT " + 
 			" a.pos_1 AS '기관' " + 
 			" , a.pos_2 AS '층' " + 
@@ -91,32 +109,38 @@ const statistics = {
 			" , ( " +  
 			"	select ifnull(sum(b1.cnt_sunap), 0) " +
 			`	from ${db.device_op_info.name} a1 inner join ${db.sunap_daily_cnt.name} b1 on a1.dev_id = b1.dev_id  ` +
-			"	where a1.pos_1 = '기관' and a1.pos_2 = '층' and b1.sunap_type like '%중간%'  " +
+			// "	where a1.pos_1 = '기관' and a1.pos_2 = '층' and b1.sunap_type like '%중간%'  " +
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}  and b1.sunap_type like '%중간%' ` : " b1.sunap_type like '%중간%' "}   ` + 
 			"	) as '중간건수'  " + 
 			" ,(  " +
 			"	select ifnull(sum(b1.amount), 0)   " + 
 			`	from ${db.device_op_info.name} a1 inner join ${db.sunap_daily_cnt.name} b1 on a1.dev_id = b1.dev_id  ` +
-			"	where a1.pos_1 = '기관' and a1.pos_2 = '층' and b1.sunap_type like '%중간%' " + 
+			// "	where a1.pos_1 = '기관' and a1.pos_2 = '층' and b1.sunap_type like '%중간%' " + 
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}  and b1.sunap_type like '%중간%' ` : " b1.sunap_type like '%중간%' "}   ` + 
 			"	) as '중간금액' " +  
 			" ,(  " + 
 			"	select ifnull(sum(b1.cnt_sunap), 0)   " + 
 			`	from ${db.device_op_info.name} a1 inner join ${db.sunap_daily_cnt.name} b1 on a1.dev_id = b1.dev_id  ` +
-			"	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and b1.sunap_type like '%퇴원%'  " + 
+			// "	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and b1.sunap_type like '%퇴원%'  " + 
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}  and b1.sunap_type like '%퇴원%' ` : " b1.sunap_type like '%퇴원%' "}   ` + 
 			"	) as '퇴원건수'  " + 
 			" ,(  " + 
 			"	select ifnull(sum(b1.amount), 0)   " + 
 			`	from ${db.device_op_info.name} a1 inner join ${db.sunap_daily_cnt.name} b1 on a1.dev_id = b1.dev_id  ` +
-			"	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and b1.sunap_type like '%퇴원%'  " + 
+			// "	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and b1.sunap_type like '%퇴원%'  " + 
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}  and b1.sunap_type like '%퇴원%' ` : " b1.sunap_type like '%퇴원%' "}   ` + 
 			"	) as '퇴원금액'  " + 
 			" ,(  " + 
 			"	select ifnull(sum(b1.cnt_his_query), 0)   " + 
 			`	from ${db.device_op_info.name} a1 inner join ${db.sunap_daily_cnt.name} b1 on a1.dev_id = b1.dev_id  ` +
-			"	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%')  " + 
+			// "	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%')  " + 
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}  and (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%') ` : " (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%') "}   ` + 
 			"	) as '입퇴원비조회건수'  " + 
 			" ,(  " +
 			"	select ifnull(sum(b1.cnt_sunap_x), 0)   " + 
 			`	from ${db.device_op_info.name} a1 inner join ${db.sunap_daily_cnt.name} b1 on a1.dev_id = b1.dev_id  ` +
-			"	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%')  " + 
+			// "	where a1.pos_1 = '기관' and a1.pos_2 = '층'  and (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%')  " + 
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}  and (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%') ` : " (b1.sunap_type like '%퇴원%' OR b1.sunap_type like '%중간%') "}   ` + 
 			"   ) as '입퇴원비불능건수'  " +
 			" , CAST(IFNULL(SUM(b.cnt_parking_reg), 0) AS UNSIGNED INTEGER) AS '주차등록건수' " + 
 			" , CAST(IFNULL(SUM(b.cnt_parking_chg), 0) AS UNSIGNED INTEGER) AS '주차변경건수' " + 
@@ -180,6 +204,24 @@ const statistics = {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
 
+			let subPos = [];
+			// 위치 조회
+			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
+				subPos.push(` a1.pos_1 = '${position[1]}' `);
+			}else{
+				subPos.push(" a1.pos_1 = a.pos_1 ");
+			}
+			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
+				subPos.push(` a1.pos_2 = '${position[2]}' `);
+			}else{
+				subPos.push(" a1.pos_2 = a.pos_2 ");
+			}
+			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
+				subPos.push(` a1.pos_3 = '${position[3]}' `);
+			}else{
+				subPos.push(" a1.pos_3 = a.pos_3 ");
+			}
+
 			let query = " SELECT " + 
 			" a.pos_1 AS '기관' " + 
 			" , a.pos_2 AS '층' " + 
@@ -188,77 +230,77 @@ const statistics = {
 			" ( " + 
 			"  SELECT count(DISTINCT a1.dev_id) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  WHERE a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역'   " + 
+			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")} ` : ""}   ` + 
 			"  ) AS '대수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 2   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 2 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 2 "} ` + 
 			"  ) AS '월건수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 2   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 2 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 2 "} ` + 
 			"  ) AS '월금액' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 3   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 3 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 3 "} ` + 
 			"  ) AS '화건수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 3   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 3 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 3 "} ` + 
 			"  ) AS '화금액' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 4   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 4 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 4 "} ` + 
 			"  ) AS '수건수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 4   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 4 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 4 "} ` + 
 			"  ) AS '수금액' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 5   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 5 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 5 "} ` + 
 			"  ) AS '목건수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 5   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 5 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 5 "} ` + 
 			"  ) AS '목금액' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 6   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 6 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 6 "} ` + 
 			"  ) AS '금건수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 6   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 6 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 6 "} ` + 
 			"  ) AS '금금액' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 7   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 7 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 7 "} ` + 
 			"  ) AS '토건수' " + 
 			" ,( " + 
-			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
+			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 7   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 7 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 7 "} ` + 
 			"  ) AS '토금액' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 1   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 1 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 1 "} ` + 
 			"  ) AS '일건수' " + 
 			" ,( " + 
-			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
+			"  SELECT IFNULL(SUM(b1.amount), 0) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` + 
-			"  where a1.pos_1 = '기관' and a1.pos_2 = '층' and a1.pos_3 = '구역' and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 1   " + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} and DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 1 ` : " DAYOFWEEK(date_format(b1.sunap_date , '%Y-%m-%d')) = 1 "} ` + 
 			"  ) AS '일금액' " + 
 			` FROM ${db.device_op_info.name} a LEFT JOIN ${db.sunap_daily_cnt.name} b ON a.dev_id = b.dev_id `;
 			
@@ -627,7 +669,15 @@ const statistics = {
 				where.push(` a.pos_3 = '${position[3]}' `);
 			}
 
-			where.push(" b.act_type LIKE '%신체계측%' ");
+			// 신체계측 타입 선택
+			let act_type = "";
+			switch(req.query.option){
+				case "신체계측 전체": act_type = "%신체계측%"; break;
+				case "신체계측(혈압)": act_type = "%혈압%"; break;
+				case "신체계측(신장체중)": act_type = "%신장체중%"; break;
+				default: act_type = "%신체계측%"; break;
+			}
+			where.push(` b.act_type like '${act_type}' `);
 
 			// 기간 선택
 			// 전체일 경우 사용 안함

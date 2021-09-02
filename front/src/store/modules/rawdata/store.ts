@@ -146,7 +146,7 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
       list: []
     }
   ]
-  // public typeIndex = 0
+  public typeIndex = 0
   public comboIndex = 0
   public comboList = []
 

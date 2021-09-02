@@ -7,9 +7,11 @@
         :typeLabel="typeLabel"
         :typeList="typeList"
         :selectDate="date"
+        :selectType="type"
         :menuType="routeData"
         @selectCenter="fetchCenter"
         @selectDate="fetchDate"
+        @selectType="fetchType"
       />
       <!-- :selectType="type" -->
     </div>

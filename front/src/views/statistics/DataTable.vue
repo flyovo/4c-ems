@@ -246,17 +246,16 @@ export default class extends Vue {
         }
       }
       .cell {
-        height: setViewport('vh', 32);
-        vertical-align: unset;
+        min-height: setViewport('vh', 32);
         font-size: setViewport('vw', 16);
         font-weight: 500;
         font-stretch: normal;
         font-style: normal;
         letter-spacing: normal;
-        text-align: center;
         color: #fff;
         padding-left: 0 !important;
         padding-right: 0;
+        display: flex;
         align-items: center;
         justify-content: center;
       }
@@ -266,15 +265,16 @@ export default class extends Vue {
         padding: 0;
         .cell {
           height: setViewport('vh', 32);
-          vertical-align: unset;
           font-size: setViewport('vw', 16);
           font-weight: 500;
           font-stretch: normal;
           font-style: normal;
           letter-spacing: normal;
-          text-align: center;
           padding-left: 0 !important;
           padding-right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
     }
@@ -298,14 +298,11 @@ export default class extends Vue {
       font-size: setViewport('vw', 24);
     }
     .el-pager li {
-      // display: flex;
-      // justify-content: center;
-      // align-items: center;
       // width: 36px;
       // height: 36px;
       // font-size: 16px;
       width: setViewport('vw', 36);
-      height: setViewport('vh', 36);
+      height: setViewport('vw', 36);
       font-size: setViewport('vw', 16);
       font-weight: bold;
       color: $paginationText;
@@ -352,6 +349,7 @@ export default class extends Vue {
 
       .el-pagination {
         position: absolute;
+        align-items: center;
         padding: 0;
 
         .el-pager li {

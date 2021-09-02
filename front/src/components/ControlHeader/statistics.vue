@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 import { SettingsModule } from '@/store/modules/settings/store'
 import dayjs from 'dayjs'
 
@@ -54,9 +55,11 @@ export default class extends Vue {
   @Prop({ default: 0 }) private selectType!: Number
   @Prop({ default: 'dashboard' }) private menuType!: String
 
+  get typeIndex() {
+    return StatisticsStoreModule.typeIndex
+  }
 
   get menuPosition() {
-    console.log('menuPosition get :::::', SettingsModule.menuPosition)
     return SettingsModule.menuPosition
   }
 
@@ -91,6 +94,10 @@ export default class extends Vue {
       await this.$emit('selectDate', value)
     }
   }
+
+  private async handleTypeChange(value: number) {
+    await this.$emit('selectType', value)
+  }
 }
 </script>
 
@@ -114,7 +121,7 @@ export default class extends Vue {
   .calendar {
     // width: setViewport('vw', 255);
     // width: setViewport('vw', 290);
-    height: 100%;
+    // height: 100%;
     margin-left: setViewport('vw', 15);
     .el-range-editor {
       width: 100%;
@@ -155,7 +162,7 @@ export default class extends Vue {
         line-height: 1;
         width: setViewport('vw', 24);
         height: setViewport('vw', 24);
-        margin-right: 12px;
+        // margin-right: 12px;
         margin-left: setViewport('vw', 10);
         &.el-range__close-icon {
           display: none;
@@ -163,7 +170,9 @@ export default class extends Vue {
       }
       .el-range-separator {
         padding: 0;
-        line-height: 1.5;
+        line-height: 0;
+        display: flex;
+        align-items: center;
       }
     }
   }
@@ -176,16 +185,6 @@ export default class extends Vue {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-
-  .control_header_group {
-    // width: 65%;
-    & + div {
-      // width: 35%;
-      display: flex;
-      align-items: center;
-      height: setViewport('vh', 36);
-    }
-  }
 
   .control_header_wrapper {
     display: flex;
@@ -236,7 +235,7 @@ export default class extends Vue {
     min-width: 40px;
     // margin-right: 20px;
     // font-size: 16px;
-    width: setViewport('vw', 63);
+    // width: setViewport('vw', 63);
     margin-right: setViewport('vw', 20);
     font-size: setViewport('vw', 16);
     font-weight: bold;

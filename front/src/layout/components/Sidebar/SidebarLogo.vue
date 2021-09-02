@@ -5,7 +5,7 @@
         <img src="@/assets/images/icon-logo-4c-logo.svg" />
       </div>
     </div>
-    <div class="sidebar-logo-user">
+    <!-- <div class="sidebar-logo-user">
       <div class="sidebar-image">
         <img src="@/assets/images/ic-users.svg" />
       </div>
@@ -13,8 +13,16 @@
         <div class="text1">{{ getterSetter }}</div>
         <div class="text2">{{ userId }}</div>
       </div>
-      <el-button type="text" @click.native="logout()"><img src="@/assets/images/ic-export.svg"/></el-button>
-    </div>
+      <el-button @click.native="logout()"><img src="@/assets/images/ic-export.svg"/></el-button>
+    </div> -->
+    <el-button class="sidebar-logo-user" @click.native="logout()">
+      <img class="sidebar-image" src="@/assets/images/ic-users.svg" />
+      <div class="sidebar-title">
+        <div class="text1">{{ getterSetter }}</div>
+        <div class="text2">{{ userId }}</div>
+      </div>
+      <img src="@/assets/images/ic-export.svg"/>
+    </el-button>
     <div class="sidebar-logo-menu">
       <el-tree ref="tree" node-key="id" :highlight-current="true" :render-after-expand="false" :default-expand-all="true" :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick" />
     </div>
@@ -276,7 +284,25 @@ export default class extends Vue {
 
 <style lang="scss">
 .sidebar-logo-container {
+  & .sidebar-logo-user {
+    display: flex;
+    width: 100%;
+    // height: 60px;
+    height: setViewport('vh', 60);
+    padding: 0;
+    background-color: $subMenuUserBg;
+    justify-content: space-between;
+    align-items: center;
+
+    &>span {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
   .el-tree {
+    margin-bottom: 50px;
     & > .el-tree-node:first-child {
       .el-tree-node__expand-icon {
         background-image: url('~@/assets/images/ic-home.svg');
@@ -330,6 +356,9 @@ export default class extends Vue {
       font-size: setViewport('vw', 16);
       font-weight: bold;
     }
+    .el-tree-node__label {
+      font-size: setViewport('vw', 14);
+    }
   }
 }
 </style>
@@ -349,26 +378,30 @@ export default class extends Vue {
   height: 100%;
 
   & .sidebar-logo-user {
-    width: 100%;
-    height: 60px;
-    height: setViewport('vh', 60);
     display: flex;
+    width: 100%;
+    // height: 60px;
+    height: setViewport('vh', 60);
+    padding: 0 16px;
     background-color: $subMenuUserBg;
     justify-content: space-between;
     align-items: center;
-
+    border-radius: 0;
+    &:hover, &:active {
+      border-color: unset;
+    }
+    img {
+      width: setViewport('vw', 24);
+      height: setViewport('vw', 24);
+    }
     & .sidebar-image {
-      // margin: 0 4px 0 16px;
-      margin: 0 setViewport('vh', 4) 0 setViewport('vh', 16);
+      margin-right: setViewport('vw', 4);
     }
     & .sidebar-title {
       width: 100%;
-      // height: 60px;
-      height: setViewport('vh', 60);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 5px;
       .text1 {
         color: #fff;
         // font-size: 15px;
@@ -380,7 +413,7 @@ export default class extends Vue {
         letter-spacing: normal;
         text-align: left;
         display: flex;
-        height: 50%;
+        // height: 50%;
         align-items: center;
       }
       .text2 {
@@ -398,10 +431,10 @@ export default class extends Vue {
         align-items: center;
       }
     }
-    button {
+    // button {
       // margin-right: 18px;
-      margin-right: setViewport('vw', 18);
-    }
+      // margin-right: setViewport('vw', 18);
+    // }
   }
 
   & .sidebar-logo-menu {

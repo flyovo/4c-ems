@@ -113,7 +113,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     },
     {
       id: 'week',
-      label: ''
+      label: '수납 타입 선택'
     },
     {
       id: 'certification',
@@ -129,7 +129,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     },
     {
       id: 'measurements',
-      label: ''
+      label: '신체계측 타입 선택'
     }
   ]
   public typeList = [
@@ -143,7 +143,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     },
     {
       id: 'week',
-      list: []
+      list: ['수납 전체', '외래 수납', '중간금 수납', '퇴원 수납']
     },
     {
       id: 'certification',
@@ -162,6 +162,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
       list: ['신체계측 전체', '신체계측(혈압)', '신체계측(신장체중)']
     }
   ]
+  public typeIndex = 0
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {

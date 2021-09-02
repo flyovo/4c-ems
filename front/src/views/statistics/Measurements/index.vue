@@ -117,5 +117,10 @@ export default class extends Vue {
 			window.addEventListener("resize", this.handleResize);
 		});
   }
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+  
 }
 </script>

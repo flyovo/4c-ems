@@ -55,7 +55,7 @@ export default class extends Vue {
     if( JSON.parse(localStorage.getItem('4c-userState')).site ){
       position.push( JSON.parse(localStorage.getItem('4c-userState')).site )
     }
-    
+
     let list = await SettingsModule.GetSite({
       site: 'pos_1',
       position: position.join(','),
@@ -171,7 +171,7 @@ export default class extends Vue {
     min-width: 40px;
     // margin-right: 20px;
     // font-size: 16px;
-    width: setViewport('vw', 63);
+    // width: setViewport('vw', 63);
     // font-size: 20px;
     font-size: setViewport('vw', 20);
     font-weight: bold;
@@ -182,7 +182,9 @@ export default class extends Vue {
   }
   &__date {
     // width: calc(100% - 212px);
-    width: calc(100% - #{setViewport('vw', 212)});
+    // width: calc(100% - #{setViewport('vw', 212)});
+    // min-width: calc(100% - 212px);
+    width: 100%;
     height: 100%;
     .date-warpper {
       width: 100%;

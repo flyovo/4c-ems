@@ -112,7 +112,6 @@ export default class extends Vue {
 
   private handleResize() {
     this.getHeight = this.$refs.tableWrapper.clientHeight
-    console.log(this.$refs.tableWrapper.clientHeight)
   }
 
   mounted(){
@@ -121,5 +120,10 @@ export default class extends Vue {
 			window.addEventListener("resize", this.handleResize);
 		});
   }
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+  
 }
 </script>

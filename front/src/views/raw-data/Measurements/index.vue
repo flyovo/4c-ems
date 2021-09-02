@@ -35,7 +35,6 @@ export default class extends Vue {
 
   created() {
     this.getDateRange()
-    // this.fetchData()
   }
 
   get dateList() {
@@ -116,6 +115,10 @@ export default class extends Vue {
       this.handleResize()
 			window.addEventListener("resize", this.handleResize);
 		});
+  }
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
   }
   
 }
