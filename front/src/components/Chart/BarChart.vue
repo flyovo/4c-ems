@@ -38,9 +38,8 @@ export default class extends Vue {
     this.initProcess()
     this.$nextTick(function() {
       let vm = this
-      let ele = document.getElementById('main-container')
-      ele.attachEvent('resize', function() {
-        console.log('main-container')
+      window.addEventListener('resize', function() {
+        console.log('resize')
         if (vm.chart) {
           vm.chart.resize()
         }
