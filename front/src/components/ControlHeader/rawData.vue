@@ -113,7 +113,7 @@ export default class extends Vue {
         to: dayjs(arr[1]).format('YYYY년 MM월 DD일')
       },
       date: {
-        term: 'weekly',
+        term: 'term',
         from: dayjs(arr[0]).format('YYYY-MM-DD'),
         to: dayjs(arr[1]).format('YYYY-MM-DD')
       }

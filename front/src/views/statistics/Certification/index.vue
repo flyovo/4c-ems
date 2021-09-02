@@ -32,6 +32,9 @@ export default class extends Vue {
   public type: string = 'receipt'
   public data: []
   public getHeight: number = 300
+  public rowSpan: string = ''
+  public rowSpanIndex: number = 0
+
 
   created() {
     this.getDateRange()
@@ -119,6 +122,9 @@ export default class extends Vue {
   }
   
   objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+    console.log(row, column, rowIndex, columnIndex)
+    console.log(row['기관'], column, rowIndex, columnIndex)
+    
     if (columnIndex === 0) {
       if (rowIndex % 2 === 0) {
         return {
@@ -131,7 +137,36 @@ export default class extends Vue {
           colspan: 0
         };
       }
-    }
+
+    // if (columnIndex === 0) {
+      // if(this.rowSpan !== row['기관']){
+      //   this.rowSpan = row['기관']
+      //   this.rowSpanIndex = 0;
+
+      //   return {
+      //     rowspan: 0,
+      //     colspan: 0
+      //   };
+      // }else{
+      //   this.rowSpanIndex += 1;
+
+      //   return {
+      //     rowspan: this.rowSpanIndex,
+      //     colspan: 1
+      //   };
+      // }
+      // if (rowIndex === this.rowSpanIndex) {
+      //   return {
+      //     rowspan: this.rowSpanIndex,
+      //     colspan: 1
+      //   };
+      // } else {
+      //   return {
+      //     rowspan: 0,
+      //     colspan: 0
+      //   };
+      // }
+    // }
   }
 }
 </script>
