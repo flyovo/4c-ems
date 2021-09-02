@@ -34,7 +34,7 @@
     <Measurements v-else-if="menuType === 'measurements'" />
     <!-- 실패 Data -->
     <div class="statistics-table__body__paging">
-      <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-change="currentPage" @current-change="handleCurrentChange"> </el-pagination>
+      <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-page.sync="page" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
         <download-excel class="excel" :data="tableData" name="filename.xls">
@@ -119,14 +119,6 @@ export default class extends Vue {
     return StatisticsStoreModule.tableListTotalCount
   }
 
-  get currentPage() {
-    return this.page
-  }
-
-  set currentPage(value) {
-    this.$emit('update:page', value)
-  }
-
   private async handleCommand(command) {
     this.pageSize = Number(command);
     this.getTablePagination()
@@ -167,9 +159,7 @@ export default class extends Vue {
       range: this.dateRange.date,
       position: this.menuPosition.join(',')
     }).then((result: any) => {
-      console.log(result)
       this.data = result
-      this.$emit('update:page', 1)
       this.handleCurrentChange(1)
     })
   }
