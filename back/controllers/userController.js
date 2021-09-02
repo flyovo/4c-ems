@@ -48,10 +48,10 @@ const user = {
 							issuer: "4c-ems",
 							subject: "ems"
 						},
-						async (err, token) => {
+						(err, token) => {
 							if (err) {return reject({ error: err });}
 
-							return await db.sequelize.query(query, {
+							db.sequelize.query(query, {
 								model: db.user_login
 							}).then(async result => {
 								return await resolve(
