@@ -62,7 +62,7 @@ const rawData = {
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
-			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
 				where.push(` DATE_FORMAT(b.sunap_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
@@ -149,7 +149,7 @@ const rawData = {
 				
 			// 기간 선택
 			// 전체일 경우 사용 안함
-			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
 				where.push(` DATE_FORMAT(b.certificate_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
@@ -219,7 +219,7 @@ const rawData = {
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
-			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
 				where.push(` DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
@@ -297,7 +297,7 @@ const rawData = {
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
-			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
 				where.push(` DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
@@ -364,7 +364,7 @@ const rawData = {
 				
 			// 기간 선택
 			// 전체일 경우 사용 안함
-			if(req.query.dateTerm === "month"){ // 당월 조회, 전월 조회
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
 				where.push(` DATE_FORMAT(b.fail_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회

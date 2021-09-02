@@ -232,7 +232,7 @@ export default class extends Vue {
     if (url[0] !== 'dashboard') {
       position = this.menuUrl.slice(2).join(',')
       if (type !== '') {
-        position = "세브란스(신촌)"
+        // position = "세브란스(신촌)"
         await this.siteList(type, position).then(async res => {
           if (!data.children && res.length > 0) {
             this.append(data, res)

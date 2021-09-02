@@ -17,14 +17,7 @@ module.exports = () => {
 				return done(null, false, { reason: "존재하지 않는 사용자입니다." });
 			}
 			if (mysqlPassword(userPwd) === exUser.pwd) {
-				const parseUser = {
-					user_id: exUser.user_id,
-					pwd: exUser.pwd, 
-					authority: exUser.authority,
-					organ: exUser.organ,
-					pos_4: exUser.pos_4
-				};
-				return done(null, parseUser);
+				return done(null, exUser);
 			} else {
 				return done(null, false, { reason: "비밀번호가 틀립니다." });
 			}

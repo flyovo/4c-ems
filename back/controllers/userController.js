@@ -24,6 +24,7 @@ const user = {
 					return await next(err);
 				}
 
+				let data = user;
 				let query = " select " +
 				"  a.user_id as id  " +
 				", a.authority  " +
@@ -32,14 +33,20 @@ const user = {
 				", a.updatedate " +
 				" from user_login a inner join site_pos_manage b on a.pos_4 = b.idx  " +
 				` where a.user_id = '${user.user_id}'  and a.pwd = '${user.pwd}' `;
-
-				return new Promise((resolve, reject) => {
+				
+				return db.sequelize.query(query, {
+					model: db.user_login
+				}).then(rows => {
+					if(rows.length > 0){
+						data.organ = rows[0].dataValues.organ;
+						data.pos_4 = rows[0].dataValues.pos_4;
+					}
 					const secret = req.app.get("jwt-secret");
 					const expired = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7days
 					jwt.sign(
 						{
 							exp: Math.floor(expired / 1000),
-							user_id: user.user_id,
+							user_id: user.id,
 							authority: user.authority
 						},
 						secret,
@@ -50,29 +57,15 @@ const user = {
 						},
 						(err, token) => {
 							if (err) {return reject({ error: err });}
-							
-							return resolve(
-								res.json({ 
-									data: user,
-									token: token,
-									resultCd: 200
-								})
-							);
-
-							// db.sequelize.query(query, {
-							// 	model: db.user_login
-							// }).then(async result => {
-							// 	return await resolve(
-							// 		res.json({ 
-							// 			data: result[0],
-							// 			token: token,
-							// 			resultCd: 200
-							// 		})
-							// 	);
-							// });
+							return res.json({
+								data: data,
+								token: token,
+								resultCd: 200
+							});
 						}
 					);
-				});					
+				});
+				// });					
 			});
 		})(req, res, next);
 	},

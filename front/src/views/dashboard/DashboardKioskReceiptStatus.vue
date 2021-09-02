@@ -60,7 +60,9 @@ export default class extends Vue {
     DashboardStoreModule.Dashboard({
       type: this.type,
       site: this.selectedSite.id,
-      ...this.dateRange.date
+      dateTerm: this.dateRange.date.term,
+      startDate: this.dateRange.date.from,
+      endDate: this.dateRange.date.to
     }).then(async (result: any) => {
       this.data = result
       await this.setChart()

@@ -7,7 +7,7 @@ const dashboard = {
 	getKiosk: async function (req, res, next) {
 		try {
 			let query = " SELECT ";
-			if(req.query.term === "weekly"){
+			if(req.query.dateTerm === "weekly"){
 				// 당월 조회 or 전월 조회 
 				query += ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y-%m/'), FLOOR((DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%d') + (DATE_FORMAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y%m%01'),'%w')-1))/7)+1) AS date, ` +
 						 ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%c'), '월', FLOOR((DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%d') + (DATE_FORMAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y%m%01'),'%w')-1))/7)+1, '째주') AS data_cloumn, `;
@@ -24,15 +24,15 @@ const dashboard = {
 			//권한에따라 달라짐
 			query += ` AND ${db.device_op_info.name}.pos_1 = '본관' `;
 
-			if(req.query.term === "weekly"){
+			if(req.query.dateTerm === "weekly"){
 				// 당월 조회 or 전월 조회 
-				let from = dayjs(req.query.from).subtract(1, "year").format("YYYY-MM");
-				let to = dayjs(req.query.to).format("YYYY-MM");
+				let from = dayjs(req.query.startDate).subtract(1, "year").format("YYYY-MM");
+				let to = dayjs(req.query.endDate).format("YYYY-MM");
 				query += ` AND DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y-%m') IN ('${from}', '${to}') `;
 			}else{ // "monthly"
 				// 년간 조회
 				// query += ` AND DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y') IN ('2020', '2021') `;
-				query += ` AND DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date , '%Y-%m-%d') BETWEEN '${req.query.from}' AND '${req.query.to}' `;
+				query += ` AND DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date , '%Y-%m-%d') BETWEEN '${req.query.startDate}' AND '${req.query.endDate}' `;
 			}
 			query += " GROUP BY date";
 			let result = {
@@ -85,7 +85,7 @@ const dashboard = {
 							` ${db.certificate_rt_log.name}.certificate_name, CAST(SUM(${db.certificate_rt_log.name}.cnt_certificate) AS UNSIGNED INTEGER) AS cnt ` + 
 							` FROM ${db.certificate_rt_log.name} ` +
 							" WHERE " +
-							` DATE_FORMAT(${db.certificate_rt_log.name}.certificate_date , '%Y-%m-%d') BETWEEN '${req.query.from}' AND '${req.query.to}' ` +
+							` DATE_FORMAT(${db.certificate_rt_log.name}.certificate_date , '%Y-%m-%d') BETWEEN '${req.query.startDate}' AND '${req.query.endDate}' ` +
 							` GROUP BY ${db.certificate_rt_log.name}.certificate_name `;
 
 			let result = {
@@ -112,7 +112,7 @@ const dashboard = {
 
 	getWait: async function (req, res, next) {
 		try {
-			// req.query.to = "2021-07-14";
+			// req.query.endDate = "2021-07-14";
 			let query = " SELECT " + 
 			// 기관
 			` ${db.device_op_info.name}.pos_1 AS '기관', ` + 
@@ -198,18 +198,18 @@ const dashboard = {
 
 			// 기간 선택
 			// 전체일 경우 사용 안함
-			if(req.query.term === "weekly"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(${db.ticket_daily_cnt.name}.q_date, '%Y-%m') = '${dayjs(req.query.to).format("YYYY-MM")}' `;
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
+				query += ` AND DATE_FORMAT(${db.ticket_daily_cnt.name}.q_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
 			}
-			if(req.query.term === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(${db.ticket_daily_cnt.name}.q_date, '%Y') = '${dayjs(req.query.to).format("YYYY")}' `;
+			if(req.query.dateTerm === "monthly"){ // 연간 조회
+				query += ` AND DATE_FORMAT(${db.ticket_daily_cnt.name}.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
 			}
-			if(req.query.term === "term"){ // 기간 조회
-				query += ` AND ${db.ticket_daily_cnt.name}.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.from).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.to).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+			if(req.query.dateTerm === "term"){ // 기간 조회
+				query += ` AND ${db.ticket_daily_cnt.name}.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
 			}
 
 			// -- 일일 조회 사용하지 않을 경우엔
-			// if(req.query.term === "all"){
+			// if(req.query.dateTerm === "all"){
 			if(true){
 				// group by a.pos_1, date_format(b.q_date, '%Y-%m-%d')
 				// query += ` GROUP BY ${db.device_op_info.name}.pos_1 , DATE_FORMAT(${db.device_op_info.name}.q_date , '%Y-%m-%d') `;
@@ -265,7 +265,7 @@ const dashboard = {
 							` CAST(IFNULL(SUM(${db.sunap_daily_cnt.name}.cnt_self_eval), 0) AS UNSIGNED INTEGER) AS '진료전자기평가' ` + 
 							` FROM ${db.sunap_daily_cnt.name} ` +
 							" WHERE " +
-							` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date , '%Y-%m-%d') BETWEEN '${req.query.from}' AND '${req.query.to}' `;
+							` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date , '%Y-%m-%d') BETWEEN '${req.query.startDate}' AND '${req.query.endDate}' `;
 			let result = {
 				data: [],
 				column: []
