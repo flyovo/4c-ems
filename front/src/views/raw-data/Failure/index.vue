@@ -1,13 +1,13 @@
 <template>
-  <div typeList class="raw-data-table__body__table">
-    <el-table :data="tableData" header-align="center">
+  <div typeList class="raw-data-table__body__table" ref="tableWrapper">
+    <el-table :data="tableData" header-align="center" :max-height="getHeight">
         <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
         <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
         <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
-        <el-table-column prop="층수" label="층" sortable align="center"></el-table-column>
+        <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
         <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
-        <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
         <el-table-column prop="부서" label="부서" sortable align="center"></el-table-column>
+        <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
         <el-table-column prop="등록번호" label="등록번호" sortable align="center"></el-table-column>
         <el-table-column prop="PGM종류" label="PGM종류" sortable align="center"></el-table-column>
         <el-table-column prop="실패Message" label="실패Message" sortable align="center"></el-table-column>
@@ -27,6 +27,7 @@ export default class extends Vue {
   private selectDate: number = 0
   public type: string = 'receipt'
   public data: []
+  public getHeight: number = 300
 
   created() {
     this.getDateRange()
@@ -101,5 +102,17 @@ export default class extends Vue {
     value = typeof value === 'string' ? value : value.toString()
     return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
+
+  private handleResize() {
+    this.getHeight = this.$refs.tableWrapper.clientHeight
+  }
+
+  mounted(){
+		this.$nextTick(function () {
+      this.handleResize()
+			window.addEventListener("resize", this.handleResize);
+		});
+  }
+
 }
 </script>

@@ -155,7 +155,7 @@ export default class extends Vue {
         line-height: 1;
         width: setViewport('vw', 24);
         height: setViewport('vw', 24);
-        margin-right: setViewport('vw', 6);
+        margin-right: 12px;
         margin-left: setViewport('vw', 10);
         &.el-range__close-icon {
           display: none;

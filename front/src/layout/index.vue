@@ -123,8 +123,7 @@ export default class extends mixins(ResizeMixin) {
         // width: 100%;
       }
       .main-container {
-        .app-main,
-        .navbar {
+        .app-main {
           width: 100vw;
         }
       }

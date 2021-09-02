@@ -1,11 +1,10 @@
 <template>
-  <div typeList class="statistics-table__body__table">
-    <el-table :data="tableData" header-align="center">
+  <div typeList class="statistics-table__body__table" ref="tableWrapper">
+    <el-table :data="tableData" header-align="center" :max-height="getHeight">
       <el-table-column label="구분" align="center">
-        <el-table-column prop="기관" label="센터명" sortable align="center"></el-table-column>
+        <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
         <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
-        <el-table-column prop="구역" label="창구명" sortable align="center"></el-table-column>
-        <el-table-column prop="용도" label="용도" sortable align="center"></el-table-column>
+        <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
         <el-table-column prop="대수" label="대수" sortable align="center"></el-table-column>
       </el-table-column>
       <el-table-column :label="`월(${dayOfWeek[1]})`" align="center">
@@ -51,6 +50,7 @@ export default class extends Vue {
   public type: string = 'receipt'
   public data: []
   public dayOfWeek: Array<number> = [0,0,0,0,0,0,0]
+  public getHeight: number = 300
 
   get dateRange() {
     return StatisticsStoreModule.dateRange
@@ -83,5 +83,17 @@ export default class extends Vue {
       from = dayjs(from).add(1, 'day').format('YYYY-MM-DD')
     } while (from <= this.dateRange.date.to)
   }
+
+  private handleResize() {
+    this.getHeight = this.$refs.tableWrapper.clientHeight
+  }
+
+  mounted(){
+		this.$nextTick(function () {
+      this.handleResize()
+			window.addEventListener("resize", this.handleResize);
+		});
+  }
+
 }
 </script>

@@ -1,9 +1,10 @@
 <template>
-  <div typeList class="statistics-table__body__table">
-    <el-table :data="tableData" header-align="center">
+  <div typeList class="statistics-table__body__table" ref="tableWrapper">
+    <el-table :data="tableData" header-align="center" :max-height="getHeight">
       <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
       <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
-      <el-table-column prop="창구명" label="창구명" sortable align="center"></el-table-column>
+      <el-table-column prop="구역" label="구역" sortable align="center"></el-table-column>
+      <el-table-column prop="발행날짜" label="발행날짜" sortable align="center"></el-table-column>
       <el-table-column label="1일" align="center">
         <el-table-column prop="발행건수" label="번호표발행건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="평균대기시간" label="평균대기시간" sortable align="center"></el-table-column>
@@ -33,6 +34,7 @@ export default class extends Vue {
   private selectDate: number = 0
   public type: string = 'receipt'
   public data: []
+  public getHeight: number = 300
 
   created() {
     this.getDateRange()
@@ -107,5 +109,17 @@ export default class extends Vue {
     value = typeof value === 'string' ? value : value.toString()
     return value.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
   }
+
+  private handleResize() {
+    this.getHeight = this.$refs.tableWrapper.clientHeight
+  }
+
+  mounted(){
+		this.$nextTick(function () {
+      this.handleResize()
+			window.addEventListener("resize", this.handleResize);
+		});
+  }
+
 }
 </script>

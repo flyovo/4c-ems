@@ -14,7 +14,7 @@ const rawData = {
 			" , SUBSTR( _UTF8'일월화수목금토', DAYOFWEEK(b.sunap_date), 1) AS '요일' " +
 			" , a.site AS '센터명' " +
 			" , a.pos_1 AS '기관' " +
-			" , a.pos_2 AS '층수' " +
+			" , a.pos_2 AS '층' " +
 			" , a.pos_3 AS '구역' " +
 			" , a.pos_4 AS '부서' " +
 			" , a.pos_0 AS '창구코드' " +
@@ -100,7 +100,7 @@ const rawData = {
 			" , SUBSTR( _UTF8'일월화수목금토', DAYOFWEEK(b.certificate_date), 1) AS '요일' " + 
 			" , a.site AS '센터명' " + 
 			" , a.pos_1 AS '기관' " + 
-			" , a.pos_2 AS '층수' " + 
+			" , a.pos_2 AS '층' " + 
 			" , a.pos_3 AS '구역' " + 
 			" , a.pos_4 AS 'ID' " + 
 			" , a.pos_0 AS '창구코드' " +
@@ -184,7 +184,7 @@ const rawData = {
 			" , DATE_FORMAT(b.act_date, '%Y-%m-%d') AS '날짜' " + 
 			" , a.site AS '센터명' " + 
 			" , a.pos_1 AS '기관' " + 
-			" , a.pos_2 AS '층수' " + 
+			" , a.pos_2 AS '층' " + 
 			" , a.pos_3 AS '구역' " + 
 			" , a.pos_4 AS '부서' " + 
 			" , a.dev_id AS 'ID' " + 
@@ -256,7 +256,7 @@ const rawData = {
 			" , DATE_FORMAT(b.act_date, '%Y-%m-%d') AS '날짜' " + 
 			" , a.site AS '센터명' " + 
 			" , a.pos_1 AS '기관' " + 
-			" , a.pos_2 AS '층수' " + 
+			" , a.pos_2 AS '층' " + 
 			" , a.pos_3 AS '구역' " + 
 			" , a.pos_4 AS '부서' " + 
 			" , a.dev_id AS 'ID' " + 
@@ -333,7 +333,7 @@ const rawData = {
 				" DATE_FORMAT(b.fail_date, '%Y-%m-%d') AS '날짜' " + 
 				" , a.site AS '센터명' " + 
 				" , a.pos_1 AS '기관' " + 
-				" , a.pos_2 AS '층수' " + 
+				" , a.pos_2 AS '층' " + 
 				" , a.pos_3 AS '구역' " + 
 				" , a.pos_4 AS '부서' " + 
 				" , a.dev_id AS 'ID' " + 

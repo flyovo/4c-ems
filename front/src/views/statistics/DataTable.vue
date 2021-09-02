@@ -6,11 +6,11 @@
         조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
       </div>
       <div class="button-group">
-        <el-dropdown>
+        <el-dropdown @command="handleCommand">
           <el-button>{{ pageSize }}개씩<i class="el-icon-arrow-down el-icon--right"></i></el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>25개씩</el-dropdown-item>
-            <el-dropdown-item>30개씩</el-dropdown-item>
+            <el-dropdown-item command="25">25개씩</el-dropdown-item>
+            <el-dropdown-item command="30">30개씩</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
@@ -129,6 +129,7 @@ export default class extends Vue {
 
   private async handleCommand(command) {
     this.pageSize = Number(command);
+    this.getTablePagination()
   }
 
   private async getTablePagination() {
