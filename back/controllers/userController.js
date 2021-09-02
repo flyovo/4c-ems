@@ -50,19 +50,26 @@ const user = {
 						},
 						(err, token) => {
 							if (err) {return reject({ error: err });}
+							
+							return resolve(
+								res.json({ 
+									data: user,
+									token: token,
+									resultCd: 200
+								})
+							);
 
-							db.sequelize.query(query, {
-								model: db.user_login
-							}).then(async result => {
-								console.log("::::::::::::::::::::::::::::::::::::::::::", result[0].dataValues);
-								return await resolve(
-									res.json({ 
-										data: result[0],
-										token: token,
-										resultCd: 200
-									})
-								);
-							});
+							// db.sequelize.query(query, {
+							// 	model: db.user_login
+							// }).then(async result => {
+							// 	return await resolve(
+							// 		res.json({ 
+							// 			data: result[0],
+							// 			token: token,
+							// 			resultCd: 200
+							// 		})
+							// 	);
+							// });
 						}
 					);
 				});					
