@@ -54,6 +54,7 @@ const user = {
 							db.sequelize.query(query, {
 								model: db.user_login
 							}).then(async result => {
+								console.log("::::::::::::::::::::::::::::::::::::::::::", result[0].dataValues);
 								return await resolve(
 									res.json({ 
 										data: result[0],
