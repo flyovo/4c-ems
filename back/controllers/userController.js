@@ -54,7 +54,7 @@ const user = {
 					", (select b1.loc_name from user_login a1 inner join site_pos_manage b1 on a1.pos_4 = b1.idx where a1.user_id = id) as pos_4 " +
 					", a.updatedate " +
 					" from user_login a inner join site_pos_manage b on a.pos_4 = b.idx  " +
-					` where a.user_id = '${user.user_id}'  and a.pwd = ${user.pwd} `;
+					` where a.user_id = '${user.user_id}'  and a.pwd = '${user.pwd}' `;
 	
 					db.sequelize.query(query, {
 						model: db.user_login
