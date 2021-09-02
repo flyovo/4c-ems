@@ -404,6 +404,7 @@ export default class extends Vue {
       align-items: center;
       .text1 {
         color: #fff;
+        margin-right: 5px;
         // font-size: 15px;
         font-size: setViewport('vw', 15);
         font-weight: 500;
@@ -427,7 +428,7 @@ export default class extends Vue {
         letter-spacing: normal;
         text-align: left;
         display: flex;
-        height: 50%;
+        // height: 50%;
         align-items: center;
       }
     }
