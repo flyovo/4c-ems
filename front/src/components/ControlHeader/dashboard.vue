@@ -131,7 +131,6 @@ export default class extends Vue {
     font-size: setViewport('vw', 14) !important;
     width: setViewport('vw', 120);
     text-align: center;
-    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
