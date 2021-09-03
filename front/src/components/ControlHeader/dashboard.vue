@@ -121,21 +121,23 @@ export default class extends Vue {
 </script>
 
 <style lang="scss">
-.control_header {
-  .el-dropdown-menu {
-    // width: setViewport('vw', 100);
-    padding: setViewport('vh', 6) 0;
+.el-dropdown-menu {
+  padding: 0 !important;
 
-    .el-dropdown-menu__item {
-      line-height: 2.4 !important;
-      padding: 0px setViewport('vw', 15) !important;
-      font-size: setViewport('vw', 14) !important;
-      width: auto !important;
-      min-width: 80px;
-      text-align: center;
-    }
+  .el-dropdown-menu__item {
+    line-height: 2.4 !important;
+    height: setViewport('vh', 30);
+    padding: 0 setViewport('vw', 15) !important;
+    font-size: setViewport('vw', 14) !important;
+    width: setViewport('vw', 120);
+    text-align: center;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-
+}
+.control_header {
   .date__buttons {
     & span {
       display: flex;
@@ -169,12 +171,11 @@ export default class extends Vue {
         text-overflow: ellipsis;
         white-space: nowrap;
         // width: 96px;
-        // width: setViewport('vw', 100);
+        width: setViewport('vw', 120);
         height: 100%;
         border-radius: 4px;
         border: 1px solid $lightGray;
-        // padding: 0 setViewport('vw', 25) 0 setViewport('vw', 12);
-        padding: 0 setViewport('vw', 12);
+        padding: 0 setViewport('vw', 25) 0 setViewport('vw', 12);
         // font-size: 14px;
         font-size: setViewport('vw', 14);
         text-align: left;
@@ -184,14 +185,23 @@ export default class extends Vue {
         line-height: 1;
         letter-spacing: normal;
         color: $subMenuText;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         &:hover,
         &:focus {
           background-color: $subMenuBg;
         }
-        // .el-icon-arrow-down {
-        //   position: absolute;
-        //   right: 0;
-        // }
+        & > span {
+          display: inline-block;
+          position: relative;
+          width: 100%;
+
+          .el-icon-arrow-down {
+            right: 5px;
+            position: absolute;
+          }
+        }
       }
     }
   }

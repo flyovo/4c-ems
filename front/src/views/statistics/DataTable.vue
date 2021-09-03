@@ -219,14 +219,14 @@ export default class extends Vue {
 </style>
 
 <style lang="scss">
-.el-dropdown-menu__item {
-  line-height: 2.4 !important;
-  padding: 0px setViewport('vw', 15) !important;
-  font-size: setViewport('vw', 14) !important;
-  width: setViewport('vw', 100);
-  min-width: 80px;
-  text-align: center;
-}
+// .el-dropdown-menu__item {
+//   line-height: 2.4 !important;
+//   padding: 0px setViewport('vw', 15) !important;
+//   font-size: setViewport('vw', 14) !important;
+//   width: setViewport('vw', 100);
+//   min-width: 80px;
+//   text-align: center;
+// }
 .statistics-table {
   .el-table {
     border-top-left-radius: setViewport('vw', 6);
