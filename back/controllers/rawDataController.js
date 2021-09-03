@@ -71,8 +71,14 @@ const rawData = {
 			if(req.query.dateTerm === "term"){ // 기간 조회
 				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
-
+			
 			where.push(" b.chart_no <> '' ");
+			
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
 			
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
@@ -159,6 +165,12 @@ const rawData = {
 				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
+
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
 			}
@@ -230,6 +242,12 @@ const rawData = {
 			}
 
 			where.push(" b.chart_no <> '' ");
+
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
 
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
@@ -358,7 +376,7 @@ const rawData = {
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
 				where.push(` a.pos_3 = '${position[3]}' `);
 			}
-				
+
 			// 콤보박스데이터
 			where.push(` b.fail_op_prog = '${req.query.option}' `);
 				
@@ -375,7 +393,12 @@ const rawData = {
 			}
 	
 			where.push(" b.chart_no <> '' ");
-
+			
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
 
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
@@ -416,6 +439,10 @@ const rawData = {
 			}
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
 				where.push(` a.pos_3 = '${position[3]}' `);
+			}
+
+			if(req.query.auth === "P" && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
 			}
 
 			if(where.length > 0){

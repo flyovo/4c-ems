@@ -302,7 +302,7 @@ export default class extends Vue {
       // height: 36px;
       // font-size: 16px;
       width: setViewport('vw', 36);
-      height: setViewport('vw', 36);
+      height: setViewport('vh', 36);
       font-size: setViewport('vw', 16);
       font-weight: bold;
       color: $paginationText;

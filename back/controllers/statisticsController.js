@@ -81,6 +81,12 @@ const statistics = {
 				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
+
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
 			}
@@ -199,6 +205,12 @@ const statistics = {
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
 				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+			}
+
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
 			}
 
 			if(where.length > 0){
@@ -364,6 +376,12 @@ const statistics = {
 				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
+			
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
 			}
@@ -495,6 +513,12 @@ const statistics = {
 				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
+
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
 			}
@@ -612,6 +636,12 @@ const statistics = {
 				where.push(` b.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
 
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
+
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") }`;
 			}
@@ -677,6 +707,12 @@ const statistics = {
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
 				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+			}
+
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
 			}
  			
 			if(where.length > 0){
@@ -754,6 +790,12 @@ const statistics = {
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
 				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+			}
+
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
 			}
 
 			if(where.length > 0){

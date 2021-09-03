@@ -51,6 +51,8 @@ export default class extends Vue {
   // 기관 리스트
   async siteList() {
     let position = [];
+    let userState = JSON.parse(localStorage.getItem('4c-userState'))
+
     if( JSON.parse(localStorage.getItem('4c-userState')).site ){
       position.push( JSON.parse(localStorage.getItem('4c-userState')).site )
     }
@@ -58,13 +60,31 @@ export default class extends Vue {
     let list = await SettingsModule.GetSite({
       site: 'pos_1',
       position: position.join(','),
-      organ: JSON.parse(localStorage.getItem('4c-userState')).organ,
-      pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
+      organ: userState.organ,
+      pos_4: userState.pos_4,
       // ...JSON.parse(localStorage.getItem('4c-userState')),
       auth: localStorage.getItem('4c-userAuth')
     }).then((result: any) => {
       return result
     })
+
+    let defaultPos = {};
+    switch(localStorage.getItem('4c-userAuth')){
+      case "P" : 
+      case "p" : 
+        defaultPos = list.find(item => {
+          return item.label === userState.organ
+        })
+      break;
+      case "S" : 
+      case "s" : 
+        defaultPos = list.find(item => {
+          return item.label === "본관"
+        })
+      break;
+    }
+    this.handleSiteChange(defaultPos)
+
     return [...list]
   }
 
@@ -81,7 +101,6 @@ export default class extends Vue {
   // 사이트 버튼 선택 -> vuex에 저장
   private async handleSiteChange(value: Object) {
     const payload = value
-    console.log('handleSiteChange : ', payload)
     await DashboardStoreModule.GetSite(payload)
   }
 
@@ -102,16 +121,26 @@ export default class extends Vue {
 </script>
 
 <style lang="scss">
-.el-dropdown-menu {
-  // width: setViewport('vw', 100);
-  padding: setViewport('vh', 6) 0;
-  .el-dropdown-menu__item {
-    line-height: 2.4 !important;
-    padding: 0px setViewport('vw', 15) !important;
-    font-size: setViewport('vw', 14) !important;
-    width: auto !important;
-    min-width: 80px;
-    text-align: center;
+.control_header {
+  .el-dropdown-menu {
+    // width: setViewport('vw', 100);
+    padding: setViewport('vh', 6) 0;
+
+    .el-dropdown-menu__item {
+      line-height: 2.4 !important;
+      padding: 0px setViewport('vw', 15) !important;
+      font-size: setViewport('vw', 14) !important;
+      width: auto !important;
+      min-width: 80px;
+      text-align: center;
+    }
+  }
+
+  .date__buttons {
+    & span {
+      display: flex;
+      font-size: setViewport('vw', 14);
+    }
   }
 }
 </style>
@@ -207,9 +236,6 @@ export default class extends Vue {
           &.active {
             background-color: $menuActiveText;
             color: $subMenuActiveText;
-          }
-          > span {
-            font-size: setViewport('vw', 14);
           }
         }
       }

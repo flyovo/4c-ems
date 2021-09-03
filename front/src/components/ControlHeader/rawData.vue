@@ -67,6 +67,8 @@ export default class extends Vue {
   public async onInitCombo() {
     if (this.menuType === 'failure') {
       await RawDataStoreModule.GetComboList({
+        auth: localStorage.getItem('4c-userAuth'),
+        pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
         position: this.menuPosition.join(',')
       })
     } else {

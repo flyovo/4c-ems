@@ -175,6 +175,8 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
   @Action({ rawError: true })
   public RawTableData(payload: any) {
     let params = {
+      auth: localStorage.getItem('4c-userAuth'),
+      pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
       type: payload.type,
       option: payload.option,
       position: payload.position,
