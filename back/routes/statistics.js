@@ -46,5 +46,11 @@ module.exports = function () {
 		api.statistics.getMeasurement
 	);
 
+	router.get(
+		"/statistics/failure",
+		isLoggedIn,
+		api.statistics.getFailure
+	);
+
 	return router;
 };

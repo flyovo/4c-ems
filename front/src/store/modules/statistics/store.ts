@@ -1,5 +1,6 @@
 import store from '@/store'
 import { statistics } from '@/api/statistics-api'
+import { rawDataCombo } from '@/api/rawdata-api'
 import { StatisticsStoreState } from './type'
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { cloneDeep } from 'lodash'
@@ -130,6 +131,10 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     {
       id: 'measurements',
       label: '신체계측 타입 선택'
+    },
+    {
+      id: 'failure',
+      label: '타입 선택'
     }
   ]
   public typeList = [
@@ -160,9 +165,15 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
     {
       id: 'measurements',
       list: ['신체계측 전체', '신체계측(혈압)', '신체계측(신장체중)']
+    },
+    {
+      id: 'failure',
+      list: []
     }
   ]
   public typeIndex = 0
+  public comboIndex = 0
+  public comboList = []
 
   @Mutation
   private SET_CHANGE_VALUE(payload: { key: string; value: any }) {
@@ -221,6 +232,21 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
   public GetType(payload: any) {
     let type= this.typeList[payload.type]
     this.SET_CHANGE_VALUE({ key: 'typeIndex', value: type })
+  }
+
+  @Action({ rawError: true })
+  public GetComboList(payload: any) {
+    let resultCd = rawDataCombo(payload)
+    new Promise(resolve => {
+      return resolve(resultCd)
+    }).then(result => {
+      this.SET_CHANGE_VALUE({ key: 'comboList', value: result })
+    })
+  }
+
+  @Action({ rawError: true })
+  public SetComboIndex(payload: any) {
+    this.SET_CHANGE_VALUE({ key: 'comboIndex', value: payload.index })
   }
 
   @Action({ rawError: true })

@@ -19,16 +19,16 @@
         </download-excel>
       </div>
     </div>
-    <HospitalStorage v-if="menuType === 'hospital-storage'" />
     <!-- 외래&입원 수납 Data -->
-    <Certification v-else-if="menuType === 'certification'" />
+    <HospitalStorage v-if="menuType === 'hospital-storage'" />
     <!-- 증명서 발급 Data -->
-    <Arrive v-else-if="menuType === 'arrive'" />
+    <Certification v-else-if="menuType === 'certification'" />
     <!-- 도착확인 Data -->
-    <Measurements v-else-if="menuType === 'measurements'" />
+    <Arrive v-else-if="menuType === 'arrive'" />
     <!-- 신체계측 Data -->
-    <Failure v-else-if="menuType === 'failure'" />
+    <Measurements v-else-if="menuType === 'measurements'" />
     <!-- 실패 Data -->
+    <Failure v-else-if="menuType === 'failure'" />
     <div class="raw-data-table__body__paging">
       <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-page.sync="page" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">

@@ -24,7 +24,15 @@
       </div>
       <div class="control_header_wrapper">
         <div class="control_header__title">{{ typeLabel }}</div>
-        <div class="control_header__date">
+        <div v-if="menuType === 'failure'" class="control_header__date">
+          <el-dropdown>
+            <el-button> {{ comboText.fail_op_prog }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(item, index) in comboList" :key="`${item}-${index}`" @click.native="handleComboChange(index)">{{ item.fail_op_prog }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+        <div v-else class="control_header__date">
           <div class="date-warpper">
             <div class="date__buttons">
               <el-button v-for="(item, index) in typeList" :key="index" type="info" :class="{ active: selectType === index }" @click.native="handleTypeChange(index)">{{ item }}</el-button>
@@ -55,6 +63,19 @@ export default class extends Vue {
   @Prop({ default: 0 }) private selectType!: Number
   @Prop({ default: 'dashboard' }) private menuType!: String
 
+  @Watch('menuType', { immediate: true })
+  public async onInitCombo() {
+    if (this.menuType === 'failure') {
+      await StatisticsStoreModule.GetComboList({
+        auth: localStorage.getItem('4c-userAuth'),
+        pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
+        position: this.menuPosition.join(',')
+      })
+    } else {
+      await [].join(',')
+    }
+  }
+
   get typeIndex() {
     return StatisticsStoreModule.typeIndex
   }
@@ -65,6 +86,21 @@ export default class extends Vue {
 
   get menuText() {
     return SettingsModule.menuText
+  }
+
+  get comboList() {
+    return StatisticsStoreModule.comboList
+  }
+  get comboIndex() {
+    return StatisticsStoreModule.comboIndex
+  }
+  
+  get comboText() {
+    if (this.comboList.length > 0) {
+      return this.comboList[this.comboIndex]
+    } else {
+      return '선택'
+    }
   }
 
   public get calendarDate(): any {
@@ -97,6 +133,12 @@ export default class extends Vue {
 
   private async handleTypeChange(value: number) {
     await this.$emit('selectType', value)
+  }
+
+  private async handleComboChange(value: number) {
+    await StatisticsStoreModule.SetComboIndex({
+      index: value
+    })
   }
 }
 </script>
@@ -159,7 +201,7 @@ export default class extends Vue {
         }
       }
       .el-input__icon {
-        line-height: 1;
+        line-height: 0.6;
         width: setViewport('vw', 24);
         height: setViewport('vw', 24);
         // margin-right: 12px;
@@ -208,6 +250,7 @@ export default class extends Vue {
       .el-button {
         // width: 96px;
         // height: 36px;
+        min-width: 80px;
         width: setViewport('vw', 96);
         height: setViewport('vh', 36);
         border-radius: 4px;
@@ -253,7 +296,7 @@ export default class extends Vue {
     .date-warpper {
       width: 100%;
       // height: 100%;
-      display: flex;
+      display: -webkit-box;
       // justify-content: space-between;
 
       .date__buttons {

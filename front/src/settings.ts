@@ -95,6 +95,10 @@ const settings: ISettings = {
         {
           id: 'statistics-measurements',
           label: '신체계측'
+        },
+        {
+          id: 'statistics-failure',
+          label: '실패 Data'
         }
       ]
     }

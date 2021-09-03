@@ -378,7 +378,9 @@ const rawData = {
 			}
 
 			// 콤보박스데이터
-			where.push(` b.fail_op_prog = '${req.query.option}' `);
+			if(req.query.option){ // // 콤보박스
+				where.push(` b.fail_op_prog = '${req.query.option}' `);
+			}
 				
 			// 기간 선택
 			// 전체일 경우 사용 안함
@@ -391,8 +393,6 @@ const rawData = {
 			if(req.query.dateTerm === "term"){ // 기간 조회
 				where.push(` b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
 			}
-	
-			where.push(" b.chart_no <> '' ");
 			
 			// 'S' 일 경우 조건 사용 안함
 			// 'A', 'P' 일 경우

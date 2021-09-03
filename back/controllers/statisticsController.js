@@ -813,6 +813,105 @@ const statistics = {
 			console.error(err);
 			next(err);
 		}
+	},
+	getFailure: async function (req, res, next) {
+		try {
+			let position = req.query.position ? req.query.position.split(",") : "";
+
+			let subPos = [];
+			// 위치 조회
+			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
+				subPos.push(` a1.pos_1 = '${position[1]}' `);
+			}else{
+				subPos.push(" a1.pos_1 = a.pos_1 ");
+			}
+			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
+				subPos.push(` a1.pos_2 = '${position[2]}' `);
+			}else{
+				subPos.push(" a1.pos_2 = a.pos_2 ");
+			}
+			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
+				subPos.push(` a1.pos_3 = '${position[3]}' `);
+			}else{
+				subPos.push(" a1.pos_3 = a.pos_3 ");
+			}
+
+			if(req.query.option){
+				subPos.push(` b1.fail_op_prog = '${req.query.option}' `);
+			}else{
+				subPos.push(" b1.fail_op_prog = b.fail_op_prog ");
+			}
+			subPos.push(" date_format(b1.fail_date, '%Y-%m-%d') = date_format(b.fail_date, '%Y-%m-%d') ");
+
+			let query = " select " +
+			" date_format(b.fail_date, '%Y-%m-%d') AS '날짜', " +
+			" a.site AS '센터명', " +
+			" a.pos_1 as '기관', " +
+			" a.pos_2 as '층', " +
+			" a.pos_3 as '구역', " +
+			" b.fail_op_prog as 'PGM종류', " +
+			" b.fail_message as '실패Message', " +
+			" (   " +
+			" select count(*)    " +
+			" from device_op_info a1 inner join fail_daily_cnt b1 on a1.dev_id = b1.dev_id   " +
+				` ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")}` : "" } ` +
+			" ) as 'COUNT'  " +
+			" from device_op_info  a inner join fail_daily_cnt b on a.dev_id = b.dev_id  ";
+
+			let where = [];
+
+			// 위치 조회
+			if(position[0]){
+				where.push(` a.site = '${position[0]}' `);
+			}
+			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
+				where.push(` a.pos_1 = '${position[1]}' `);
+			}
+			if(position[2]){ // 좌측 Tree에서 층 선택했을 경우
+				where.push(` a.pos_2 = '${position[2]}' `);
+			}
+			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
+				where.push(` a.pos_3 = '${position[3]}' `);
+			}
+
+			// 기간 선택
+			// 전체일 경우 사용 안함
+			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
+				where.push(` DATE_FORMAT(b.fail_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+			}
+			if(req.query.dateTerm === "monthly"){ // 연간 조회
+				where.push(` DATE_FORMAT(b.fail_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+			}
+			if(req.query.dateTerm === "term"){ // 기간 조회
+				where.push(` b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+			}
+
+			if(req.query.option){ // // 콤보박스
+				where.push(` b.fail_op_prog = '${req.query.option}' `);
+			}
+
+			// 'S' 일 경우 조건 사용 안함
+			// 'A', 'P' 일 경우
+			if((req.query.auth === "A" || req.query.auth === "P") && req.query.pos_4){
+				where.push(` a.pos_4 = '${req.query.pos_4}' `);
+			}
+
+			if(where.length > 0){
+				query += ` WHERE ${ where.join(" AND ") }`;
+			}
+
+			query += " GROUP BY b.fail_message ";
+			query += " ORDER BY 'COUNT' ";
+
+			let result = await db.sequelize.query(query, {
+				model: db.device_op_info
+			});
+			res.setHeader("token", req.headers.token);
+			res.json(result);
+		} catch (err) {
+			console.error(err);
+			next(err);
+		}
 	}
 };
 module.exports = statistics;

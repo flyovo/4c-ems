@@ -94,6 +94,7 @@ export default class extends Vue {
   get comboIndex() {
     return RawDataStoreModule.comboIndex
   }
+
   get comboText() {
     if (this.comboList.length > 0) {
       return this.comboList[this.comboIndex]
@@ -129,9 +130,11 @@ export default class extends Vue {
       await this.$emit('selectDate', value)
     }
   }
+  
   private async handleTypeChange(value: number) {
     await this.$emit('selectType', value)
   }
+
   private async handleComboChange(value: number) {
     await RawDataStoreModule.SetComboIndex({
       index: value

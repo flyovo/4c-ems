@@ -19,20 +19,22 @@
         </download-excel>
       </div>
     </div>
-    <OutPatient v-if="menuType === 'out-patient'" />
     <!-- 외래&입원 수납 Data -->
+    <OutPatient v-if="menuType === 'out-patient'" />
+    <!-- 퇴원수납 Data -->
     <Leaves v-else-if="menuType === 'leaves'" />
-    <!-- 증명서 발급 Data -->
+    <!-- 요일별 수납 Data -->
     <Week v-else-if="menuType === 'week'" />
-    <!-- 도착확인 Data -->
+    <!-- 증명서 발급 Data -->
     <Certification v-else-if="menuType === 'certification'" />
-    <!-- 신체계측 Data -->
+    <!-- 수납 대기 시간 Data -->
     <WaitTime v-else-if="menuType === 'wait-time'" />
-    <!-- 실패 Data -->
+    <!-- 도착 확인 Data -->
     <Arrive v-else-if="menuType === 'arrive'" />
-    <!-- 실패 Data -->
+    <!-- 신체계측 Data -->
     <Measurements v-else-if="menuType === 'measurements'" />
     <!-- 실패 Data -->
+    <Failure v-else-if="menuType === 'failure'" />
     <div class="statistics-table__body__paging">
       <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-page.sync="page" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
@@ -56,6 +58,7 @@ import Certification from './Certification/index.vue'
 import WaitTime from './WaitTime/index.vue'
 import Arrive from './Arrive/index.vue'
 import Measurements from './Measurements/index.vue'
+import Failure from './Failure/index.vue'
 
 @Component({
   name: 'TableList',
@@ -66,7 +69,8 @@ import Measurements from './Measurements/index.vue'
     Certification,
     WaitTime,
     Arrive,
-    Measurements
+    Measurements,
+    Failure
   }
 })
 export default class extends Vue {
