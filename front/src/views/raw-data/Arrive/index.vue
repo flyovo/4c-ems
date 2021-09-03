@@ -1,6 +1,6 @@
 <template>
   <div typeList class="raw-data-table__body__table" ref="tableWrapper">
-    <el-table :data="tableData" header-align="center" :max-height="getHeight">
+    <el-table :data="tableData" header-align="center" :max-height="getHeight" style="width: 100%">
       <el-table-column prop="타입" label="타입" sortable align="center"></el-table-column>
       <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
       <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>

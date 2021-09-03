@@ -1,6 +1,6 @@
 <template>
   <div typeList class="raw-data-table__body__table" ref="tableWrapper">
-    <el-table :data="tableData" header-align="center" :max-height="getHeight">
+    <el-table :data="tableData" header-align="center" :max-height="getHeight" style="width: 100%">
         <el-table-column prop="날짜" label="날짜" sortable align="center"></el-table-column>
         <el-table-column prop="센터명" label="센터명" sortable align="center"></el-table-column>
         <el-table-column prop="기관" label="기관" sortable align="center"></el-table-column>
@@ -10,7 +10,7 @@
         <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
         <el-table-column prop="등록번호" label="등록번호" sortable align="center"></el-table-column>
         <el-table-column prop="PGM종류" label="PGM종류" sortable align="center"></el-table-column>
-        <el-table-column prop="실패Message" label="실패Message" sortable align="center"></el-table-column>
+        <el-table-column prop="실패Message" label="실패Message" sortable align="center" width="300"></el-table-column>
     </el-table>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div typeList class="statistics-table__body__table" ref="tableWrapper">
     <!-- <el-table :data="tableData" header-align="center" :max-height="getHeight" :span-method="objectSpanMethod"> -->
-    <el-table :data="tableData" header-align="center" :max-height="getHeight">
+    <el-table :data="tableData" header-align="center" :max-height="getHeight" style="width: 100%">
         <el-table-column label="구분" sortable align="center">
           <el-table-column prop="기관" label="센터명" sortable align="center"></el-table-column>
           <el-table-column prop="층" label="층" sortable align="center"></el-table-column>
