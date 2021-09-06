@@ -116,8 +116,9 @@ export default class extends Vue {
         //   show: true,
         //   position: 'top'
         // },
-        data: this.data.data.avgTime
+        // data: this.data.data.avgTime
         // data: this.data.data.avgTimeTotal
+        data: this.data.data.avgSec
       }
     ]
   }

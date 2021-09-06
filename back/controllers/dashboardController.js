@@ -12,11 +12,11 @@ const dashboard = {
 			if(req.query.dateTerm === "weekly"){
 				// 당월 조회 or 전월 조회 
 				query += ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y-%m/'), FLOOR((DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%d') + (DATE_FORMAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y%m%01'),'%w')-1))/7)+1) AS date, ` +
-						 ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%c'), '월', FLOOR((DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%d') + (DATE_FORMAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y%m%01'),'%w')-1))/7)+1, '째주') AS data_cloumn, `;
+						 ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%c'), '월', FLOOR((DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%d') + (DATE_FORMAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y%m%01'),'%w')-1))/7)+1, '째주') AS data_column, `;
 			}else{ // "monthly"
 				// 년간 조회
 				query += ` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y-%m') AS date, ` + 
-						 ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%c'), '월') AS data_cloumn, `;
+						 ` CONCAT(DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%c'), '월') AS data_column, `;
 			}
 			query += ` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date, '%Y') AS data_key, ` +
 					` CAST(SUM(${db.sunap_daily_cnt.name}.cnt_sunap) AS UNSIGNED INTEGER) AS cnt_sunap ` +
@@ -50,7 +50,7 @@ const dashboard = {
 				let column = [];
 				rows.forEach(row => {
 					result.data[row.dataValues.data_key] = new Array;
-					column.push(row.dataValues.data_cloumn);
+					column.push(row.dataValues.data_column);
 				});
 				column = [...new Set(column)];
 				column.sort();
@@ -67,7 +67,7 @@ const dashboard = {
 					rows.forEach(row => {
 						// row.start;
 						// row.end;
-						if(col === row.dataValues.data_cloumn){
+						if(col === row.dataValues.data_column){
 							result.data[row.dataValues.data_key][index] = row.dataValues.cnt_sunap;
 						}
 					});
@@ -117,51 +117,61 @@ const dashboard = {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
 
-			// req.query.endDate = "2021-07-14";
+			let subPos = [];
+			// 위치 조회
+			if(position[1]){ // 좌측 Tree에서 기관 선택했을 경우
+				subPos.push(` a1.pos_1 = '${position[1]}' `);
+			}else{
+				subPos.push(" a1.pos_1 = a.pos_1 ");
+			}
+			subPos.push(" DATE_FORMAT(b1.q_date , '%Y-%m-%d') = DATE_FORMAT(b.q_date  , '%Y-%m-%d') ");
+			subPos.push(" b1.workno = 1 ");
+			
 			let query = " SELECT " + 
-			// 기관
-			` ${db.device_op_info.name}.pos_1 AS '기관', ` + 
-			// 발행날짜
-			` ${db.ticket_daily_cnt.name}.q_date AS '발행날짜', `;
+			" a.pos_1 AS 'site', " +  // 기관
+			" b.q_date AS 'issueDate', "; // 발행날짜
 
+			if(req.query.dateTerm === "weekly"){
+				// 당월 조회 or 전월 조회 
+				query += " CONCAT(DATE_FORMAT(b.q_date,'%Y-%m/'), FLOOR((DATE_FORMAT(b.q_date,'%d') + (DATE_FORMAT(DATE_FORMAT(b.q_date,'%Y%m%01'),'%w')-1))/7)+1) AS date, " +
+						 " CONCAT(DATE_FORMAT(b.q_date,'%c'), '월', FLOOR((DATE_FORMAT(b.q_date,'%d') + (DATE_FORMAT(DATE_FORMAT(b.q_date,'%Y%m%01'),'%w')-1))/7)+1, '째주') AS data_column, ";
+			}else{ // "monthly"
+				// 년간 조회
+				query += " DATE_FORMAT(b.q_date,'%Y-%m') AS date, " + 
+						 " CONCAT(DATE_FORMAT(b.q_date,'%c'), '월') AS data_column, ";
+			}
+
+			// query += dateTerm;
 			// 발행건수
 			query += ` (SELECT IFNULL((  
 				SELECT SUM(b1.t_q_cnt)  
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE b1.workno = 1 
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
+				WHERE ${subPos.join(" AND ")}
 			), 0) as 'issueCnt') as 'issueCnt', `;
 
-			// 평균대기시간
+			// 평균대기시간 - sec
+			query += ` (SELECT IFNULL((  
+				SELECT AVG(b1.t_wtime_avg) 
+				FROM ${db.device_op_info.name} a1 
+				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
+				WHERE ${subPos.join(" AND ")}
+			), 0) as 'avgSec') as 'avgSec', `;
+
+			// 평균대기시간 - HH:mm:ss
 			query += ` (SELECT IFNULL((  
 				SELECT CONCAT(LPAD(ROUND((SUM(b1.t_wtime_avg) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD(SUM(b1.t_wtime_avg), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD(SUM(b1.t_wtime_avg), 60)), '2', '0')) 
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE b1.workno = 1
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
+				WHERE ${subPos.join(" AND ")}
 			), 0) as 'avgTime') as 'avgTime', `;
-
-			// 평균대기시간 총합
-			query += ` (SELECT IFNULL((  
-				SELECT SUM(b1.t_wtime_avg)
-				FROM ${db.device_op_info.name} a1 
-				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id
-				WHERE b1.workno = 1 
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
-			), 0) as 'avgTimeTotal') as 'avgTimeTotal', `;
 
 			// 오전발행건수
 			query += ` (SELECT IFNULL((  
 				SELECT SUM(b1.ticket_cnt_1000) + SUM(b1.ticket_cnt_1100) + SUM(b1.ticket_cnt_1200)  
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE b1.workno = 1 
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
+				WHERE ${subPos.join(" AND ")}
 			), 0) as 'amIssueCnt') as 'amIssueCnt', `;
 
 			// 오전대기시간
@@ -169,9 +179,7 @@ const dashboard = {
 				SELECT CONCAT(LPAD(ROUND(((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)), 60)), '2', '0'))  
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE b1.workno = 1 
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
+				WHERE ${subPos.join(" AND ")}
 			), 0) as 'amWaitTime') as 'amWaitTime', `;
 
 			// 오후발행건수
@@ -179,9 +187,7 @@ const dashboard = {
 				SELECT SUM(b1.ticket_cnt_1400) + SUM(b1.ticket_cnt_1500) + SUM(b1.ticket_cnt_1600)  
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE b1.workno = 1 
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
+				WHERE ${subPos.join(" AND ")}
 			), 0) as 'pmIssueCnt') as 'pmIssueCnt', `;
 
 			// 오후대기시간
@@ -189,46 +195,44 @@ const dashboard = {
 				SELECT CONCAT(LPAD(ROUND(((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)), 60)), '2', '0'))  
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE b1.workno = 1 
-				AND a1.pos_1 = device_op_info.pos_1
-				AND DATE_FORMAT(b1.q_date , '%Y-%m-%d') = ticket_daily_cnt.q_date 
+				WHERE ${subPos.join(" AND ")}
 			), 0) as 'pmWaitTime') as 'pmWaitTime'  `;
 
-			query += ` FROM ${db.device_op_info.name} INNER JOIN ${db.ticket_daily_cnt.name} ON ${db.device_op_info.name}.dev_id = ${db.ticket_daily_cnt.name}.dev_id ` +
-					 ` WHERE ${db.ticket_daily_cnt.name}.workno = 1 `;
+			query += ` FROM ${db.device_op_info.name} a INNER JOIN ${db.ticket_daily_cnt.name} b ON a.dev_id = b.dev_id ` +
+					 " WHERE b.workno = 1 ";
 			
 			if(position[0]){
-				query += ` AND ${db.device_op_info.name}.site = '${position[0]}' ` ;
+				query += ` AND a.site = '${position[0]}' ` ;
 			}
 			if(position[1]){
-				query += ` AND ${db.device_op_info.name}.pos_1 = '${position[1]}' ` ;
+				query += ` AND a.pos_1 = '${position[1]}' ` ;
 			}
 
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(${db.ticket_daily_cnt.name}.q_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				query += ` AND DATE_FORMAT(b.q_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				query += ` AND DATE_FORMAT(${db.ticket_daily_cnt.name}.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
+				query += ` AND DATE_FORMAT(b.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				query += ` AND ${db.ticket_daily_cnt.name}.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
+				query += ` AND b.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `;
 			}
 
 			// -- 일일 조회 사용하지 않을 경우엔
 			// if(req.query.dateTerm === "all"){
 			if(true){
-				// group by a.pos_1, date_format(b.q_date, '%Y-%m-%d')
-				// query += ` GROUP BY ${db.device_op_info.name}.pos_1 , DATE_FORMAT(${db.device_op_info.name}.q_date , '%Y-%m-%d') `;
-				query += " GROUP BY '기관' , '발행날짜' ";
+				// query += " GROUP BY a.pos_1, date_format(b.q_date, '%Y-%m-%d') ";
+				// query += " GROUP BY a.pos_1, date, issueDate ";
+				query += " GROUP BY date, a.pos_1";
 			}
 			let result = {
 				data: {
 					am: [],
 					pm: [],
 					avgTime: [],
-					avgTimeTotal: []
+					avgSec: []
 				},
 				column: []
 			};
@@ -237,18 +241,19 @@ const dashboard = {
 				//replacements: { pat_no: req.query.PAT_NO }
 			}).then(rows => {
 				// get columns & data
-				let am, pm, avgTime, avgTimeTotal;
+				let am, pm, avgTime, avgSec;
 				rows.forEach(row => {
 					am = row.dataValues.amIssueCnt === null ? 0 : row.dataValues.amIssueCnt;
 					pm = row.dataValues.pmIssueCnt === null ? 0 : row.dataValues.pmIssueCnt;
 					avgTime = row.dataValues.avgTime === null ? 0 : row.dataValues.avgTime;
-					avgTimeTotal = row.dataValues.avgTimeTotal === null ? 0 : row.dataValues.avgTimeTotal;
+					avgSec = row.dataValues.avgSec === null ? 0 : row.dataValues.avgSec;
 					
-					result.column.push(row.dataValues["기관"]);
+					// result.column.push(row.dataValues.site); // 기관
+					result.column.push(row.dataValues.data_column); // 날짜
 					result.data.am.push(am);
 					result.data.pm.push(pm);
 					result.data.avgTime.push(avgTime);
-					result.data.avgTimeTotal.push(avgTimeTotal);
+					result.data.avgSec.push(avgSec);
 				});
 			});
 			res.setHeader("token", req.headers.token);

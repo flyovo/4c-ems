@@ -14,7 +14,7 @@
           </el-dropdown-menu>
         </el-dropdown>
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
-        <download-excel class="excel" :data="tableData" name="filename.xls">
+        <download-excel class="excel" :data="totalTableData" :name="fileName">
           <el-button type="info">엑셀 저장</el-button>
         </download-excel>
       </div>
@@ -39,7 +39,7 @@
       <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-page.sync="page" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
-        <download-excel class="excel" :data="tableData" name="filename.xls">
+        <download-excel class="excel" :data="totalTableData" :name="fileName">
           <el-button type="info">엑셀 저장</el-button>
         </download-excel>
       </div>
@@ -51,6 +51,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { StatisticsStoreModule } from '@/store/modules/statistics/store'
 import { SettingsModule } from '@/store/modules/settings/store'
+import dayjs from 'dayjs'
 import OutPatient from './OutPatient/index.vue'
 import Leaves from './Leaves/index.vue'
 import Week from './Week/index.vue'
@@ -90,6 +91,18 @@ export default class extends Vue {
     this.getDateRange()
   }
 
+  get menuListTree() {
+    return SettingsModule.menuListTree
+  }
+
+  get comboList() {
+    return StatisticsStoreModule.comboList
+  }
+
+  get comboIndex() {
+    return StatisticsStoreModule.comboIndex
+  }
+
   get dateList() {
     return StatisticsStoreModule.dateList
   }
@@ -99,10 +112,28 @@ export default class extends Vue {
   }
 
   get menuPosition() {
-    console.log('menuPosition:::::', SettingsModule.menuPosition)
     return SettingsModule.menuPosition
   }
+  
+  get menuKor() {
+    return SettingsModule.menuKor
+  }
 
+  get fileName() {
+    let date = this.dateRange.date.term === "all" ? "전체" : `${(this.dateRange.date.from).replace(/[-]/gi, '')}-${(this.dateRange.date.to).replace(/[-]/gi, '')}`;
+    let index = Number(this.selectType);
+    let type = ""
+
+    if (this.menuType === 'failure') {
+      type = "_" + this.comboList[this.comboIndex].fail_op_prog
+    } else if (this.typeList[index] === undefined) {
+      type = ""
+    } else {
+      type = "_" + this.typeList[index]
+    }
+    return `[${date}]${this.menuKor.join('_')}${type}.xls`
+  }
+  
   private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
@@ -113,6 +144,10 @@ export default class extends Vue {
       date: this.selectDate
     }
     await StatisticsStoreModule.GetDateRange(payload)
+  }
+
+  get totalTableData() {
+    return StatisticsStoreModule.totalTableList
   }
 
   get tableData() {
@@ -151,7 +186,9 @@ export default class extends Vue {
     // console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
 
     let option = []
-    if (this.typeList[index] === undefined) {
+    if (this.menuType === 'failure') {
+      option = this.comboList[this.comboIndex].fail_op_prog
+    } else if (this.typeList[index] === undefined) {
       option = []
     } else {
       option = this.typeList[index]
@@ -164,7 +201,14 @@ export default class extends Vue {
       position: this.menuPosition.join(',')
     }).then((result: any) => {
       this.data = result
+      this.handleTotalTableData(result)
       this.handleCurrentChange(1)
+    })
+  }
+
+  private async handleTotalTableData(list: any) {
+    await StatisticsStoreModule.GetTotalTableData({
+      data: list
     })
   }
 

@@ -20,6 +20,7 @@ class Settings extends VuexModule implements SettingsState {
   public loginTimeStatus = false
   public menuText = ''
   public menuPosition = []
+  public menuKor = []
 
   @Action({ rawError: true })
   public ChangeSetting(payload: { key: string; value: any }) {
@@ -42,6 +43,11 @@ class Settings extends VuexModule implements SettingsState {
   @Action({ rawError: true })
   public SetMenuPosition(payload: any) {
     this.CHANGE_SETTING({ key: 'menuPosition', value: payload })
+  }
+  
+  @Action({ rawError: true })
+  public SetMenuKor(payload: any) {
+    this.CHANGE_SETTING({ key: 'menuKor', value: payload })
   }
 
   @Action({ rawError: true })

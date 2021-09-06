@@ -123,7 +123,6 @@ export default class extends Vue {
   //   return async(type, position) => {
   private async siteList(type, position) {
     // return async() => {
-      console.log('siteList::::::::::', type)
     let list = await SettingsModule.GetSite({
       site: type,
       position: position,
@@ -151,6 +150,7 @@ export default class extends Vue {
       await SettingsModule.SetMenuText([])
 
       let path = this.$route.path.split('/')
+      let pathKor = []
       path.shift()
       for (let [index, p] of path.entries()) {
         path[index] = decodeURIComponent(p)
@@ -163,7 +163,7 @@ export default class extends Vue {
       } else {
         position = position.slice(2)
       }
-      console.log("path :::::", path)
+      // console.log("path :::::", path)
 
       for (let [index, p] of path.entries()) {
         let type = ''
@@ -192,6 +192,8 @@ export default class extends Vue {
             return tree.id === p
           })[0]
         }
+        
+        pathKor.push(this.initMenu.label.trim())
 
         let pos = position.join(',')
         if (type !== '') {
@@ -213,9 +215,8 @@ export default class extends Vue {
           }
         }
       }
-      console.log(position)
-      console.log('SetMenuPosition::::::', position)
       await SettingsModule.SetMenuPosition(position)
+      await SettingsModule.SetMenuKor(pathKor)
       resolve(path[path.length - 1])
     })
   }
@@ -242,7 +243,6 @@ export default class extends Vue {
     // if(type === ''){
     //   return;
     // }
-    console.log('::::::::: ', type)
 
     let position = this.menuUrl.slice(1).join(',')
     if (url[0] !== 'dashboard') {
@@ -261,7 +261,7 @@ export default class extends Vue {
       } else {
         await SettingsModule.SetMenuText([])
       }
-      console.log('position:::', position)
+      // console.log('position:::', position)
       await SettingsModule.SetMenuPosition(position.split(','))
     }
 

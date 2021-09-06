@@ -38,8 +38,6 @@ export default class extends Vue {
 
   created() {
     this.routeData = this.$route.path.split('/')[2].replace(`${this.$route.path.split('/')[1]}-`, '')
-    console.log(this.routeData)
-    
     RawDataStoreModule.SetInitDataList()
   }
 

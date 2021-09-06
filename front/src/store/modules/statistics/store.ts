@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 
 @Module({ dynamic: true, store, name: 'StatisticsStore', namespaced: true })
 class StatisticsStore extends VuexModule implements StatisticsStoreState {
+  public totalTableList = []
   public tableList = []
   public tableListTotalCount = 0
   public dateRange = {
@@ -220,6 +221,11 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
 
     this.SET_CHANGE_VALUE({ key: 'tableList', value: pageList })
     this.SET_CHANGE_VALUE({ key: 'tableListTotalCount', value: totalCount })
+  }
+
+  @Action({ rawError: true })
+  public GetTotalTableData(payload: any) {
+    this.SET_CHANGE_VALUE({ key: 'totalTableList', value: payload.data })
   }
 
   @Action({ rawError: true })

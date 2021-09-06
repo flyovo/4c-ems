@@ -14,7 +14,7 @@
           </el-dropdown-menu>
         </el-dropdown>
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
-        <download-excel class="excel" :data="tableData" name="filename.xls">
+        <download-excel class="excel" :data="totalTableData" :name="fileName">
           <el-button type="info">엑셀 저장</el-button>
         </download-excel>
       </div>
@@ -33,7 +33,7 @@
       <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-page.sync="page" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
-        <download-excel class="excel" :data="tableData" name="filename.xls">
+        <download-excel class="excel" :data="totalTableData" :name="fileName">
           <el-button type="info">엑셀 저장</el-button>
         </download-excel>
       </div>
@@ -45,6 +45,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 import { SettingsModule } from '@/store/modules/settings/store'
+import dayjs from 'dayjs'
 import HospitalStorage from './HospitalStorage/index.vue'
 import Certification from './Certification/index.vue'
 import Arrive from './Arrive/index.vue'
@@ -79,6 +80,10 @@ export default class extends Vue {
     // this.fetchData()
   }
 
+  get menuListTree() {
+    return SettingsModule.menuListTree
+  }
+
   get comboList() {
     return RawDataStoreModule.comboList
   }
@@ -98,6 +103,26 @@ export default class extends Vue {
   get menuPosition() {
     return SettingsModule.menuPosition
   }
+  
+  get menuKor() {
+    return SettingsModule.menuKor
+  }
+
+  get fileName() {
+    let date = this.dateRange.date.term === "all" ? "전체" : `${(this.dateRange.date.from).replace(/[-]/gi, '')}-${(this.dateRange.date.to).replace(/[-]/gi, '')}`;
+    let index = Number(this.selectType);
+    let type = ""
+
+    if (this.menuType === 'failure') {
+      type = "_" + this.comboList[this.comboIndex].fail_op_prog
+    } else if (this.typeList[index] === undefined) {
+      type = ""
+    } else {
+      type = "_" + this.typeList[index]
+    }
+    return `[${date}]${this.menuKor.join('_')}${type}.xls`
+  }
+  
 
   private async handleDateChange(value: number) {
     this.selectDate = value
@@ -110,6 +135,10 @@ export default class extends Vue {
       date: this.selectDate
     }
     await RawDataStoreModule.GetDateRange(payload)
+  }
+
+  get totalTableData() {
+    return RawDataStoreModule.totalTableList
   }
 
   get tableData() {
@@ -145,7 +174,7 @@ export default class extends Vue {
 
     let index = Number(this.selectType);
 
-    console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
+    // console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
 
     let option = []
     if (this.menuType === 'failure') {
@@ -162,9 +191,15 @@ export default class extends Vue {
       range: this.dateRange.date,
       position: this.menuPosition.join(',')
     }).then((result: any) => {
-      console.log(result)
       this.data = result
+      this.handleTotalTableData(result)
       this.handleCurrentChange(1)
+    })
+  }
+
+  private async handleTotalTableData(list: any) {
+    await RawDataStoreModule.GetTotalTableData({
+      data: list
     })
   }
 

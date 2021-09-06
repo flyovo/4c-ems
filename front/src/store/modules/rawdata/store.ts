@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 
 @Module({ dynamic: true, store, name: 'rawDataStore', namespaced: true })
 class RawDataStore extends VuexModule implements RawDataStoreState {
+  public totalTableList = []
   public tableList = []
   public tableListTotalCount = 0
   public dateRange = {
@@ -195,6 +196,11 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
 
     this.SET_CHANGE_VALUE({ key: 'tableList', value: pageList })
     this.SET_CHANGE_VALUE({ key: 'tableListTotalCount', value: totalCount })
+  }
+
+  @Action({ rawError: true })
+  public GetTotalTableData(payload: any) {
+    this.SET_CHANGE_VALUE({ key: 'totalTableList', value: payload.data })
   }
 
   @Action({ rawError: true })
