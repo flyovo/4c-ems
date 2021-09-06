@@ -189,7 +189,7 @@ export default class extends Vue {
       type: this.menuType,
       option: option,
       range: this.dateRange.date,
-      position: this.menuPosition.join(',')
+      position: this.menuPosition
     }).then((result: any) => {
       this.data = result
       this.handleTotalTableData(result)

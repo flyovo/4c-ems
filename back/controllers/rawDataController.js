@@ -149,9 +149,11 @@ const rawData = {
 				case "납입증명서(연말정산)": col_nm = "CNT_08"; break; 
 				case "납입증명서(난임진료)": col_nm = "CNT_09"; break; 
 				case "예비": col_nm = "CNT_10"; break;
-				default: col_nm = "CNT_01"; break;
+				default: col_nm = ""; break;
 			}
-			where.push(` b.col_nm = '${col_nm}' `);
+			if(col_nm !== ""){
+				where.push(` b.col_nm = '${col_nm}' `);
+			}
 				
 			// 기간 선택
 			// 전체일 경우 사용 안함

@@ -161,12 +161,17 @@ class RawDataStore extends VuexModule implements RawDataStoreState {
 
   @Action({ rawError: true })
   public RawTableData(payload: any) {
+    let userState = JSON.parse(localStorage.getItem('4c-userState'))
+    if(localStorage.getItem('4c-userAuth') === "P"){
+      payload.position[0] = userState.site
+      payload.position[1] = userState.organ
+    }
     let params = {
       auth: localStorage.getItem('4c-userAuth'),
-      pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
+      pos_4: userState.pos_4,
       type: payload.type,
       option: payload.option,
-      position: payload.position,
+      position: payload.position.join(','),
       dateTerm: payload.range.term,
       startDate: payload.range.from,
       endDate: payload.range.to

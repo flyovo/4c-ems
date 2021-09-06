@@ -123,7 +123,7 @@ export default class extends Vue {
 <style lang="scss">
 .el-dropdown-menu {
   padding: 0 !important;
-  height: setViewport('vh', 180);
+  max-height: setViewport('vh', 180);
   overflow-y: scroll;
 
   .el-dropdown-menu__item {

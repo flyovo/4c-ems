@@ -66,10 +66,19 @@ export default class extends Vue {
   @Watch('menuType', { immediate: true })
   public async onInitCombo() {
     if (this.menuType === 'failure') {
+      let position = this.menuPosition.slice()
+
+      // 사용자 상태 확인 / P일 때 강제 설정
+      let userState = JSON.parse(localStorage.getItem('4c-userState'))
+      if(localStorage.getItem('4c-userAuth') === "P"){
+        position[0] = userState.site
+        position[1] = userState.organ
+      }
+      
       await StatisticsStoreModule.GetComboList({
         auth: localStorage.getItem('4c-userAuth'),
-        pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
-        position: this.menuPosition.join(',')
+        pos_4: userState.pos_4,
+        position: position.join(',')
       })
     } else {
       await [].join(',')
