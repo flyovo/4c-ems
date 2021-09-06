@@ -12,7 +12,8 @@ export interface IBarChart {
   legend: Object
   colors: string[]
   xAxisData: string[]
-  series: Object
+  series: Object,
+  tooltip: any
 }
 
 @Component({
@@ -39,7 +40,6 @@ export default class extends Vue {
     this.$nextTick(function() {
       let vm = this
       window.addEventListener('resize', function() {
-        console.log('resize')
         if (vm.chart) {
           vm.chart.resize()
         }
@@ -71,9 +71,18 @@ export default class extends Vue {
             fontSize: commonScss.chartFont
           }
         },
-        tooltip: {
-          trigger: 'axis'
-        },
+        tooltip: chartItems.tooltip ? 
+          chartItems.tooltip : 
+          { // 수납시간에서 평균시간을 따로 계산하기 위해 formatter 설정
+            trigger: 'axis',
+            formatter: function (params) {
+              return `${params[0].name}<br />
+              ${params[0].marker} ${params[0].seriesName}: ${params[0].value}<br />\
+              ${params[1].marker} ${params[1].seriesName}: ${params[1].value}<br />\
+              ${params[2].marker} ${params[2].seriesName}: ${params[3].value}<br />\
+              `;
+            }
+          },
         legend: {
           x: 'center',
           // y: 'bottom',

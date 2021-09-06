@@ -24,9 +24,18 @@ export default class extends Vue {
     title: this.title,
     legend: ['10:00~12:00', '14:00~16:00', '1일 평균 대기시간'],
     colors: [variables.darkRed, variables.darkGray, variables.darkTurquoise],
-    // xAxisData: ['세브란스병원', '연세암병원', '심장혈관병원', '어린이병원', '안과병원'],
     xAxisData: [],
-    series: []
+    series: [],
+    // tooltip : {  // 여기서 설정하면 formatter가 동작하지 않아 barChart 파일 내에서 선언
+    //   trigger: 'axis',
+    //   formatter: (params) => {
+    //   return `
+    //     Tooltip: <br />
+    //     ${params[0].seriesName}: ${params[0].value}<br />
+    //     ${params[1].seriesName}: ${params[1].value}
+    //     `;
+    //   }
+    // }
   }
 
   // 사이트 변경
@@ -111,14 +120,12 @@ export default class extends Vue {
       {
         name: '1일 평균 대기시간',
         type: 'line',
-        // stack: '',
-        // label: {
-        //   show: true,
-        //   position: 'top'
-        // },
-        // data: this.data.data.avgTime
-        // data: this.data.data.avgTimeTotal
         data: this.data.data.avgSec
+      },
+      {
+        name: '',
+        type: 'line',
+        data: this.data.data.avgTime
       }
     ]
   }

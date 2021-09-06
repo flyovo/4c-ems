@@ -25,7 +25,10 @@ export default class extends Vue {
     legend: [],
     colors: [variables.darkBlue, variables.lightRed],
     xAxisData: [],
-    series: []
+    series: [],
+    tooltip : {
+      trigger: 'axis'
+    }
   }
 
   // 사이트 변경
