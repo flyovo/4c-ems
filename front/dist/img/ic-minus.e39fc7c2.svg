@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <defs>
+        <clipPath id="0ca3np2mda">
+            <path fill="#fff" stroke="#262626" d="M0 0H24V24H0z" transform="translate(2304 355)"/>
+        </clipPath>
+    </defs>
+    <g fill="none" stroke="#999" stroke-width="1.5px" clip-path="url(#0ca3np2mda)" transform="translate(-2304 -355)">
+        <g transform="translate(2308 359)">
+            <circle cx="8" cy="8" r="8" stroke="none"/>
+            <circle cx="8" cy="8" r="7.25"/>
+        </g>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M0 0L6 0" transform="translate(2313 367)"/>
+    </g>
+</svg>
