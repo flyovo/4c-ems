@@ -6,6 +6,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import echarts, { ECharts, EChartOption } from 'echarts'
 import commonScss from '@/styles/common.scss'
+// import { AppStoreModule } from '@/store/modules/app/store'
 
 export interface IBarHorizontalChart {
   title: Object
@@ -13,15 +14,7 @@ export interface IBarHorizontalChart {
   colors: string[]
   yAxisData: string[]
   series: Object
-  // series: SeriesType[]
 }
-
-// export interface SeriesType {
-//   name: string
-//   type: string
-//   stack: string
-//   data: number[]
-// }
 
 @Component({
   name: 'BarHorizontalChart'
@@ -33,6 +26,7 @@ export default class extends Vue {
   @Prop({ default: '100%' }) private width!: string
   @Prop({ default: '500px' }) private height!: string
   private chart!: ECharts
+  private options: Object
 
   @Watch('chartItems', { immediate: true, deep: true })
   public onInitChartChange(val: any, oldVal: any) {
@@ -41,6 +35,12 @@ export default class extends Vue {
     }
     this.setOptions(this.chartItems)
   }
+  // get sidebar() {
+  //   return AppStoreModule.sidebar
+  // }
+  // @Watch('sidebar', { immediate: true, deep: true })
+  // public onInitResize(val: any, oldVal: any) {
+  // }
 
   mounted() {
     this.initProcess()
@@ -69,8 +69,12 @@ export default class extends Vue {
 
   private setOptions(chartItems: IBarHorizontalChart) {
     if (this.chart) {
-      this.chart.setOption(({
+      this.options = {
         // title: chartItems.title,
+        style: {
+          width: "100%",
+          height: "100%",
+        },
         title: {
           text: chartItems.title,
           left: 'center',
@@ -119,16 +123,20 @@ export default class extends Vue {
           data: chartItems.yAxisData
         },
         series: chartItems.series
-      } as unknown) as EChartOption<EChartOption.SeriesLine>)
+      };
+
+      this.chart.setOption(( this.options as unknown) as EChartOption<EChartOption.SeriesLine>)
     }
   }
 }
 </script>
 <style lang="scss">
 .bar-horizontal-chart {
-  width: 100%;
+  display: block;
+  width: 100% !important;
   height: 100% !important;
-  // height: 400px;
-  // height: setViewport('vh', 400);
+  & > div {
+    width: auto !important;
+  }
 }
 </style>

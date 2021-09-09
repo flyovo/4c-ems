@@ -125,7 +125,9 @@ export default class extends Vue {
     let type = ""
 
     if (this.menuType === 'failure') {
-      type = "_" + this.comboList[this.comboIndex].fail_op_prog
+      if(this.comboList.length > 0){
+        type = "_" + this.comboList[this.comboIndex].fail_op_prog
+      }
     } else if (this.typeList[index] === undefined) {
       type = ""
     } else {
@@ -280,7 +282,8 @@ export default class extends Vue {
     }
   }
   table {
-    thead {
+    thead,
+    thead.is-group {
       th {
         padding: 0;
 
@@ -351,6 +354,7 @@ export default class extends Vue {
       // font-size: 16px;
       width: setViewport('vw', 36);
       height: setViewport('vh', 36);
+      line-height: setViewport('vh', 36);
       font-size: setViewport('vw', 16);
       font-weight: bold;
       color: $paginationText;

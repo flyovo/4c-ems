@@ -37,7 +37,7 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    console.log('init 사이트 변경:::', val)
+    // console.log('init 사이트 변경:::', val)
     this.fetchData()
   }
 
@@ -47,7 +47,7 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    console.log('init 날짜 범위 변경')
+    // console.log('init 날짜 범위 변경')
     this.fetchData()
   }
 

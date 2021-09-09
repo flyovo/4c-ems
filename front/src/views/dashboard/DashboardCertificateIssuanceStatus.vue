@@ -36,7 +36,7 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    console.log('selectedSite::::', val)
+    // console.log('selectedSite::::', val)
     this.fetchData()
   }
 
@@ -46,7 +46,7 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    console.log('dateRange::::', val)
+    // console.log('dateRange::::', val)
     this.fetchData()
   }
 

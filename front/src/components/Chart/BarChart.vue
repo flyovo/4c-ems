@@ -6,6 +6,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import echarts, { ECharts, EChartOption } from 'echarts'
 import commonScss from '@/styles/common.scss'
+// import { AppStoreModule } from '@/store/modules/app/store'
 
 export interface IBarChart {
   title: Object
@@ -34,6 +35,30 @@ export default class extends Vue {
     }
     this.setOptions(this.chartItems)
   }
+
+  // get sidebar() {
+  //   return AppStoreModule.sidebar
+  // }
+
+  // @Watch('sidebar', { immediate: true, deep: true })
+  // public onInitResize(val: any, oldVal: any) {
+  //   // this.$nextTick(function() {
+  //     console.log('1')
+  //       if (this.chart) {
+  //         console.log('2')
+  //       //   this.chart.resize(domWidth)
+  //         this.chart.dispose()
+  //         console.log('3')
+  //       }
+  //       this.initProcess()
+  //         console.log('4')
+  //     // window.dispatchEvent(new Event('resize'));
+  //     // var evt = document.createEvent("HTMLEvents");
+  //     // evt.initEvent('resize', true, false);
+  //     // window.dispatchEvent(evt);
+
+  //   // })
+  // }
 
   mounted() {
     this.initProcess()
@@ -64,6 +89,10 @@ export default class extends Vue {
     if (this.chart) {
       this.chart.setOption(({
         // title: chartItems.title,
+        style: {
+          width: "100%",
+          height: "100%",
+        },
         title: {
           text: chartItems.title,
           left: 'center',
@@ -124,9 +153,12 @@ export default class extends Vue {
 </script>
 <style lang="scss">
 .bar-chart {
-  width: 100%;
+  width: 100% !important;
   height: 100% !important;
   // height: 400px;
   // height: setViewport('vh', 400);
+  & > div {
+    width: auto !important;
+  }
 }
 </style>

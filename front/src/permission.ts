@@ -1,10 +1,10 @@
 import router from './router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import { Route } from 'vue-router'
-import { UserStoreModule } from '@/store/modules/user/store'
-import { PermissionModule } from '@/store/modules/permission/store'
+// import { UserStoreModule } from '@/store/modules/user/store'
+// import { PermissionModule } from '@/store/modules/permission/store'
 
 import i18n from '@/lang'
 import settings from './settings'

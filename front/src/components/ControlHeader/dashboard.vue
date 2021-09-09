@@ -3,7 +3,7 @@
     <div class="control_header_wrapper">
       <div class="control_header__title">기관 선택</div>
       <el-dropdown>
-        <el-button> {{ siteLabel.label }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+        <el-button> {{ siteLabel.label ? siteLabel.label : '전체' }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item v-for="(item, index) in siteList" :key="`${item}-${index}`" @click.native="handleSiteChange(item)">{{ item.label }}</el-dropdown-item>
         </el-dropdown-menu>
@@ -200,7 +200,11 @@ export default class extends Vue {
 
           .el-icon-arrow-down {
             right: 5px;
+            top: 0;
             position: absolute;
+            height: 100%;
+            display: flex;
+            align-items: center;
           }
         }
       }

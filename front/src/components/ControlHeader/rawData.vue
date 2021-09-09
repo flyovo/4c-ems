@@ -183,12 +183,12 @@ export default class extends Vue {
       border: 1px solid $lightGray;
       font-size: setViewport('vw', 14);
       padding-left: 0;
-      padding-right: setViewport('vw', 10);
+      padding-right: setViewport('vw', 15);
 
       &.is-disabled {
         input.el-range-input {
           width: setViewport('vw', 70);
-          min-width: 50px;
+          min-width: 45px;
           font-size: setViewport('vw', 14);
           letter-spacing: -0.84px;
           text-align: left;
@@ -196,7 +196,9 @@ export default class extends Vue {
       }
       &:not(.is-disabled) {
         input.el-range-input {
-          width: 70px;
+          // width: 70px;
+          width: setViewport('vw', 70);
+          min-width: 45px;
           font-size: setViewport('vw', 14);
           color: $subMenuText;
           letter-spacing: -0.84px;
@@ -210,16 +212,16 @@ export default class extends Vue {
         }
       }
       .el-input__icon {
-        line-height: 0.6;
+        line-height: 1;
         width: setViewport('vw', 24);
         height: setViewport('vw', 24);
-        // margin-right: 12px;
-        margin-left: setViewport('vw', 10);
+        margin: 0 setViewport('vw', 10);
         &.el-range__close-icon {
           display: none;
         }
       }
       .el-range-separator {
+        margin: 0 3px;
         padding: 0;
         line-height: 0;
         display: flex;

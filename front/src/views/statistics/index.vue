@@ -39,7 +39,7 @@ export default class extends Vue {
 
   created() {
     this.routeData = this.$route.path.split('/')[2].replace(`${this.$route.path.split('/')[1]}-`, '')
-    console.log(this.routeData)
+    // console.log(this.routeData)
 
     StatisticsStoreModule.SetInitDataList()
   }
@@ -73,7 +73,7 @@ export default class extends Vue {
       this.type = value
       return StatisticsStoreModule.typeList.filter(list => {
         if (list.id === this.routeData) {
-          console.log('>>> ', list.id, this.routeData)
+          // console.log('>>> ', list.id, this.routeData)
         }
         return list.id === this.routeData
       })[0].list[value]

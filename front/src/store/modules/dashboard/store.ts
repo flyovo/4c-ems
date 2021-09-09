@@ -121,7 +121,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
 
   @Action({ rawError: true })
   public GetSite(payload: any) {
-    console.log('Action GetSite : ', payload)
+    // console.log('Action GetSite : ', payload)
     this.SET_CHANGE_VALUE({ key: 'selectedSite', value: payload })
   }
 
@@ -129,7 +129,7 @@ class DashboardStore extends VuexModule implements DashboardStoreState {
   public GetDateRange(payload: any) {
     // const selectDate = payload.date
     let date = this.dateList[payload.date]
-    console.log('Action GetDateRange : ', date)
+    // console.log('Action GetDateRange : ', date)
     this.SET_CHANGE_VALUE({ key: 'dateRange', value: date })
   }
 }
