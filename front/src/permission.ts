@@ -25,7 +25,7 @@ const getPageTitle = (key: string) => {
 router.beforeEach(async (to: Route, _: Route, next: any) => {
   NProgress.start()
   // next()
-  if (localStorage.getItem('token')) {
+  if (sessionStorage.getItem('token')) {
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
@@ -38,7 +38,7 @@ router.beforeEach(async (to: Route, _: Route, next: any) => {
       //    router.addRoutes(PermissionModule.dynamicRoutes)
       //    next({ ...to, replace: true })
       //  } catch (err) {
-      //    localStorage.removeItem('token')
+      //    sessionStorage.removeItem('token')
       //    Message.error(err || 'Has Error')
       //    next(`/login?redirect=${to.path}`)
       //    NProgress.done()

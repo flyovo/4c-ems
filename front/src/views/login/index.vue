@@ -84,16 +84,16 @@ export default class extends Vue {
   @Watch('idRemember', { immediate: true })
   private onIdRememberChange() {
     if(this.idRemember){
-      localStorage.setItem('4c-saveId', this.loginForm.userId)
+      sessionStorage.setItem('4c-saveId', this.loginForm.userId)
     }
   }
 
   mounted() {
-    if (localStorage.getItem('4c-saveId')) {
+    if (sessionStorage.getItem('4c-saveId')) {
       this.idRemember = true;
-      this.loginForm.userId = localStorage.getItem('4c-saveId');
+      this.loginForm.userId = sessionStorage.getItem('4c-saveId');
     }else{
-      localStorage.removeItem('4c-saveId')
+      sessionStorage.removeItem('4c-saveId')
     }
   }
 
@@ -104,7 +104,7 @@ export default class extends Vue {
           if (resolve === 200) {
             // this.idRemember = false
             if(this.idRemember){
-              localStorage.setItem('4c-saveId', this.loginForm.userId)
+              sessionStorage.setItem('4c-saveId', this.loginForm.userId)
             }
 
             await this.$router.push(

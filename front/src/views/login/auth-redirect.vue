@@ -7,8 +7,8 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class extends Vue {
   created() {
     const hash = window.location.search.slice(1)
-    if (window.localStorage) {
-      window.localStorage.setItem('x-admin-oauth-code', hash)
+    if (window.sessionStorage) {
+      window.sessionStorage.setItem('x-admin-oauth-code', hash)
       window.close()
     }
   }

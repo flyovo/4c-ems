@@ -25,19 +25,19 @@ const service = axios.create({
 let loading: any
 service.interceptors.request.use(
   config => {
-    // if (localStorage.getItem('token')) {
-    //  set(config.headers, 'token', localStorage.getItem('token'))
+    // if (sessionStorage.getItem('token')) {
+    //  set(config.headers, 'token', sessionStorage.getItem('token'))
     // }
     const reqType = config.method
     switch (reqType) {
       case 'get':
-        if (localStorage.getItem('token')) {
-          set(config.headers, 'token', localStorage.getItem('token'))
+        if (sessionStorage.getItem('token')) {
+          set(config.headers, 'token', sessionStorage.getItem('token'))
         }
         break
       case 'post':
-        if (localStorage.getItem('token')) {
-          config.data.token = localStorage.getItem('token')
+        if (sessionStorage.getItem('token')) {
+          config.data.token = sessionStorage.getItem('token')
         }
         break
       default:
@@ -63,17 +63,17 @@ service.interceptors.response.use(
 
     if (response.data.token) {
       console.log(response.data.data)
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('4c-userId', response.data.data.user_id)
-      localStorage.setItem('4c-userAuth', response.data.data.authority)
-      localStorage.setItem('4c-userState', JSON.stringify({ site: response.data.data.site, organ: response.data.data.organ, pos_4: response.data.data.pos_4 }))
+      sessionStorage.setItem('token', response.data.token)
+      sessionStorage.setItem('4c-userId', response.data.data.user_id)
+      sessionStorage.setItem('4c-userAuth', response.data.data.authority)
+      sessionStorage.setItem('4c-userState', JSON.stringify({ site: response.data.data.site, organ: response.data.data.organ, pos_4: response.data.data.pos_4 }))
     }
 
-    const token = localStorage.getItem('token')
+    const token = sessionStorage.getItem('token')
     if (token === '' || !token) {
       MessageService.MsgError('토큰 불일치 또는 만료')
-      // localStorage.removeItem('userId')
-      // localStorage.removeItem('token')
+      // sessionStorage.removeItem('userId')
+      // sessionStorage.removeItem('token')
       router.push(`/login`)
     }
 

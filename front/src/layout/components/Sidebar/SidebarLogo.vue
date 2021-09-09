@@ -40,7 +40,7 @@ import { Loading } from 'element-ui'
 })
 export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
-  public userId = localStorage.getItem('4c-userId')
+  public userId = sessionStorage.getItem('4c-userId')
   public userAuth = ''
   public initMenu = {}
   public menuActive = 'dashboard'
@@ -53,7 +53,7 @@ export default class extends Vue {
   public menuText = []
 
   created() {
-    switch (localStorage.getItem('4c-userAuth')) {
+    switch (sessionStorage.getItem('4c-userAuth')) {
       case 'S':
         this.userAuth = 'Super Admin(4cgate)'
         break
@@ -126,10 +126,10 @@ export default class extends Vue {
     let list = await SettingsModule.GetSite({
       site: type,
       position: position,
-      organ: JSON.parse(localStorage.getItem('4c-userState')).organ,
-      pos_4: JSON.parse(localStorage.getItem('4c-userState')).pos_4,
-      // ...JSON.parse(localStorage.getItem('4c-userState')),
-      auth: localStorage.getItem('4c-userAuth')
+      organ: JSON.parse(sessionStorage.getItem('4c-userState')).organ,
+      pos_4: JSON.parse(sessionStorage.getItem('4c-userState')).pos_4,
+      // ...JSON.parse(sessionStorage.getItem('4c-userState')),
+      auth: sessionStorage.getItem('4c-userAuth')
     }).then((result: any) => {
       return result
     })

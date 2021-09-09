@@ -58,7 +58,7 @@ import router from '@/router'
 })
 export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
-  public userId = localStorage.getItem('4c-userId')
+  public userId = sessionStorage.getItem('4c-userId')
   public userAuth = ''
   // public menuActive = location.pathname.split("/")[2]
   public menuActive = 'dashboard'
@@ -69,7 +69,7 @@ export default class extends Vue {
   public isCollapse = false
 
   created() {
-    switch (localStorage.getItem('4c-userAuth')) {
+    switch (sessionStorage.getItem('4c-userAuth')) {
       case 'S':
         this.userAuth = 'Super Admin(4cgate)'
         break

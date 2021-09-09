@@ -70,8 +70,8 @@ export default class extends Vue {
     let position = []
 
     // site
-    if( JSON.parse(localStorage.getItem('4c-userState')).site ){
-      position.push( JSON.parse(localStorage.getItem('4c-userState')).site )
+    if( JSON.parse(sessionStorage.getItem('4c-userState')).site ){
+      position.push( JSON.parse(sessionStorage.getItem('4c-userState')).site )
     }else{
       position.push('')
     }

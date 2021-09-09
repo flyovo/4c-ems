@@ -69,14 +69,14 @@ export default class extends Vue {
       let position = this.menuPosition.slice()
 
       // 사용자 상태 확인 / P일 때 강제 설정
-      let userState = JSON.parse(localStorage.getItem('4c-userState'))
-      if(localStorage.getItem('4c-userAuth') === "P"){
+      let userState = JSON.parse(sessionStorage.getItem('4c-userState'))
+      if(sessionStorage.getItem('4c-userAuth') === "P"){
         position[0] = userState.site
         position[1] = userState.organ
       }
       
       await RawDataStoreModule.GetComboList({
-        auth: localStorage.getItem('4c-userAuth'),
+        auth: sessionStorage.getItem('4c-userAuth'),
         pos_4: userState.pos_4,
         position: position.join(',')
       })

@@ -86,7 +86,7 @@ const user = {
 			let position = req.query.position ? req.query.position.split(",") : "";
 			// req.query
 			// { site: 'site', position: ['site', 'pos_1', 'pos_2'] -> text, 
-			//   state: {organ, pos_4}, auth: localStorage.getItem('4c-userAuth') }
+			//   state: {organ, pos_4}, auth: sessionStorage.getItem('4c-userAuth') }
 
 			// let organ = req.query.organ ? ` pos_1 = '${req.query.organ}' ` : "";
 			// let pos_4 = req.query.pos_4 ? ` pos_4 = '${req.query.pos_4}' ` : "";

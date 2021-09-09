@@ -26,8 +26,8 @@ service.interceptors.request.use(
     const reqType = config.method
     switch (reqType) {
       case 'post':
-        if (localStorage.getItem('userId')) {
-          config.data.systemKey = localStorage.getItem('userId')
+        if (sessionStorage.getItem('userId')) {
+          config.data.systemKey = sessionStorage.getItem('userId')
         }
         break
 

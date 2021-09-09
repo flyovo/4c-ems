@@ -51,10 +51,10 @@ export default class extends Vue {
   // 기관 리스트
   async siteList() {
     let position = [];
-    let userState = JSON.parse(localStorage.getItem('4c-userState'))
+    let userState = JSON.parse(sessionStorage.getItem('4c-userState'))
 
-    if( JSON.parse(localStorage.getItem('4c-userState')).site ){
-      position.push( JSON.parse(localStorage.getItem('4c-userState')).site )
+    if( JSON.parse(sessionStorage.getItem('4c-userState')).site ){
+      position.push( JSON.parse(sessionStorage.getItem('4c-userState')).site )
     }
 
     let list = await SettingsModule.GetSite({
@@ -62,14 +62,14 @@ export default class extends Vue {
       position: position.join(','),
       organ: userState.organ,
       pos_4: userState.pos_4,
-      // ...JSON.parse(localStorage.getItem('4c-userState')),
-      auth: localStorage.getItem('4c-userAuth')
+      // ...JSON.parse(sessionStorage.getItem('4c-userState')),
+      auth: sessionStorage.getItem('4c-userAuth')
     }).then((result: any) => {
       return result
     })
 
     let defaultPos = {};
-    switch(localStorage.getItem('4c-userAuth')){
+    switch(sessionStorage.getItem('4c-userAuth')){
       case "P" : 
       case "p" : 
         defaultPos = list.find(item => {
