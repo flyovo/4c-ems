@@ -70,13 +70,14 @@ export default class extends Vue {
 
       // 사용자 상태 확인 / P일 때 강제 설정
       let userState = JSON.parse(sessionStorage.getItem('4c-userState'))
-      if(sessionStorage.getItem('4c-userAuth') === "P"){
+      if (sessionStorage.getItem('4c-userAuth') === 'P') {
         position[0] = userState.site
         position[1] = userState.organ
       }
-      
+
       await StatisticsStoreModule.GetComboList({
         auth: sessionStorage.getItem('4c-userAuth'),
+        pos_1: userState.organ,
         pos_4: userState.pos_4,
         position: position.join(',')
       })
@@ -103,7 +104,7 @@ export default class extends Vue {
   get comboIndex() {
     return StatisticsStoreModule.comboIndex
   }
-  
+
   get comboText() {
     if (this.comboList.length > 0) {
       return this.comboList[this.comboIndex]
@@ -165,7 +166,10 @@ export default class extends Vue {
     letter-spacing: -1.04px;
     text-align: right;
     color: #333;
+    position: absolute;
+    right: 0;
     span {
+      font-size: setViewport('vw', 26);
       color: #0058ff;
     }
   }
@@ -262,7 +266,7 @@ export default class extends Vue {
         // width: 96px;
         // height: 36px;
         min-width: 80px;
-        width: setViewport('vw', 96);
+        // width: setViewport('vw', 96);
         height: setViewport('vh', 36);
         border-radius: 4px;
         border: 1px solid $lightGray;
@@ -299,6 +303,7 @@ export default class extends Vue {
     color: $subMenuText;
   }
   &__date {
+    width: 60%;
     // min-width: calc(100% - 116px);
     // min-width: calc(100% - #{setViewport('vw', 116)});
     // min-width: calc(100% - #{setViewport('vw', 116)});

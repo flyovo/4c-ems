@@ -3,7 +3,9 @@
     <div class="statistics-table__header">
       <div class="statistics-table__header__date_text">
         <i class="el-icon-date"></i>
-        조회 기간 : {{ dateRange.label.from }} ~ {{ dateRange.label.to }}
+        조회 기간 :
+        <span v-if="dateRange.label.from === dateRange.label.to"> 전체 </span>
+        <span v-else>{{ dateRange.label.from }} ~ {{ dateRange.label.to }}</span>
       </div>
       <div class="button-group">
         <el-dropdown @command="handleCommand">
@@ -114,28 +116,28 @@ export default class extends Vue {
   get menuPosition() {
     return SettingsModule.menuPosition
   }
-  
+
   get menuKor() {
     return SettingsModule.menuKor
   }
 
   get fileName() {
-    let date = this.dateRange.date.term === "all" ? "전체" : `${(this.dateRange.date.from).replace(/[-]/gi, '')}-${(this.dateRange.date.to).replace(/[-]/gi, '')}`;
-    let index = Number(this.selectType);
-    let type = ""
+    let date = this.dateRange.date.term === 'all' ? '전체' : `${this.dateRange.date.from.replace(/[-]/gi, '')}-${this.dateRange.date.to.replace(/[-]/gi, '')}`
+    let index = Number(this.selectType)
+    let type = ''
 
     if (this.menuType === 'failure') {
-      if(this.comboList.length > 0){
-        type = "_" + this.comboList[this.comboIndex].fail_op_prog
+      if (this.comboList.length > 0) {
+        type = '_' + this.comboList[this.comboIndex].fail_op_prog
       }
     } else if (this.typeList[index] === undefined) {
-      type = ""
+      type = ''
     } else {
-      type = "_" + this.typeList[index]
+      type = '_' + this.typeList[index]
     }
     return `[${date}]${this.menuKor.join('_')}${type}.xls`
   }
-  
+
   private async handleDateChange(value: number) {
     this.selectDate = value
     await this.getDateRange()
@@ -161,7 +163,7 @@ export default class extends Vue {
   }
 
   private async handleCommand(command) {
-    this.pageSize = Number(command);
+    this.pageSize = Number(command)
     this.handleCurrentChange(1)
   }
 
@@ -183,7 +185,7 @@ export default class extends Vue {
     if (this.selectDate === undefined) return
     if (this.dateRange === undefined) return
 
-    let index = Number(this.selectType);
+    let index = Number(this.selectType)
 
     // console.log(this.menuType, this.typeList, this.selectType, this.typeList[index], this.selectDate, this.dateRange)
 
@@ -267,11 +269,11 @@ export default class extends Vue {
 <style lang="scss">
 .el-dropdown-menu__item {
   width: 100%;
-  min-width: 55px;
+  // min-width: 55px;
   text-align: center;
   padding: 0px setViewport('vw', 15) !important;
   font-size: setViewport('vw', 14) !important;
-  line-height: 2.5 !important;
+  // line-height: 2.5 !important;
 }
 .statistics-table {
   .el-dropdown-menu {
@@ -465,7 +467,7 @@ export default class extends Vue {
           color: $darkGrayText;
           border-color: $lightGray;
         }
-        > span{
+        > span {
           padding: 0px setViewport('vw', 15);
         }
       }

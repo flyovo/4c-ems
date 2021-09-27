@@ -443,7 +443,7 @@ const rawData = {
 				where.push(` a.pos_3 = '${position[3]}' `);
 			}
 
-			if(req.query.auth === "P" && req.query.pos_4){
+			if((req.query.auth === "P" || req.query.auth === "A") && req.query.pos_4){
 				where.push(` a.pos_4 = '${req.query.pos_4}' `);
 			}
 
@@ -452,6 +452,8 @@ const rawData = {
 			}
 
 			query += " GROUP BY b.fail_op_prog ";
+			query += " ORDER BY b.fail_op_prog ";
+
 		
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info

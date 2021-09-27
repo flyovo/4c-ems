@@ -19,7 +19,16 @@
             <!-- <svg-icon name="password" /> -->
             비밀번호
           </span>
-          <el-input :key="passwordType" ref="userPwd" v-model="loginForm.userPwd" :type="passwordType" name="userPwd" autocomplete="on" @keyup.enter.native="handleLogin" placeholder="비밀번호를 입력해주세요."/>
+          <el-input
+            :key="passwordType"
+            ref="userPwd"
+            v-model="loginForm.userPwd"
+            :type="passwordType"
+            name="userPwd"
+            autocomplete="on"
+            @keyup.enter.native="handleLogin"
+            placeholder="비밀번호를 입력해주세요."
+          />
         </el-form-item>
 
         <el-checkbox v-model="idRemember">아이디 저장</el-checkbox>
@@ -83,27 +92,27 @@ export default class extends Vue {
   }
   @Watch('idRemember', { immediate: true })
   private onIdRememberChange() {
-    if(this.idRemember){
+    if (this.idRemember) {
       sessionStorage.setItem('4c-saveId', this.loginForm.userId)
     }
   }
 
   mounted() {
     if (sessionStorage.getItem('4c-saveId')) {
-      this.idRemember = true;
-      this.loginForm.userId = sessionStorage.getItem('4c-saveId');
-    }else{
+      this.idRemember = true
+      this.loginForm.userId = sessionStorage.getItem('4c-saveId')
+    } else {
       sessionStorage.removeItem('4c-saveId')
     }
   }
 
   private handleLogin() {
-    (this.$refs.loginForm as ElForm).validate(async (valid: boolean) => {
+    ;(this.$refs.loginForm as ElForm).validate(async (valid: boolean) => {
       if (valid) {
         await UserStoreModule.Login(this.loginForm).then(async (resolve: any) => {
           if (resolve === 200) {
             // this.idRemember = false
-            if(this.idRemember){
+            if (this.idRemember) {
               sessionStorage.setItem('4c-saveId', this.loginForm.userId)
             }
 
@@ -163,7 +172,7 @@ export default class extends Vue {
 
         &:-webkit-autofill {
           box-shadow: 0 0 0px 1000px $loginBg inset !important;
-          -webkit-text-fill-color: #fff !important;
+          // -webkit-text-fill-color: #fff !important;
         }
 
         &::-webkit-input-placeholder {

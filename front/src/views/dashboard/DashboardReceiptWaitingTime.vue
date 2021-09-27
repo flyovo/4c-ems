@@ -25,7 +25,7 @@ export default class extends Vue {
     legend: ['10:00~12:00', '14:00~16:00', '1일 평균 대기시간'],
     colors: [variables.darkRed, variables.darkGray, variables.darkTurquoise],
     xAxisData: [],
-    series: [],
+    series: []
     // tooltip : {  // 여기서 설정하면 formatter가 동작하지 않아 barChart 파일 내에서 선언
     //   trigger: 'axis',
     //   formatter: (params) => {
@@ -44,7 +44,10 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    this.fetchData()
+    if (oldVal) {
+      // console.log('watch Site::::', val, oldVal)
+      this.fetchData()
+    }
   }
 
   // 날짜 범위 변경
@@ -53,7 +56,10 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    this.fetchData()
+    if (oldVal) {
+      // console.log('watch Date::::', val, oldVal)
+      this.fetchData()
+    }
   }
 
   // 사이트 텍스트
@@ -70,14 +76,14 @@ export default class extends Vue {
     let position = []
 
     // site
-    if( JSON.parse(sessionStorage.getItem('4c-userState')).site ){
-      position.push( JSON.parse(sessionStorage.getItem('4c-userState')).site )
-    }else{
+    if (JSON.parse(sessionStorage.getItem('4c-userState')).site) {
+      position.push(JSON.parse(sessionStorage.getItem('4c-userState')).site)
+    } else {
       position.push('')
     }
     // pos_1
     position.push(this.selectedSite.id)
-    
+
     DashboardStoreModule.Dashboard({
       type: this.type,
       position: position.join(','),

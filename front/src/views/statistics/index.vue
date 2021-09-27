@@ -108,6 +108,7 @@ export default class extends Vue {
     // margin-bottom: 20px;
     // height: setViewport('vh', 90);
     margin-bottom: setViewport('vh', 20);
+    position: relative;
   }
 }
 </style>

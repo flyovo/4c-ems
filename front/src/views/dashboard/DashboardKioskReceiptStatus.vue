@@ -26,7 +26,7 @@ export default class extends Vue {
     colors: [variables.darkBlue, variables.lightRed],
     xAxisData: [],
     series: [],
-    tooltip : {
+    tooltip: {
       trigger: 'axis'
     }
   }
@@ -37,7 +37,10 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    this.fetchData()
+    if (oldVal) {
+      // console.log('watch Site::::', val, oldVal)
+      this.fetchData()
+    }
   }
 
   // 날짜 범위 변경
@@ -46,7 +49,10 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    this.fetchData()
+    if (oldVal) {
+      // console.log('watch Date::::', val, oldVal)
+      this.fetchData()
+    }
   }
 
   // 사이트 텍스트 (site? pos_1?)
@@ -63,14 +69,14 @@ export default class extends Vue {
     let position = []
 
     // site
-    if( JSON.parse(sessionStorage.getItem('4c-userState')).site ){
-      position.push( JSON.parse(sessionStorage.getItem('4c-userState')).site )
-    }else{
+    if (JSON.parse(sessionStorage.getItem('4c-userState')).site) {
+      position.push(JSON.parse(sessionStorage.getItem('4c-userState')).site)
+    } else {
       position.push('')
     }
     // pos_1
     position.push(this.selectedSite.id)
-    
+
     DashboardStoreModule.Dashboard({
       type: this.type,
       position: position.join(','),

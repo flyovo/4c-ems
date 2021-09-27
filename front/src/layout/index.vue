@@ -84,7 +84,7 @@ export default class extends mixins(ResizeMixin) {
 }
 .container {
   display: flex;
-  height: 100%;
+  height: calc(100% - 10px);
 }
 .main-container {
   width: calc(100% - #{$sideBarWidth});

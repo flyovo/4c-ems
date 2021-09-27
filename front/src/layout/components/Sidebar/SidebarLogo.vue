@@ -21,7 +21,7 @@
         <div class="text1">{{ getterSetter }}</div>
         <div class="text2">{{ userId }}</div>
       </div>
-      <img src="@/assets/images/ic-export.svg"/>
+      <img src="@/assets/images/ic-export.svg" />
     </el-button>
     <div class="sidebar-logo-menu">
       <el-tree ref="tree" node-key="id" :highlight-current="true" :render-after-expand="false" :default-expand-all="true" :data="menuListTree" :props="defaultProps" @node-click="handleNodeClick" />
@@ -146,7 +146,7 @@ export default class extends Vue {
   private setCheckedNodes() {
     // 화면 처음 진입했을 때 tree setting
 
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       await SettingsModule.SetMenuText([])
 
       let path = this.$route.path.split('/')
@@ -192,7 +192,7 @@ export default class extends Vue {
             return tree.id === p
           })[0]
         }
-        
+
         pathKor.push(this.initMenu.label.trim())
 
         let pos = position.join(',')
@@ -294,7 +294,7 @@ export default class extends Vue {
     justify-content: space-between;
     align-items: center;
 
-    &>span {
+    & > span {
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -387,7 +387,8 @@ export default class extends Vue {
     justify-content: space-between;
     align-items: center;
     border-radius: 0;
-    &:hover, &:active {
+    &:hover,
+    &:active {
       border-color: unset;
     }
     img {
@@ -433,8 +434,8 @@ export default class extends Vue {
       }
     }
     // button {
-      // margin-right: 18px;
-      // margin-right: setViewport('vw', 18);
+    // margin-right: 18px;
+    // margin-right: setViewport('vw', 18);
     // }
   }
 
@@ -443,7 +444,7 @@ export default class extends Vue {
     // height: calc(100vh - 250px);
     height: calc(100% - #{setViewport('vh', 171)});
     background-color: $subMenuBg;
-    overflow: scroll;
+    overflow: auto;
   }
 
   & .sidebar-logo-link {

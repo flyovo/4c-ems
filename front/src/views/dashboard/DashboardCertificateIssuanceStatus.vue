@@ -36,8 +36,10 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    // console.log('selectedSite::::', val)
-    this.fetchData()
+    if (oldVal) {
+      // console.log('watch Site::::', val, oldVal)
+      this.fetchData()
+    }
   }
 
   // 날짜 범위 변경
@@ -46,8 +48,10 @@ export default class extends Vue {
     if (this.interval) {
       clearInterval(this.interval)
     }
-    // console.log('dateRange::::', val)
-    this.fetchData()
+    if (oldVal) {
+      // console.log('watch Date::::', val, oldVal)
+      this.fetchData()
+    }
   }
 
   // 사이트 텍스트
@@ -64,9 +68,9 @@ export default class extends Vue {
     let position = []
 
     // site
-    if( JSON.parse(sessionStorage.getItem('4c-userState')).site ){
-      position.push( JSON.parse(sessionStorage.getItem('4c-userState')).site )
-    }else{
+    if (JSON.parse(sessionStorage.getItem('4c-userState')).site) {
+      position.push(JSON.parse(sessionStorage.getItem('4c-userState')).site)
+    } else {
       position.push('')
     }
     // pos_1

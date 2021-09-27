@@ -50,11 +50,11 @@ export default class extends Vue {
   @AsyncComputed()
   // 기관 리스트
   async siteList() {
-    let position = [];
+    let position = []
     let userState = JSON.parse(sessionStorage.getItem('4c-userState'))
 
-    if( JSON.parse(sessionStorage.getItem('4c-userState')).site ){
-      position.push( JSON.parse(sessionStorage.getItem('4c-userState')).site )
+    if (JSON.parse(sessionStorage.getItem('4c-userState')).site) {
+      position.push(JSON.parse(sessionStorage.getItem('4c-userState')).site)
     }
 
     let list = await SettingsModule.GetSite({
@@ -68,20 +68,22 @@ export default class extends Vue {
       return result
     })
 
-    let defaultPos = {};
-    switch(sessionStorage.getItem('4c-userAuth')){
-      case "P" : 
-      case "p" : 
+    let defaultPos = {}
+    switch (sessionStorage.getItem('4c-userAuth')) {
+      case 'P':
+      case 'p':
         defaultPos = list.find(item => {
           return item.label === userState.organ
         })
-      break;
-      case "S" : 
-      case "s" : 
+        break
+      case 'A':
+      case 'a':
+      case 'S':
+      case 's':
         defaultPos = list.find(item => {
-          return item.label === "본관"
+          return item.label === '본관'
         })
-      break;
+        break
     }
     this.handleSiteChange(defaultPos)
 
@@ -123,12 +125,12 @@ export default class extends Vue {
 <style lang="scss">
 .el-dropdown-menu {
   padding: 0 !important;
-  max-height: setViewport('vh', 180);
+  // max-height: setViewport('vh', 180);
   overflow-y: scroll;
 
   .el-dropdown-menu__item {
-    line-height: 2.4 !important;
-    height: setViewport('vh', 30);
+    // line-height: 2.4 !important;
+    // height: setViewport('vh', 30);
     padding: 0 setViewport('vw', 15) !important;
     font-size: setViewport('vw', 14) !important;
     width: setViewport('vw', 120);
