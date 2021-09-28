@@ -78,7 +78,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -204,7 +205,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -373,7 +375,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -510,7 +513,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.certificate_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -633,7 +637,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -706,7 +711,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -789,7 +795,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -883,7 +890,8 @@ const statistics = {
 				where.push(` DATE_FORMAT(b.fail_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				where.push(` b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${dayjs(req.query.endDate).format("YYYY-MM-DD")}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
+				where.push(` b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			if(req.query.option){ // // 콤보박스

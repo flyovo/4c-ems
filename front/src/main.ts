@@ -10,7 +10,6 @@ import AsyncComputedPlugin from 'vue-async-computed'
 
 import '@/plugins/lodash'
 import '@/plugins/vTooltip'
-import '@/plugins/excel'
 
 import '@/styles/element-variables.scss'
 import '@/styles/index.scss'

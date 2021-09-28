@@ -16,9 +16,7 @@
           </el-dropdown-menu>
         </el-dropdown>
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
-        <download-excel class="excel" :data="totalTableData" :name="fileName">
-          <el-button type="info">엑셀 저장</el-button>
-        </download-excel>
+        <el-button type="info" @click="makeExcelFile">엑셀 저장</el-button>
       </div>
     </div>
     <!-- 외래&입원 수납 Data -->
@@ -35,9 +33,7 @@
       <el-pagination :page-size="pageSize" layout="prev, pager, next" :total="totalCount" :current-page.sync="page" @current-change="handleCurrentChange"> </el-pagination>
       <div class="button-group">
         <el-button type="info" @click="fetchData">데이터 조회</el-button>
-        <download-excel class="excel" :data="totalTableData" :name="fileName">
-          <el-button type="info">엑셀 저장</el-button>
-        </download-excel>
+        <el-button type="info" @click="makeExcelFile">엑셀 저장</el-button>
       </div>
     </div>
   </div>
@@ -47,9 +43,10 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { RawDataStoreModule } from '@/store/modules/rawdata/store'
 import { SettingsModule } from '@/store/modules/settings/store'
+import Xlsx from 'xlsx'
 import dayjs from 'dayjs'
 import HospitalStorage from './HospitalStorage/index.vue'
-import Certification from './Certification/index.vue'
+import Certification from './certification/index.vue'
 import Arrive from './Arrive/index.vue'
 import Measurements from './Measurements/index.vue'
 import Failure from './Failure/index.vue'
@@ -124,7 +121,14 @@ export default class extends Vue {
     } else {
       type = '_' + this.typeList[index]
     }
-    return `[${date}]${this.menuKor.join('_')}${type}.xls`
+    return `${date} ${this.menuKor.join('_')}${type}.xlsx`
+  }
+
+  private makeExcelFile() {
+    const workBook = Xlsx.utils.book_new()
+    const workSheet = Xlsx.utils.json_to_sheet(this.data)
+    Xlsx.utils.book_append_sheet(workBook, workSheet, 'Sheet1')
+    Xlsx.writeFile(workBook, this.fileName)
   }
 
   private async handleDateChange(value: number) {

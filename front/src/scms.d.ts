@@ -31,5 +31,3 @@ declare module 'vue-infinite-scroll'
 declare module 'v-tooltip'
 
 declare module 'excel-date-to-js'
-
-declare module 'vue-json-excel'
