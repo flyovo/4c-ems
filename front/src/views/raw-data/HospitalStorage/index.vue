@@ -21,6 +21,8 @@
         <el-table-column prop="약국 전송 건수" label="약국 전송 건수" sortable :formatter="getNumFormat" align="center"></el-table-column>
         <el-table-column prop="약국" label="약국" sortable align="center"></el-table-column>
         <el-table-column prop="번호표" label="번호표" sortable align="center"></el-table-column>
+        <el-table-column prop="차량등록" label="차량등록" sortable align="center"></el-table-column>
+        <el-table-column prop="차량변경" label="차량변경" sortable align="center"></el-table-column>
         <el-table-column prop="폐기여부" label="폐기여부" sortable align="center"></el-table-column>
     </el-table>
   </div>

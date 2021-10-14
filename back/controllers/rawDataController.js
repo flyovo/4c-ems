@@ -29,7 +29,9 @@ const rawData = {
 			" , b.cnt_pharm AS '약국 전송 건수' " +
 			" , b.pharm_name AS '약국' " +
 			" , b.cnt_ticket AS '번호표' " +
-			" , a.del_type  AS '폐기여부' " +   
+			" , b.cnt_parking_reg as '차량등록' " +
+			" , b.cnt_parking_chg as '차량변경' " +
+			" , a.del_type  AS '폐기여부' " + 
 			` FROM ${db.device_op_info.name} a INNER JOIN ${db.sunap_rt_log.name} b ON a.dev_id = b.dev_id `;
 
 			let where = [];
