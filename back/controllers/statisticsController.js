@@ -701,6 +701,10 @@ const statistics = {
 			if(position[3]){ // 좌측 Tree에서 구역 선택했을 경우
 				where.push(` a.pos_3 = '${position[3]}' `);
 			}
+
+			// 도착확인만 조회
+			let act_type = "%도착%";
+			where.push(` b.act_type like '${act_type}' `);
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함

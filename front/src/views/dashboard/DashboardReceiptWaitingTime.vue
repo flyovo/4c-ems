@@ -22,7 +22,7 @@ export default class extends Vue {
   private chartItems: IBarChart = {}
   private chartItemsOrigin: IBarChart = {
     title: this.title,
-    legend: ['10:00~12:00', '14:00~16:00', '1일 평균 대기시간'],
+    legend: ['10:00~12:00', '14:00~16:00'],
     colors: [variables.darkRed, variables.darkGray, variables.darkTurquoise],
     xAxisData: [],
     series: []
@@ -96,43 +96,102 @@ export default class extends Vue {
     })
   }
 
+  private dateFormat(data){
+    let seconds = Number(data.value);
+
+    if(seconds === 0) return seconds;
+
+    var hours = 0;
+    var min = 0;
+    var sec = 0;
+
+    function secToStr(seconds){
+      if(seconds < 60) {
+        return Math.round(seconds) + '초';
+      }
+      if(seconds < 3600) {
+        min = Math.floor(seconds/60);
+        sec = Math.round(seconds - min*60);
+        return min + '분' + sec + '초';
+      }
+      hours = Math.floor(seconds/3600);
+      min = Math.floor((seconds - hours*3600)/60);
+      sec = Math.round(seconds - hours*3600 - min*60);
+      return hours + '시' + min + '분' + sec + '초';
+    }
+    return secToStr(seconds);
+  }
+
   private async setChart() {
+    let vm = this;
     // init
     this.chartItems = JSON.parse(JSON.stringify(this.chartItemsOrigin))
 
     this.chartItems.xAxisData = this.data.column
     this.chartItems.series = [
       {
+        //1일 평균 대기시간(sec)
+        name: '1일 평균 대기시간',
+        type: 'line',
+        itemStyle: {
+          borderColor: 'none',
+          color: 'none',
+        },
+        emphasis: {
+          itemStyle: {
+            borderColor: 'none',
+            color: 'none'
+          }
+        },
+        data: this.data.data.avgSecToStr
+      },
+      // {
+      //   //1일 평균 대기시간(HH:mm:ss)
+      //   name: '',
+      //   type: 'line',
+      //   data: this.data.data.avgTime
+      // },
+      {
+        //오전 평균 대기시간(sec)
         barGap: 0.2,
         name: '10:00~12:00',
         type: 'bar',
         stack: '',
         label: {
           show: true,
-          position: 'top'
+          position: 'top',
+          formatter: function(data){
+            return vm.dateFormat(data);
+          }
         },
-        data: this.data.data.am
+        data: this.data.data.amSec
       },
       {
+        //오후 평균 대기시간(sec)
         name: '14:00~16:00',
         type: 'bar',
         stack: '',
         label: {
           show: true,
-          position: 'top'
+          position: 'top',
+          formatter: function(data){
+            return vm.dateFormat(data);
+          }
         },
-        data: this.data.data.pm
+        data: this.data.data.pmSec
       },
-      {
-        name: '1일 평균 대기시간',
-        type: 'line',
-        data: this.data.data.avgSec
-      },
-      {
-        name: '',
-        type: 'line',
-        data: this.data.data.avgTime
-      }
+      // {
+      //   //오전 평균 대기시간(HH:mm:ss)
+      //   name: '', 
+      //   type: 'line',
+      //   data: this.data.data.amTime
+      // },
+      // {
+      //   //오후 평균 대기시간(HH:mm:ss)
+      //   name: '',
+      //   type: 'line',
+      //   data: this.data.data.pmTime
+      // }
     ]
   }
 }

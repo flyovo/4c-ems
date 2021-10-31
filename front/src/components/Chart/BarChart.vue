@@ -105,18 +105,35 @@ export default class extends Vue {
           { // 수납시간에서 평균시간을 따로 계산하기 위해 formatter 설정
             trigger: 'axis',
             formatter: function (params) {
+              function addZero(num) {
+                return ((num < 10) ? '0' : '') + num;
+              }
+
+              function secToStr(seconds){
+                if(seconds < 60) {
+                  return '00:00:' + addZero(Math.round(seconds));
+                }
+                if(seconds < 3600) {
+                  var min = Math.floor(seconds/60);
+                  var sec = Math.round(seconds - min*60);
+                  return '00:'+ addZero(min) + ':' + addZero(sec);
+                }
+                var hours = Math.floor(seconds/3600);
+                var min = Math.floor((seconds - hours*3600)/60);
+                var sec = Math.round(seconds - hours*3600 - min*60);
+                return addZero(hours) + ':' + addZero(min) + ':' + addZero(sec);
+              }
+
               return `${params[0].name}<br />
-              ${params[0].marker} ${params[0].seriesName}: ${params[0].value}<br />\
-              ${params[1].marker} ${params[1].seriesName}: ${params[1].value}<br />\
-              ${params[2].marker} ${params[2].seriesName}: ${params[3].value}<br />\
+              => ${params[0].seriesName}: ${params[0].value}<br />\
+              ${params[1].marker} ${params[1].seriesName}: ${secToStr(params[1].value)}<br />\
+              ${params[2].marker} ${params[2].seriesName}: ${secToStr(params[2].value)}<br />\
               `;
             }
           },
         legend: {
           x: 'center',
-          // y: 'bottom',
           bottom: 0,
-          // icon: 'rect',
           itemWidth: 12,
           itemHeight: 12,
           data: chartItems.legend
@@ -129,12 +146,6 @@ export default class extends Vue {
           right: commonScss.chartRight,
           top: commonScss.chartTop,
           bottom: commonScss.chartBottom,
-          // width: "100%",
-          // height: "80%",
-          // left: '0%',
-          // right: '3%',
-          // top: '15%',
-          // bottom: '0%',
           containLabel: true
         },
         toolbox: {},
@@ -143,7 +154,36 @@ export default class extends Vue {
           data: chartItems.xAxisData
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            formatter: function(value){
+              let seconds = Number(value);
+
+              if(seconds === 0) return seconds;
+
+              var hours = "";
+              var min = "";
+              var sec = "";
+
+              function secToStr(seconds){
+                if(seconds < 60) {
+                  return Math.round(seconds) + '초';
+                }
+                if(seconds < 3600) {
+                  min = Math.floor(seconds/60);
+                  sec = Math.round(seconds - min*60) > 0 ? 
+                    Math.round(seconds - min*60) + '초'
+                    : "";
+                  return min + '분' + sec;
+                }
+                hours = Math.floor(seconds/3600);
+                min = Math.floor((seconds - hours*3600)/60);
+                sec = Math.round(seconds - hours*3600 - min*60);
+                return hours + '시' + min + '분' + sec + '초';
+              }
+              return secToStr(seconds);
+            },
+          }
         },
         series: chartItems.series
       } as unknown) as EChartOption<EChartOption.SeriesBar>)

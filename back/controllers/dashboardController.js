@@ -114,6 +114,25 @@ const dashboard = {
 	},
 
 	getWait: async function (req, res, next) {
+		function addZero(num) {
+			return ((num < 10) ? "0" : "") + num;
+		}
+
+		function secToStr(seconds){
+			if(seconds < 60) {
+				return "00:00:" + addZero(Math.round(seconds));
+			}
+			if(seconds < 3600) {
+				var min = Math.floor(seconds / 60);
+				var sec = Math.round(seconds - min * 60);
+				return "00:" + addZero(min) + ":" + addZero(sec);
+			}
+			let hours = Math.floor(seconds / 3600);
+			var min = Math.floor((seconds - hours * 3600) / 60);
+			var sec = Math.round(seconds - hours * 3600 - min * 60);
+			return addZero(hours) + ":" + addZero(min) + ":" + addZero(sec);
+		}
+
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
 
@@ -124,31 +143,51 @@ const dashboard = {
 			}else{
 				subPos.push(" a1.pos_1 = a.pos_1 ");
 			}
-			subPos.push(" DATE_FORMAT(b1.q_date , '%Y-%m-%d') = DATE_FORMAT(b.q_date  , '%Y-%m-%d') ");
 			subPos.push(" b1.workno = 1 ");
 			
 			let query = " SELECT " + 
 			" a.pos_1 AS 'site', " +  // 기관
 			" b.q_date AS 'issueDate', "; // 발행날짜
 
+			let data_column = "";
 			if(req.query.dateTerm === "weekly"){
 				// 당월 조회 or 전월 조회 
-				query += " CONCAT(DATE_FORMAT(b.q_date,'%Y-%m/'), FLOOR((DATE_FORMAT(b.q_date,'%d') + (DATE_FORMAT(DATE_FORMAT(b.q_date,'%Y%m%01'),'%w')-1))/7)+1) AS date, " +
-						 " CONCAT(DATE_FORMAT(b.q_date,'%c'), '월', FLOOR((DATE_FORMAT(b.q_date,'%d') + (DATE_FORMAT(DATE_FORMAT(b.q_date,'%Y%m%01'),'%w')-1))/7)+1, '째주') AS data_column, ";
+				data_column = " CONCAT(DATE_FORMAT(b.q_date,'%c'), '월', WEEKOFYEAR(b.q_date) - WEEKOFYEAR(DATE_FORMAT(b.q_date,'%Y%m%01')) +1, '째주') ";
+				let range = 
+				" CONCAT(" + 
+				"	IF(" +
+				"		DATE_FORMAT(DATE_SUB(b.q_date, INTERVAL(DAYOFWEEK(b.q_date) - 2) DAY), '%m') = DATE_FORMAT(b.q_date,'%m'), " +
+				"		DATE_FORMAT(DATE_SUB(b.q_date, INTERVAL(DAYOFWEEK(b.q_date) - 2) DAY), '%m.%d'), " +
+				"		DATE_FORMAT(b.q_date,'%m.%01') " +
+				"	), " + 
+				"	'~'," +
+				"	DATE_FORMAT(DATE_ADD(b.q_date, INTERVAL(7 - DAYOFWEEK(b.q_date) + 1) DAY), '%m.%d') " + 
+				" ) ";
+
+				query += data_column + " AS data_column, ";
+				query += ` CONCAT(${data_column},'\n','(',${range},')') AS columns, `;
+				
+				subPos.push(` DATE_FORMAT(b1.q_date, '%Y-%m') = '${dayjs(req.query.startDate).format("YYYY-MM")}' `);
+				subPos.push(` CONCAT(DATE_FORMAT(b1.q_date,'%c'), '월', WEEKOFYEAR(b1.q_date) - WEEKOFYEAR('${dayjs(req.query.startDate).set("date", 1).format("YYYY-MM-DD")}') +1, '째주' ) = data_column `);
 			}else{ // "monthly"
 				// 년간 조회
-				query += " DATE_FORMAT(b.q_date,'%Y-%m') AS date, " + 
-						 " CONCAT(DATE_FORMAT(b.q_date,'%c'), '월') AS data_column, ";
+				data_column = " CONCAT(DATE_FORMAT(b.q_date,'%c'), '월') ";
+
+				query += data_column + " AS data_column, ";
+				query += ` CONCAT(${data_column}) AS columns, `;
+
+				subPos.push(` DATE_FORMAT(b1.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				subPos.push(" CONCAT(DATE_FORMAT(b1.q_date,'%c'), '월') = data_column ");
 			}
 
 			// query += dateTerm;
 			// 발행건수
-			query += ` (SELECT IFNULL((  
-				SELECT SUM(b1.t_q_cnt)  
-				FROM ${db.device_op_info.name} a1 
-				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE ${subPos.join(" AND ")}
-			), 0) as 'issueCnt') as 'issueCnt', `;
+			// query += ` (SELECT IFNULL((  
+			// 	SELECT SUM(b1.t_q_cnt)  
+			// 	FROM ${db.device_op_info.name} a1 
+			// 	INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
+			// 	WHERE ${subPos.join(" AND ")}
+			// ), 0) as 'issueCnt') as 'issueCnt', `;
 
 			// 평균대기시간 - sec
 			query += ` (SELECT IFNULL((  
@@ -167,36 +206,52 @@ const dashboard = {
 			), 0) as 'avgTime') as 'avgTime', `;
 
 			// 오전발행건수
-			query += ` (SELECT IFNULL((  
-				SELECT SUM(b1.ticket_cnt_1000) + SUM(b1.ticket_cnt_1100) + SUM(b1.ticket_cnt_1200)  
-				FROM ${db.device_op_info.name} a1 
-				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE ${subPos.join(" AND ")}
-			), 0) as 'amIssueCnt') as 'amIssueCnt', `;
+			// query += ` (SELECT IFNULL((  
+			// 	SELECT SUM(b1.ticket_cnt_1000) + SUM(b1.ticket_cnt_1100) + SUM(b1.ticket_cnt_1200)  
+			// 	FROM ${db.device_op_info.name} a1 
+			// 	INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
+			// 	WHERE ${subPos.join(" AND ")}
+			// ), 0) as 'amIssueCnt') as 'amIssueCnt', `;
 
-			// 오전대기시간
+			// 오전대기시간 - sec
 			query += ` (SELECT IFNULL((  
-				SELECT CONCAT(LPAD(ROUND(((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)), 60)), '2', '0'))  
+				SELECT AVG(b1.time_avg_1000) + AVG(b1.time_avg_1100) + AVG(b1.time_avg_1200)
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
 				WHERE ${subPos.join(" AND ")}
-			), 0) as 'amWaitTime') as 'amWaitTime', `;
+			), 0) as 'amAvgSec') as 'amAvgSec', `;
+
+			// 오전대기시간 - HH:mm:ss
+			// query += ` (SELECT IFNULL((  
+			// 	SELECT CONCAT(LPAD(ROUND(((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1000) + SUM(b1.time_avg_1100) + SUM(b1.time_avg_1200)), 60)), '2', '0'))  
+			// 	FROM ${db.device_op_info.name} a1 
+			// 	INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
+			// 	WHERE ${subPos.join(" AND ")}
+			// ), 0) as 'amWaitTime') as 'amWaitTime', `;
 
 			// 오후발행건수
-			query += ` (SELECT IFNULL((  
-				SELECT SUM(b1.ticket_cnt_1400) + SUM(b1.ticket_cnt_1500) + SUM(b1.ticket_cnt_1600)  
-				FROM ${db.device_op_info.name} a1 
-				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
-				WHERE ${subPos.join(" AND ")}
-			), 0) as 'pmIssueCnt') as 'pmIssueCnt', `;
+			// query += ` (SELECT IFNULL((  
+			// 	SELECT SUM(b1.ticket_cnt_1400) + SUM(b1.ticket_cnt_1500) + SUM(b1.ticket_cnt_1600)  
+			// 	FROM ${db.device_op_info.name} a1 
+			// 	INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
+			// 	WHERE ${subPos.join(" AND ")}
+			// ), 0) as 'pmIssueCnt') as 'pmIssueCnt', `;
 
-			// 오후대기시간
+			// 오후대기시간 - sec
 			query += ` (SELECT IFNULL((  
-				SELECT CONCAT(LPAD(ROUND(((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)), 60)), '2', '0'))  
+				SELECT AVG(b1.time_avg_1400) + AVG(b1.time_avg_1500) + AVG(b1.time_avg_1600)
 				FROM ${db.device_op_info.name} a1 
 				INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
 				WHERE ${subPos.join(" AND ")}
-			), 0) as 'pmWaitTime') as 'pmWaitTime'  `;
+			), 0) as 'pmAvgSec') as 'pmAvgSec' `;
+
+			// // 오후대기시간 - HH:mm:ss
+			// query += ` (SELECT IFNULL((  
+			// 	SELECT CONCAT(LPAD(ROUND(((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)) / 3600)), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)), 3600) / 60), '2', '0'), ':', LPAD(ROUND(MOD((SUM(b1.time_avg_1400) + SUM(b1.time_avg_1500) + SUM(b1.time_avg_1600)), 60)), '2', '0'))  
+			// 	FROM ${db.device_op_info.name} a1 
+			// 	INNER JOIN ${db.ticket_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id 
+			// 	WHERE ${subPos.join(" AND ")}
+			// ), 0) as 'pmWaitTime') as 'pmWaitTime'  `;
 
 			query += ` FROM ${db.device_op_info.name} a INNER JOIN ${db.ticket_daily_cnt.name} b ON a.dev_id = b.dev_id ` +
 					 " WHERE b.workno = 1 ";
@@ -211,7 +266,7 @@ const dashboard = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				query += ` AND DATE_FORMAT(b.q_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `;
+				query += ` AND DATE_FORMAT(b.q_date, '%Y-%m') = '${dayjs(req.query.startDate).format("YYYY-MM")}' `;
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
 				query += ` AND DATE_FORMAT(b.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `;
@@ -225,14 +280,15 @@ const dashboard = {
 			if(true){
 				// query += " GROUP BY a.pos_1, date_format(b.q_date, '%Y-%m-%d') ";
 				// query += " GROUP BY a.pos_1, date, issueDate ";
-				query += " GROUP BY date, a.pos_1";
+				query += " GROUP BY data_column, a.pos_1";
 			}
 			let result = {
 				data: {
-					am: [],
-					pm: [],
 					avgTime: [],
-					avgSec: []
+					avgSec: [],
+					avgSecToStr: [],
+					amSec: [],
+					pmSec: []
 				},
 				column: []
 			};
@@ -241,19 +297,20 @@ const dashboard = {
 				//replacements: { pat_no: req.query.PAT_NO }
 			}).then(rows => {
 				// get columns & data
-				let am, pm, avgTime, avgSec;
+				let avgTime, amTime, pmTime, avgSec, amSec, pmSec;
 				rows.forEach(row => {
-					am = row.dataValues.amIssueCnt === null ? 0 : row.dataValues.amIssueCnt;
-					pm = row.dataValues.pmIssueCnt === null ? 0 : row.dataValues.pmIssueCnt;
 					avgTime = row.dataValues.avgTime === null ? 0 : row.dataValues.avgTime;
 					avgSec = row.dataValues.avgSec === null ? 0 : row.dataValues.avgSec;
-					
+					amSec = row.dataValues.amAvgSec === null ? 0 : row.dataValues.amAvgSec;
+					pmSec = row.dataValues.pmAvgSec === null ? 0 : row.dataValues.pmAvgSec;
+
 					// result.column.push(row.dataValues.site); // 기관
-					result.column.push(row.dataValues.data_column); // 날짜
-					result.data.am.push(am);
-					result.data.pm.push(pm);
+					result.column.push(row.dataValues.columns); // 날짜
 					result.data.avgTime.push(avgTime);
+					result.data.avgSecToStr.push(secToStr(avgSec));
 					result.data.avgSec.push(avgSec);
+					result.data.amSec.push(amSec);
+					result.data.pmSec.push(pmSec);
 				});
 			});
 			res.setHeader("token", req.headers.token);
