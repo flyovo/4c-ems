@@ -72,14 +72,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.sunap_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.sunap_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.sunap_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.sunap_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -199,14 +199,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.sunap_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.sunap_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.sunap_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.sunap_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -369,14 +369,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.sunap_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.sunap_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.sunap_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.sunap_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.sunap_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.sunap_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -507,14 +507,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.certificate_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.certificate_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.certificate_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.certificate_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.certificate_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.certificate_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -631,14 +631,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.q_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.q_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.q_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.q_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.q_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.q_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -651,7 +651,7 @@ const statistics = {
 				query += ` WHERE ${ where.join(" AND ") }`;
 			}
 
-			query += " GROUP BY a.pos_1, a.pos_2, a.pos_3, date_format(b.q_date, '%Y-%m') ";
+			query += " GROUP BY a.pos_1, a.pos_2, a.pos_3, date_format(b.q_date, '%Y-%m-%d') ";
 
 			let result = await db.sequelize.query(query, {
 				model: db.device_op_info
@@ -709,14 +709,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.act_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.act_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.act_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -793,14 +793,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.act_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.act_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.act_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.act_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.act_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.act_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			// 'S' 일 경우 조건 사용 안함
@@ -888,14 +888,14 @@ const statistics = {
 			// 기간 선택
 			// 전체일 경우 사용 안함
 			if(req.query.dateTerm === "weekly"){ // 당월 조회, 전월 조회
-				where.push(` DATE_FORMAT(b.fail_date, '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
+				where.push(` DATE_FORMAT(DATE(b.fail_date), '%Y-%m') = '${dayjs(req.query.endDate).format("YYYY-MM")}' `);
 			}
 			if(req.query.dateTerm === "monthly"){ // 연간 조회
-				where.push(` DATE_FORMAT(b.fail_date, '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
+				where.push(` DATE_FORMAT(DATE(b.fail_date), '%Y') = '${dayjs(req.query.endDate).format("YYYY")}' `);
 			}
 			if(req.query.dateTerm === "term"){ // 기간 조회
-				let endDate = dayjs(req.query.endDate).add(1, "day").format("YYYY-MM-DD");
-				where.push(` b.fail_date BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
+				let endDate = dayjs(req.query.endDate).format("YYYY-MM-DD");
+				where.push(` DATE(b.fail_date) BETWEEN DATE_FORMAT('${dayjs(req.query.startDate).format("YYYY-MM-DD")}', '%Y-%m-%d') AND DATE_FORMAT('${endDate}', '%Y-%m-%d') `);
 			}
 
 			if(req.query.option){ // // 콤보박스
