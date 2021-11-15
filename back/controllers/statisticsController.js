@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const dayjs = require("dayjs");
 
 const statistics = {
+	// 외래수납
 	getOutPatient: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -106,6 +107,7 @@ const statistics = {
 		}
 	},
 
+	// 퇴원수납
 	getLeaves: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -233,6 +235,7 @@ const statistics = {
 		}
 	},
 
+	// 요일별수납
 	getWeek: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -402,8 +405,8 @@ const statistics = {
 			next(err);
 		}
 	},
-
-
+	
+	// 증명서발급
 	getCertification: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -541,6 +544,7 @@ const statistics = {
 		}
 	},
 
+	// 수납대기시간
 	getWaitTime: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -664,6 +668,7 @@ const statistics = {
 		}
 	},
 
+	// 도착확인
 	getArrive: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -705,6 +710,7 @@ const statistics = {
 			// 도착확인만 조회
 			let act_type = "%도착%";
 			where.push(` b.act_type like '${act_type}' `);
+			where.push(" a.op_prog LIKE '%도착확인%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
@@ -743,6 +749,7 @@ const statistics = {
 		}
 	},
 
+	// 신체계측
 	getMeasurement: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -789,6 +796,7 @@ const statistics = {
 				default: act_type = "%신체계측%"; break;
 			}
 			where.push(` b.act_type like '${act_type}' `);
+			where.push(" a.op_prog LIKE '%신체%' ");
 
 			// 기간 선택
 			// 전체일 경우 사용 안함

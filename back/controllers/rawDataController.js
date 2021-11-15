@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const dayjs = require("dayjs");
 
 const rawData = {
+	// 외래&입원 수납 Data
 	getStorage: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -100,6 +101,7 @@ const rawData = {
 		}
 	},
 
+	// 증명서 발급 Data
 	getCertification: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -193,6 +195,8 @@ const rawData = {
 			next(err);
 		}
 	},
+
+	// 도착확인 Data
 	getArrive: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -234,6 +238,7 @@ const rawData = {
 			}
 			
 			where.push(" b.act_type LIKE '%도착확인%' ");
+			where.push(" a.op_prog LIKE '%도착확인%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
@@ -272,6 +277,8 @@ const rawData = {
 			next(err);
 		}
 	},
+
+	// 신체계측 Data
 	getMeasurements: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
@@ -319,6 +326,7 @@ const rawData = {
 				default: act_type = "%신체계측%"; break;
 			}
 			where.push(` b.act_type like '${act_type}' `);
+			where.push(" a.op_prog LIKE '%신체%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
@@ -351,6 +359,8 @@ const rawData = {
 			next(err);
 		}
 	},
+
+	// 실패 Data
 	getFailure: async function (req, res, next) {
 		try {
 			let position = req.query.position ? req.query.position.split(",") : "";
