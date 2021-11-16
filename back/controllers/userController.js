@@ -145,6 +145,13 @@ const user = {
 					}
 					break;
 			}
+			
+			if(/measurements/i.test(req.query.keyword)){
+				where.push(" op_prog like '%신체%' ");
+			}
+			if(/arrive/i.test(req.query.keyword)){
+				where.push(" op_prog = '도착확인' ");
+			}
 
 			if(where.length > 0){
 				query += " WHERE ";
@@ -152,9 +159,7 @@ const user = {
 			}
 
 			query += ` group by ${req.query.site} `;
-			console.log("------------------------------------------------------------");
-			console.log(query);
-			console.log("------------------------------------------------------------");
+
 			let result = [];
 			await db.sequelize.query(query, {
 				model: db.device_op_info

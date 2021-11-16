@@ -238,7 +238,6 @@ const rawData = {
 			}
 			
 			where.push(" b.act_type LIKE '%도착확인%' ");
-			where.push(" a.op_prog LIKE '%도착확인%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
@@ -326,7 +325,6 @@ const rawData = {
 				default: act_type = "%신체계측%"; break;
 			}
 			where.push(` b.act_type like '${act_type}' `);
-			where.push(" a.op_prog LIKE '%신체%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함

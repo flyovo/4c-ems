@@ -62,6 +62,7 @@ export default class extends Vue {
       position: position.join(','),
       organ: userState.organ,
       pos_4: userState.pos_4,
+      keyword: "",
       // ...JSON.parse(sessionStorage.getItem('4c-userState')),
       auth: sessionStorage.getItem('4c-userAuth')
     }).then((result: any) => {

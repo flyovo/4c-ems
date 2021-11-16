@@ -121,11 +121,12 @@ export default class extends Vue {
   // 기관 리스트
   // siteList() {
   //   return async(type, position) => {
-  private async siteList(type, position) {
+  private async siteList(type, position, keyword) {
     // return async() => {
     let list = await SettingsModule.GetSite({
       site: type,
       position: position,
+      keyword: keyword,
       organ: JSON.parse(sessionStorage.getItem('4c-userState')).organ,
       pos_4: JSON.parse(sessionStorage.getItem('4c-userState')).pos_4,
       // ...JSON.parse(sessionStorage.getItem('4c-userState')),
@@ -150,7 +151,9 @@ export default class extends Vue {
       await SettingsModule.SetMenuText([])
 
       let path = this.$route.path.split('/')
-      let pathKor = []
+      let pathKor = [];
+      let keyword = path[1];
+      
       path.shift()
       for (let [index, p] of path.entries()) {
         path[index] = decodeURIComponent(p)
@@ -197,7 +200,7 @@ export default class extends Vue {
 
         let pos = position.join(',')
         if (type !== '') {
-          await this.siteList(type, pos).then(async res => {
+          await this.siteList(type, pos, keyword).then(async res => {
             if (index < path.length) {
               if (res) {
                 this.$set(this.initMenu, 'children', res)
@@ -244,11 +247,13 @@ export default class extends Vue {
     //   return;
     // }
 
+    let keyword = url[1];
+
     let position = this.menuUrl.slice(1).join(',')
     if (url[0] !== 'dashboard') {
       position = this.menuUrl.slice(2).join(',')
       if (type !== '') {
-        await this.siteList(type, position).then(async res => {
+        await this.siteList(type, position, keyword).then(async res => {
           if (!data.children && res.length > 0) {
             this.append(data, res)
           }

@@ -710,7 +710,6 @@ const statistics = {
 			// 도착확인만 조회
 			let act_type = "%도착%";
 			where.push(` b.act_type like '${act_type}' `);
-			where.push(" a.op_prog LIKE '%도착확인%' ");
 			
 			// 기간 선택
 			// 전체일 경우 사용 안함
@@ -796,7 +795,6 @@ const statistics = {
 				default: act_type = "%신체계측%"; break;
 			}
 			where.push(` b.act_type like '${act_type}' `);
-			where.push(" a.op_prog LIKE '%신체%' ");
 
 			// 기간 선택
 			// 전체일 경우 사용 안함
