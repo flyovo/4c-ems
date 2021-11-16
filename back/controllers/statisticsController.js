@@ -37,7 +37,7 @@ const statistics = {
 				" SELECT COUNT(DISTINCT a1.dev_id) " + 
 				" FROM device_op_info a1 INNER JOIN sunap_daily_cnt b1 ON a1.dev_id = b1.dev_id " + 
 				// " WHERE a1.pos_1 = '기관' AND a1.pos_2 = '층' AND a1.pos_3 = '구역' AND b1.sunap_type LIKE '%외래%' " + 
-				`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")} AND b1.sunap_type LIKE '%외래%' ` : " b1.sunap_type LIKE '%외래%' "}   ` + 
+				` WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} AND b1.sunap_type LIKE '%외래%' AND a1.del_type = 'N' ` : " b1.sunap_type LIKE '%외래%' AND a1.del_type = 'N' "}   ` + 
 			" ) AS `대수` " + 
 			" , CAST(IFNULL(SUM(b.cnt_his_query), 0) AS UNSIGNED INTEGER) AS '수납가능건수' " + 
 			" , CAST(IFNULL(SUM(b.cnt_sunap), 0) AS UNSIGNED INTEGER) AS '수납건수' " + 
@@ -266,7 +266,7 @@ const statistics = {
 			" ( " + 
 			"  SELECT count(DISTINCT a1.dev_id) " + 
 			`  FROM ${db.device_op_info.name} a1 INNER JOIN ${db.sunap_daily_cnt.name} b1 ON a1.dev_id = b1.dev_id ` +
-			`  ${subPos.length > 0 ? ` WHERE ${subPos.join(" AND ")} ` : ""}   ` + 
+			`  WHERE ${subPos.length > 0 ? ` ${subPos.join(" AND ")} AND a1.del_type = 'N' ` : " a1.del_type = 'N' "}   ` + 
 			"  ) AS '대수' " + 
 			" ,( " + 
 			"  SELECT IFNULL(SUM(b1.cnt_sunap), 0) " + 
