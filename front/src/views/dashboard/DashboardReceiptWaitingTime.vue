@@ -22,8 +22,8 @@ export default class extends Vue {
   private chartItems: IBarChart = {}
   private chartItemsOrigin: IBarChart = {
     title: this.title,
-    legend: ['10:00~12:00', '14:00~16:00'],
-    colors: [variables.darkRed, variables.darkGray, variables.darkTurquoise],
+    legend: ['1일 평균 대기시간', '10:00~12:00', '14:00~16:00'],
+    colors: [variables.darkGray, variables.darkRed, variables.darkTurquoise],
     xAxisData: [],
     series: []
     // tooltip : {  // 여기서 설정하면 formatter가 동작하지 않아 barChart 파일 내에서 선언
@@ -133,22 +133,22 @@ export default class extends Vue {
         //1일 평균 대기시간(sec)
         name: '1일 평균 대기시간',
         type: 'line',
-        itemStyle: {
-          borderColor: 'none',
-          color: 'none',
-        },
-        emphasis: {
-          itemStyle: {
-            borderColor: 'none',
-            color: 'none'
-          }
-        },
-        data: this.data.data.avgSecToStr
+        data: this.data.data.avgSec
       },
       // {
       //   //1일 평균 대기시간(HH:mm:ss)
       //   name: '',
       //   type: 'line',
+              // itemStyle: {
+        //   borderColor: 'none',
+        //   color: 'none',
+        // },
+        // emphasis: {
+        //   itemStyle: {
+        //     borderColor: 'none',
+        //     color: 'none'
+        //   }
+        // },
       //   data: this.data.data.avgTime
       // },
       {

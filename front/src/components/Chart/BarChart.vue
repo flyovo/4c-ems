@@ -125,10 +125,11 @@ export default class extends Vue {
               }
 
               return `${params[0].name}<br />
-              => ${params[0].seriesName}: ${params[0].value}<br />\
+              ${params[0].marker} ${params[0].seriesName}: ${secToStr(params[0].value)}<br />\
               ${params[1].marker} ${params[1].seriesName}: ${secToStr(params[1].value)}<br />\
               ${params[2].marker} ${params[2].seriesName}: ${secToStr(params[2].value)}<br />\
               `;
+              // => ${params[0].seriesName}: ${params[0].value}<br />\
             }
           },
         legend: {
