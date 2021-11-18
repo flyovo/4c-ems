@@ -133,6 +133,14 @@ export default class extends Vue {
         //1일 평균 대기시간(sec)
         name: '1일 평균 대기시간',
         type: 'line',
+        stack: '',
+        label: {
+          show: true,
+          position: 'top',
+          formatter: function(data){
+            return vm.dateFormat(data);
+          }
+        },
         data: this.data.data.avgSec
       },
       // {
