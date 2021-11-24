@@ -1,18 +1,18 @@
 <template>
   <div class="dashboard-receipt-waiting-time">
-    <bar-chart :chart-items="chartItems" />
+    <bar-line-chart :chart-items="chartItems" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
-import BarChart, { IBarChart } from '@/components/Chart/BarChart.vue'
+import BarLineChart, { IBarChart } from '@/components/Chart/BarLineChart.vue'
 import variables from '@/styles/_variables.scss'
 import { DashboardStoreModule } from '@/store/modules/dashboard/store.ts'
 
 @Component({
   name: 'DashboardReceiptWaitingTime',
-  components: { BarChart }
+  components: { BarLineChart }
 })
 export default class extends Vue {
   public data: any = {}

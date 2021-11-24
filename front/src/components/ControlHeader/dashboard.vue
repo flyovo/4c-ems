@@ -69,7 +69,8 @@ export default class extends Vue {
       return result
     })
 
-    let defaultPos = {}
+    let defaultPos = {};
+    let allType = [];
     switch (sessionStorage.getItem('4c-userAuth')) {
       case 'P':
       case 'p':
@@ -81,6 +82,7 @@ export default class extends Vue {
       case 'a':
       case 'S':
       case 's':
+        allType.push({id: "all", label: "전체"});
         defaultPos = list.find(item => {
           return item.label === '본관'
         })
@@ -88,7 +90,10 @@ export default class extends Vue {
     }
     this.handleSiteChange(defaultPos)
 
-    return [...list]
+    return [
+      ...allType, 
+      ...list
+    ];
   }
 
   // 사이트 텍스트

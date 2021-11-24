@@ -155,36 +155,7 @@ export default class extends Vue {
           data: chartItems.xAxisData
         },
         yAxis: {
-          type: 'value',
-          axisLabel: {
-            formatter: function(value){
-              let seconds = Number(value);
-
-              if(seconds === 0) return seconds;
-
-              var hours = "";
-              var min = "";
-              var sec = "";
-
-              function secToStr(seconds){
-                if(seconds < 60) {
-                  return Math.round(seconds) + '초';
-                }
-                if(seconds < 3600) {
-                  min = Math.floor(seconds/60);
-                  sec = Math.round(seconds - min*60) > 0 ? 
-                    Math.round(seconds - min*60) + '초'
-                    : "";
-                  return min + '분' + sec;
-                }
-                hours = Math.floor(seconds/3600);
-                min = Math.floor((seconds - hours*3600)/60);
-                sec = Math.round(seconds - hours*3600 - min*60);
-                return hours + '시' + min + '분' + sec + '초';
-              }
-              return secToStr(seconds);
-            },
-          }
+          type: 'value'
         },
         series: chartItems.series
       } as unknown) as EChartOption<EChartOption.SeriesBar>)
