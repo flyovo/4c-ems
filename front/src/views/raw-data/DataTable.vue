@@ -4,7 +4,7 @@
       <div class="raw-data-table__header__date_text">
         <i class="el-icon-date"></i>
         조회 기간 :
-        <span v-if="dateRange.label.from === dateRange.label.to"> 전체 </span>
+        <span v-if="dateRange.date.term === 'all'"> 전체 </span>
         <span v-else>{{ dateRange.label.from }} ~ {{ dateRange.label.to }}</span>
       </div>
       <div class="button-group">

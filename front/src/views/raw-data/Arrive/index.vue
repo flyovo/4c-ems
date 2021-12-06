@@ -11,12 +11,12 @@
       <el-table-column prop="ID" label="ID" sortable align="center"></el-table-column>
       <el-table-column prop="Model" label="Model" sortable align="center"></el-table-column>
       <el-table-column prop="등록번호" label="등록번호" sortable align="center"></el-table-column>
-      <el-table-column prop="예약진료수" label="예약진료수" sortable align="center"></el-table-column>
-      <el-table-column prop="문진성공" label="문진성공" sortable align="center"></el-table-column>
-      <el-table-column prop="문진실패" label="문진실패" sortable align="center"></el-table-column>
+      <!-- <el-table-column prop="예약진료수" label="예약진료수" sortable align="center"></el-table-column> -->
+      <!-- <el-table-column prop="문진성공" label="문진성공" sortable align="center"></el-table-column> -->
+      <!-- <el-table-column prop="문진실패" label="문진실패" sortable align="center"></el-table-column> -->
       <el-table-column prop="도착확인성공" label="도착확인성공" sortable align="center"></el-table-column>
       <el-table-column prop="도착확인실패" label="도착확인실패" sortable align="center"></el-table-column>
-      <el-table-column prop="폐기여부" label="폐기여부" sortable align="center"></el-table-column>
+      <!-- <el-table-column prop="폐기여부" label="폐기여부" sortable align="center"></el-table-column> -->
     </el-table>
   </div>
 </template>

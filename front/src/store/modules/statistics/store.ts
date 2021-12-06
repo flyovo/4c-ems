@@ -58,7 +58,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
           .format('YYYY년 MM월 DD일'),
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
-          .date(this.dateToday.daysInMonth())
+          .date(dayjs(this.dateToday).subtract(1, 'month').daysInMonth())
           .format('YYYY년 MM월 DD일')
       },
       date: {
@@ -69,7 +69,7 @@ class StatisticsStore extends VuexModule implements StatisticsStoreState {
           .format('YYYY-MM-DD'),
         to: dayjs(this.dateToday)
           .subtract(1, 'month')
-          .date(this.dateToday.daysInMonth())
+          .date(dayjs(this.dateToday).subtract(1, 'month').daysInMonth())
           .format('YYYY-MM-DD')
       }
     },
