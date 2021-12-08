@@ -212,12 +212,12 @@ const rawData = {
 			" , a.dev_id AS 'ID' " + 
 			" , a.dev_model AS 'Model' " + 
 			" , b.chart_no AS '등록번호' " + 
-			" , b.tr_book_cnt AS '예약진료수' " + 
-			" , b.survey_success_cnt AS '문진성공' " + 
-			" , b.survey_fail_cnt AS '문진실패' " + 
+			// " , b.tr_book_cnt AS '예약진료수' " + 
+			// " , b.survey_success_cnt AS '문진성공' " + 
+			// " , b.survey_fail_cnt AS '문진실패' " + 
 			" , b.success_cnt AS '도착확인성공' " + 
 			" , b.fail_cnt AS '도착확인실패' " + 
-			" , a.del_type AS '폐기여부' " + 
+			// " , a.del_type AS '폐기여부' " + 
 			` FROM ${db.device_op_info.name} a INNER JOIN ${db.etc_rt_log.name} b ON a.dev_id = b.dev_id `;
 
 			// " WHERE " ;
@@ -293,10 +293,10 @@ const rawData = {
 			" , a.dev_id AS 'ID' " + 
 			" , a.dev_model AS 'Model' " + 
 			" , b.chart_no AS '등록번호' " + 
-			" , b.tr_book_cnt AS '예약진료수' " + 
+			// " , b.tr_book_cnt AS '예약진료수' " + 
 			" , b.success_cnt AS '신체계측성공' " + 
 			" , b.fail_cnt AS '신체계측실패' " + 
-			" , a.del_type AS '폐기여부' " + 
+			// " , a.del_type AS '폐기여부' " + 
 			` FROM ${db.device_op_info.name} a INNER JOIN ${db.etc_rt_log.name} b ON a.dev_id = b.dev_id `;
 
 			// " WHERE " ;
