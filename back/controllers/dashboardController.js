@@ -31,21 +31,19 @@ const dashboard = {
 				where.push(` ${db.device_op_info.name}.pos_1 = '${position[1]}' `);
 			}
 
-			if(req.query.dateTerm === "weekly"){
-				// 당월 조회 or 전월 조회 
-				let from = dayjs(req.query.startDate).subtract(1, "year").format("YYYY-MM");
-				let to = dayjs(req.query.endDate).format("YYYY-MM");
-				where.push(` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y-%m') IN ('${from}', '${to}') `);
-			}else{ // "monthly"
-				// 년간 조회
-				where.push(` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date , '%Y-%m-%d') BETWEEN '${req.query.startDate}' AND '${req.query.endDate}' `);
-			}
+			// if(req.query.dateTerm === "weekly"){
+			let from = dayjs(req.query.startDate).format("YYYY-MM-DD");
+			let to = dayjs(req.query.endDate).format("YYYY-MM-DD");
+			where.push(` DATE_FORMAT(${db.sunap_daily_cnt.name}.sunap_date,'%Y-%m-%d') BETWEEN '${from}' AND '${to}' `);
+			// }
 
 			if(where.length > 0){
 				query += ` WHERE ${ where.join(" AND ") } `;
 			}
 
 			query += " GROUP BY date ";
+			query += " ORDER BY date ";
+
 			let result = {
 				data: {},
 				column: []
@@ -59,8 +57,6 @@ const dashboard = {
 					result.data[row.dataValues.data_key] = new Array;
 					column.push(row.dataValues.data_column);
 				});
-				column = [...new Set(column)];
-				column.sort();
 
 				// init data
 				for(let key in result.data){
